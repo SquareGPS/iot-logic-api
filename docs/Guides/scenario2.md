@@ -14,7 +14,7 @@ For this example, let's presume that we have already:
 
 To see all your existing flows, send the request:
 
-### [GET /iot/logic/flow/list](IoT_Logic.json/paths/~1iot~1logic~1flow~1list/get)
+### [GET /iot/logic/flow/list](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1list/get)
 
 Response:
 ```json
@@ -33,7 +33,7 @@ Response:
 
 To see the details of a specific flow, send the request:
 
-### [GET /iot/logic/flow/read](IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
+### [GET /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
 
 Request body:
 ```json
@@ -125,7 +125,7 @@ Response:
 
 Let's add another processing rule to calculate engine temperature in Celsius:
 
-### [POST /iot/logic/flow/update](IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
+### [POST /iot/logic/flow/update](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
 
 Request body:
 ```json

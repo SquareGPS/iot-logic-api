@@ -6,7 +6,7 @@ Let's create a complete workflow to send your device data to an external MQTT br
 
 First, we need to define where the data will be sent:
 
-### [POST /iot/logic/flow/endpoint/create](IoT_Logic.json/paths/~1iot~1logic~1flow~1endpoint~1create)
+### [POST /iot/logic/flow/endpoint/create](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1endpoint~1create/post)
 
 Request body:
 ```json
@@ -44,7 +44,7 @@ The response will include the endpoint ID that we'll need later:
 
 Next, we need to create a data source endpoint to connect to your devices:
 
-### [POST /iot/logic/flow/endpoint/create](IoT_Logic.json/paths/~1iot~1logic~1flow~1endpoint~1create)
+### [POST /iot/logic/flow/endpoint/create](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1endpoint~1create/post)
 
 Request body:
 ```json
@@ -74,7 +74,7 @@ The response will include the endpoint ID that we'll need later:
 
 Now we'll create the complete flow that connects your data source endpoint to the MQTT endpoint:
 
-### [POST /iot/logic/flow/create](IoT_Logic.json/paths/~1iot~1logic~1flow~1create/post)
+### [POST /iot/logic/flow/create](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1create/post)
 
 Request body:
 ```json
