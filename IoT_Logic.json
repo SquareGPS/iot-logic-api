@@ -20,11 +20,11 @@
   },
   "servers": [
     {
-      "url": "https://api.eu.navixy.com",
+      "url": "https://api.eu.navixy.com/v2",
       "description": "Navixy production server on European platform"
     },
     {
-      "url": "https://api.us.navixy.com",
+      "url": "https://api.us.navixy.com/v2",
       "description": "Navixy production server on American platform"
     }
   ],
