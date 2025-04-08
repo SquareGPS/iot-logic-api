@@ -68,7 +68,7 @@ Response parameters:
 
 * `type` – required, text: _"response"_.
 * `action` – required, text: _"subscription/subscribe"_.
-* `events` – required, array of [enum](https://developers.navixy.com/docs/navixy-api/getting-started/introduction#data-types), without nulls. List of the subscribed events types ("", "" or "iot_monitor").
+* `events` – required, array of [enum](https://developers.navixy.com/docs/navixy-api/d87ce89118d15-introduction#data-types), without nulls. List of the subscribed events types ("", "" or "iot_monitor").
 * `data` – required, map <string, object>. Map with events subscription result. One key per subscribed event.
     * `state` – present if the "state" subscription requested, see sub response below.
     * `state_batch` – present if the "state_batch" subscription requested, see sub response below.
