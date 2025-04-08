@@ -46,7 +46,7 @@ For this example, let's presume that we have already:
 
 We'll update the existing flow to send the processed data to both Navixy and our MQTT endpoint:
 
-#### [POST /iot/logic/flow/update](IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post) 
+#### [POST /iot/logic/flow/update](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post) 
 
 Request body:
 ```json
@@ -149,7 +149,7 @@ Response:
 
 ### Verifying the flow configuration
 
-#### [GET /iot/logic/flow/read](IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
+#### [GET /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
 
 Request body:
 ```json
@@ -196,7 +196,7 @@ For this example, let's presume that we have already:
 
 ### Adding multiple transformation nodes
 
-#### [POST /iot/logic/flow/update](IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
+#### [POST /iot/logic/flow/update](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
 
 Request body:
 ```json
@@ -311,7 +311,7 @@ Response:
 
 ### Verifying the flow configuration
 
-#### [GET /iot/logic/flow/read](IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
+#### [GET /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
 
 Request body:
 ```json
