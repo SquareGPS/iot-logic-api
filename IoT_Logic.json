@@ -779,18 +779,19 @@
               "data_source"
             ]
           },
-          "title": {
-            "type": "string",
-            "examples": [
-              "Standard Input Endpoint"
-            ]
-          },
+          
           "enabled": {
             "$ref": "#/components/schemas/Enabled"
           },
           "data": {
             "type": "object",
             "properties": {
+              "title": {
+            "type": "string",
+            "examples": [
+              "Standard Input Endpoint"
+            ]
+          },
               "sources": {
                 "type": "array",
                 "items": {
@@ -877,15 +878,15 @@
               "initiate_attributes"
             ]
           },
-          "title": {
-            "type": "string",
-            "examples": [
-              "Add/modify attributes"
-            ]
-          },
           "data": {
             "type": "object",
             "properties": {
+                  "title": {
+                "type": "string",
+                "examples": [
+                  "Add/modify attributes"
+                ]
+              },
               "items": {
                 "type": "array",
                 "items": {
