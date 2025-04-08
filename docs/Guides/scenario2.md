@@ -33,7 +33,7 @@ Response:
 
 To see the details of a specific flow, send the request:
 
-### [GET /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
+### [POST /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/post)
 
 Request body:
 ```json
@@ -138,9 +138,9 @@ Request body:
       {
         "id": 1,
         "type": "data_source",
-        "title": "Fleet Vehicles",
         "enabled": true,
         "data": {
+          "title": "Fleet Vehicles",
           "sources": [12345, 12346, 12347]
         },
         "view": {
@@ -150,8 +150,8 @@ Request body:
       {
         "id": 2,
         "type": "initiate_attributes",
-        "title": "Calculate Business Metrics",
         "data": {
+          "title": "Calculate Business Metrics",
           "items": [
             {
               "name": "fuel_efficiency",
@@ -186,9 +186,9 @@ Request body:
       {
         "id": 3,
         "type": "output_endpoint",
-        "title": "Send to External System",
         "enabled": true,
         "data": {
+          "title": "Send to External System",
           "output_endpoint_type": "output_mqtt_client",
           "output_endpoint_id": 45678
         },

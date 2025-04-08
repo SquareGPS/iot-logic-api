@@ -4,8 +4,6 @@ stoplight-id: ie3rt9xv91kie
 
 # Navixy IoT Logic API
 
-*BETA Version*
-
 <!-- theme: warning -->
 > *BETA Version!* <br>
 >Now the easrly access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned! 

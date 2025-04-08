@@ -77,7 +77,7 @@
       }
     },
     "/iot/logic/flow/read": {
-      "get": {
+      "post": {
         "summary": "flowRead",
         "description": "Read a flowchart",
         "operationId": "flowRead",
@@ -98,9 +98,11 @@
                 "required": [
                   "flow_id"
                 ]
-              }
+              },
+              "examples": {}
             }
-          }
+          },
+          "description": ""
         },
         "responses": {
           "200": {
@@ -147,7 +149,8 @@
         ],
         "x-stoplight": {
           "id": "k1ho66hqjjvoy"
-        }
+        },
+        "parameters": []
       }
     },
     "/iot/logic/flow/update": {
@@ -779,7 +782,6 @@
               "data_source"
             ]
           },
-          
           "enabled": {
             "$ref": "#/components/schemas/Enabled"
           },
@@ -787,11 +789,11 @@
             "type": "object",
             "properties": {
               "title": {
-            "type": "string",
-            "examples": [
-              "Standard Input Endpoint"
-            ]
-          },
+                "type": "string",
+                "examples": [
+                  "Standard Input Endpoint"
+                ]
+              },
               "sources": {
                 "type": "array",
                 "items": {
@@ -881,7 +883,7 @@
           "data": {
             "type": "object",
             "properties": {
-                  "title": {
+              "title": {
                 "type": "string",
                 "examples": [
                   "Add/modify attributes"

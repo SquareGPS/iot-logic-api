@@ -86,9 +86,9 @@ Request body:
       {
         "id": 1,
         "type": "data_source",
-        "title": "Fleet vehicles",
         "enabled": true,
         "data": {
+          "title": "Fleet vehicles",
           "sources": [56789]
         },
         "view": {
@@ -98,9 +98,9 @@ Request body:
       {
         "id": 2,
         "type": "output_endpoint",
-        "title": "Send to external system",
         "enabled": true,
         "data": {
+          "title": "Send to external system",
           "output_endpoint_type": "output_mqtt_client",
           "output_endpoint_id": 45678
         },
