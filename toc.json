@@ -1,0 +1,79 @@
+{
+  "collapseTableOfContents": true,
+  "items": [
+    {
+      "type": "item",
+      "title": "Overview",
+      "uri": "/docs/Overview.md",
+      "slug": "overview"
+    },
+    {
+      "type": "item",
+      "title": "Technical Details",
+      "uri": "/docs/Technical-details.md",
+      "slug": "technical-details"
+    },
+    {
+      "type": "group",
+      "title": "Flow schemas",
+      "uri": "/docs/Flow schemas/Flow-schema-structure.md",
+      "slug": "flow-schemas/structure",
+      "items": [
+        {
+          "type": "item",
+          "title": "JSON-schema template",
+          "uri": "IoT Logic.json/components/schemas/Flow",
+          "slug": "flow-schemas/json-schema-template"
+        },
+        {
+          "type": "item",
+          "title": "JSON-schema example",
+          "uri": "/docs/Flow schemas/General-JSON-schema-example.md",
+          "slug": "flow-schemas/example"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Guides",
+      "uri": "/docs/Guides/navixy-iot-guide.md",
+      "slug": "guides",
+      "items": [
+        {
+          "type": "item",
+          "title": "Sending device data to an external MQTT system",
+          "uri": "/docs/Guides/scenario1.md",
+          "slug": "guides/device-data-to-an-external-mqtt-system"
+        },
+        {
+          "type": "item",
+          "title": "Managing your flows and endpoints",
+          "uri": "/docs/Guides/scenario2.md",
+          "slug": "guides/managing-flows-and-endpoints"
+        },
+        {
+        "type": "item",
+        "title": "Advanced configurations",
+        "uri": "/docs/Guides/Advanced-configurations.md",
+        "slug": "guides/advanced-configurations"
+        }
+      ]
+    },
+    {
+      "type": "item",
+      "title": "Websocket access for Data Stream Analyzer",
+      "uri": "docs/Websocket-access-for-DSA.md",
+      "slug": "websocket-access-DSA"
+    },
+    {
+      "type": "divider",
+      "title": "Resources"
+    },
+    {
+      "type": "item",
+      "title": "Navixy IoT Logic API",
+      "uri": "/IoT Logic.json",
+      "slug": "resources"
+    }
+  ]
+}
