@@ -1,16 +1,20 @@
----
-stoplight-id: 14s9rqt7rrkvq
----
-
 # Managing your flows and endpoints
 
-## Viewing Your Flows
+## Prerequisites
 
-To see all your existing flows:
+For this example, let's presume that we have already:
 
-```http
-GET /iot/logic/flow/list
-```
+1. Created an MQTT output endpoint with ID 45678 using `/iot/logic/flow/endpoint/create`
+2. Created a flow with ID 1234 using `/iot/logic/flow/create` with the following components:
+   - A data source node (ID: 1) that captures data from devices 12345, 12346, and 12347
+   - An attribute calculation node (ID: 2) for basic metrics
+   - An output endpoint node (ID: 3) that sends data to the MQTT endpoint
+
+## Viewing your flows
+
+To see all your existing flows, send the request:
+
+### [GET /iot/logic/flow/list](IoT_Logic.json/paths/~1iot~1logic~1flow~1list/get)
 
 Response:
 ```json
@@ -25,13 +29,11 @@ Response:
 }
 ```
 
-## Viewing Flow Details
+## Viewing flow details
 
-To see the details of a specific flow:
+To see the details of a specific flow, send the request:
 
-```http
-GET /iot/logic/flow/read
-```
+### [GET /iot/logic/flow/read](IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
 
 Request body:
 ```json
@@ -40,17 +42,92 @@ Request body:
 }
 ```
 
-The response will include all nodes, edges, and settings for the flow.
+Response:
+```json
+{
+  "success": true,
+  "value": {
+    "id": 1234,
+    "title": "Fleet Data to External System",
+    "enabled": true,
+    "nodes": [
+      {
+        "id": 1,
+        "type": "data_source",
+        "title": "Fleet Vehicles",
+        "enabled": true,
+        "data": {
+          "sources": [12345, 12346, 12347]
+        },
+        "view": {
+          "position": { "x": 50, "y": 50 }
+        }
+      },
+      {
+        "id": 2,
+        "type": "initiate_attributes",
+        "title": "Calculate Business Metrics",
+        "data": {
+          "items": [
+            {
+              "name": "fuel_efficiency",
+              "value": "distance_traveled / fuel_consumed",
+              "generation_time": "now()",
+              "server_time": "now()"
+            },
+            {
+              "name": "idle_time_percent",
+              "value": "(idle_time / (idle_time + moving_time)) * 100",
+              "generation_time": "now()",
+              "server_time": "now()"
+            },
+            {
+              "name": "vehicle_status",
+              "value": "speed > 0 ? 'moving' : (engine_on ? 'idle' : 'stopped')",
+              "generation_time": "now()",
+              "server_time": "now()"
+            }
+          ]
+        },
+        "view": {
+          "position": { "x": 200, "y": 50 }
+        }
+      },
+      {
+        "id": 3,
+        "type": "output_endpoint",
+        "title": "Send to External System",
+        "enabled": true,
+        "data": {
+          "output_endpoint_type": "output_mqtt_client",
+          "output_endpoint_id": 45678
+        },
+        "view": {
+          "position": { "x": 350, "y": 50 }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 2
+      },
+      {
+        "from": 2,
+        "to": 3
+      }
+    ]
+  }
+}
+```
 
-## Updating a Flow
+## Updating a flow
 
 Let's add another processing rule to calculate engine temperature in Celsius:
 
-```http
-POST /iot/logic/flow/update
-```
+### [POST /iot/logic/flow/update](IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
 
-Request body (showing only the relevant changes):
+Request body:
 ```json
 {
   "flow": {
@@ -134,61 +211,16 @@ Request body (showing only the relevant changes):
 }
 ```
 
-## Managing Endpoints
-
-### Listing Your Endpoints
-
-```http
-POST /iot/logic/flow/endpoint/list
-```
-
 Response:
 ```json
 {
-  "success": true,
-  "list": [
-    {
-      "id": 45678,
-      "title": "External MQTT System",
-      "type": "output_mqtt_client",
-      "status": "active",
-      "properties": {
-        /* endpoint properties */
-      }
-    }
-  ]
+  "success": true
 }
 ```
 
-### Updating an Endpoint
-
-To update an endpoint's connection details:
-
-```http
-POST /iot/logic/flow/endpoint/update
-```
-
-Request body:
-```json
-{
-  "endpoint": {
-    "id": 45678,
-    "title": "External MQTT System (Updated)",
-    "type": "output_mqtt_client",
-    "status": "active",
-    "properties": {
-      "protocol": "NGP",
-      "domain": "new-mqtt.mycompany.com",
-      "port": 8883,
-      "client_id": "navixy-integration",
-      "qos": 1,
-      "topics": ["fleet/vehicles/data/v2"],
-      "version": "5.0",
-      "use_ssl": true,
-      "mqtt_auth": true,
-      "user_name": "mqtt_username",
-      "user_password": "updated_password"
-    }
-  }
-}
-```
+<!-- theme: success -->
+> **Congratulations!**<br>
+> You've now successfully enhanced your data flow by:
+> - Adding an engine temperature conversion calculation (Fahrenheit to Celsius)
+> - Maintaining your existing business metrics calculations
+> - Updating your flow while preserving the connection to your fleet vehicles and MQTT endpoint

@@ -1,18 +1,12 @@
----
-stoplight-id: v3pj5ugo604ke
----
-
 # Sending device data to an external MQTT system
 
 Let's create a complete workflow to send your device data to an external MQTT broker.
 
-## Step 1: Create an MQTT Endpoint
+## Step 1: Create an MQTT Output Endpoint
 
 First, we need to define where the data will be sent:
 
-```http
-POST /iot/logic/flow/endpoint/create
-```
+### [POST /iot/logic/flow/endpoint/create](IoT_Logic.json/paths/~1iot~1logic~1flow~1endpoint~1create)
 
 Request body:
 ```json
@@ -46,31 +40,56 @@ The response will include the endpoint ID that we'll need later:
 }
 ```
 
-## Step 2: Create a Flow with Data Processing
+## Step 2: Create a data source endpoint
 
-Now we'll create a flow that:
-1. Takes data from your devices
-2. Processes it to calculate useful metrics
-3. Sends it to your MQTT system
+Next, we need to create a data source endpoint to connect to your devices:
 
-```http
-POST /iot/logic/flow/create
+### [POST /iot/logic/flow/endpoint/create](IoT_Logic.json/paths/~1iot~1logic~1flow~1endpoint~1create)
+
+Request body:
+```json
+{
+  "endpoint": {
+    "title": "Fleet Vehicles Data Source",
+    "type": "input_navixy",
+    "status": "active",
+    "properties": {
+      "sources": [12345, 12346, 12347]
+    }
+  }
+}
 ```
+
+> Ensure the device IDs (12345, 12346, 12347 in this example) are valid and registered in your Navixy system.
+
+The response will include the endpoint ID that we'll need later:
+```json
+{
+  "success": true,
+  "id": 56789
+}
+```
+
+## Step 3: Create a complete flow
+
+Now we'll create the complete flow that connects your data source endpoint to the MQTT endpoint:
+
+### [POST /iot/logic/flow/create](IoT_Logic.json/paths/~1iot~1logic~1flow~1create/post)
 
 Request body:
 ```json
 {
   "flow": {
-    "title": "Fleet Data to External System",
+    "title": "Fleet data to external system",
     "enabled": true,
     "nodes": [
       {
         "id": 1,
         "type": "data_source",
-        "title": "Fleet Vehicles",
+        "title": "Fleet vehicles",
         "enabled": true,
         "data": {
-          "sources": [12345, 12346, 12347]
+          "sources": [56789]
         },
         "view": {
           "position": { "x": 50, "y": 50 }
@@ -78,45 +97,15 @@ Request body:
       },
       {
         "id": 2,
-        "type": "initiate_attributes",
-        "title": "Calculate Business Metrics",
-        "data": {
-          "items": [
-            {
-              "name": "fuel_efficiency",
-              "value": "distance_traveled / fuel_consumed",
-              "generation_time": "now()",
-              "server_time": "now()"
-            },
-            {
-              "name": "idle_time_percent",
-              "value": "(idle_time / (idle_time + moving_time)) * 100",
-              "generation_time": "now()",
-              "server_time": "now()"
-            },
-            {
-              "name": "vehicle_status",
-              "value": "speed > 0 ? 'moving' : (engine_on ? 'idle' : 'stopped')",
-              "generation_time": "now()",
-              "server_time": "now()"
-            }
-          ]
-        },
-        "view": {
-          "position": { "x": 200, "y": 50 }
-        }
-      },
-      {
-        "id": 3,
         "type": "output_endpoint",
-        "title": "Send to External System",
+        "title": "Send to external system",
         "enabled": true,
         "data": {
           "output_endpoint_type": "output_mqtt_client",
           "output_endpoint_id": 45678
         },
         "view": {
-          "position": { "x": 350, "y": 50 }
+          "position": { "x": 250, "y": 50 }
         }
       }
     ],
@@ -124,10 +113,6 @@ Request body:
       {
         "from": 1,
         "to": 2
-      },
-      {
-        "from": 2,
-        "to": 3
       }
     ]
   }
@@ -141,11 +126,9 @@ The response will include the flow ID:
   "id": 1234
 }
 ```
-
-## Congratulations! 
-
-You've now set up a complete flow that:
-- Collects data from multiple vehicles
-- Calculates business-relevant metrics like fuel efficiency
-- Determines vehicle operational status
-- Sends all this processed data to your external MQTT system
+<!-- theme: success -->
+> **Congratulations!**<br>
+> You've now set up a complete flow that:
+> - Connects to multiple vehicles in your fleet through a data source endpoint
+> - Sends the device data to your external MQTT system
+> - Uses your custom MQTT broker settings for secure data transfer
