@@ -115,26 +115,26 @@ curl -X POST "https://your.server.com/iot/logic/flow/create" \
   -H "Content-Type: application/json" \
   -H "Authorization: NVX hash_value" \
   -d '{
-    "flow": {                                   # Flow entity creation
+    "flow": {                                   
       "title": "Basic Temperature Monitoring",
-      "enabled": true,                          # If true, the flow starts to process data immediately after creation
-      "nodes": [                                # Node entity creation right inside new flow
+      "enabled": true,                          
+      "nodes": [                                
         {
-          "id": 1,                              # First node creation with an ID unique within a flow
+          "id": 1,                              
           "type": "data_source",
           "enabled": true,
-          "data": {                             # Node-specific parameters, depend on node type
+          "data": {                             
             "title": "Fleet Vehicles",
-            "sources": [394892, 394893, 394894] # Actual data sources from your accountm can be found in Devices and Settings
+            "sources": [394892, 394893, 394894] 
           },
-          "view": {                             # First node postion, defining the display in UI
+          "view": {                             
             "position": {
               "x": 50,
               "y": 100
             }
           }
         },
-        {                                       # Second node creation
+        {                                       
           "id": 2,              
           "type": "initiate_attributes",
           "data": {
@@ -148,7 +148,7 @@ curl -X POST "https://your.server.com/iot/logic/flow/create" \
               }
             ]
           },
-          "view": {                           # Second node postion, defining the display in UI
+          "view": {                           
             "position": {
               "x": 300,
               "y": 100
@@ -156,14 +156,14 @@ curl -X POST "https://your.server.com/iot/logic/flow/create" \
           }
         },
         {
-          "id": 3,                            # third node creation
+          "id": 3,                            
           "type": "output_endpoint",
           "enabled": true,
           "data": {
             "title": "Navixy Platform",
             "output_endpoint_type": "output_navixy"
           },
-          "view": {                           # Third node postion, defining the display in UI
+          "view": {                           
             "position": {
               "x": 550,
               "y": 100
@@ -171,9 +171,9 @@ curl -X POST "https://your.server.com/iot/logic/flow/create" \
           }
         }
       ],
-      "edges": [                              # Transitions that connect nodes in a flow
+      "edges": [                              
         {
-          "from": 1,                          # Notice, that nodes are referenced by their IDs
+          "from": 1,                          
           "to": 2
         },
         {
@@ -192,6 +192,29 @@ Response (example):
   "id": 123
 }
 ```
+
+### Parameters explained
+
+* **Flow entity**: The main container defining a complete data processing pipeline
+  * `title`: Names your flow for easier identification
+  * `enabled`: When true, flow begins processing data immediately after creation
+* **Nodes**: Functional components that each handle a specific step in data processing
+  * **Node 1 (data_source)**:
+     * Entry point collecting data from devices (IDs: 394892, 394893, 394894)
+     * Unique ID within the flow for connection references
+     * Position coordinates control UI display location
+  * **Node 2 (initiate_attributes)**:
+     * Transforms data with custom calculations
+     * Creates new "temperature_f" attribute using formula
+     * Uses timestamps for data validity tracking
+  * **Node 3 (output_endpoint)**:
+     * Destination for processed data
+     * Type "output_navixy" sends to Navixy platform
+     * Final step in the processing pipeline
+* **Edges**: Define connections between nodes
+  * Reference nodes by their IDs to create the processing sequence
+  * Create a clear path for data to follow from source to destination
+
 <!-- theme: success -->
 > This single request creates a complete flow that:
 > 1. Collects data from three specific devices (IDs: 394892, 394893, 394894)
