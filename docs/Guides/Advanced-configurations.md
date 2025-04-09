@@ -59,9 +59,9 @@ Request body:
       {
         "id": 1,
         "type": "data_source",
-        "title": "Temperature Sensors",
         "enabled": true,
         "data": {
+          "title": "Temperature Sensors",
           "sources": [123458]
         },
         "view": {
@@ -71,8 +71,8 @@ Request body:
       {
         "id": 2,
         "type": "initiate_attributes",
-        "title": "Basic Calculations",
         "data": {
+        "title": "Basic Calculations",
           "items": [
             {
               "name": "temp_celsius",
@@ -89,8 +89,8 @@ Request body:
       {
         "id": 3,
         "type": "initiate_attributes",
-        "title": "Advanced Calculations",
         "data": {
+        "title": "Advanced Calculations",
           "items": [
             {
               "name": "temp_status",
@@ -107,9 +107,9 @@ Request body:
       {
         "id": 4,
         "type": "output_endpoint",
-        "title": "Send to Navixy",
         "enabled": true,
         "data": {
+        "title": "Send to Navixy",
           "output_endpoint_type": "output_navixy"
         },
         "view": {
@@ -119,9 +119,9 @@ Request body:
       {
         "id": 5,
         "type": "output_endpoint",
-        "title": "Send to MQTT",
         "enabled": true,
         "data": {
+        "title": "Send to MQTT",
           "output_endpoint_type": "output_mqtt_client",
           "output_endpoint_id": 44551
         },
@@ -149,7 +149,7 @@ Response:
 
 ### Verifying the flow configuration
 
-#### [GET /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
+#### [POST /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/post)
 
 Request body:
 ```json
@@ -209,9 +209,9 @@ Request body:
       {
         "id": 1,
         "type": "data_source",
-        "title": "Environmental Sensors",
         "enabled": true,
         "data": {
+        "title": "Environmental Sensors",
           "sources": [98765]
         },
         "view": {
@@ -221,8 +221,8 @@ Request body:
       {
         "id": 2,
         "type": "initiate_attributes",
-        "title": "Temperature Processing",
         "data": {
+        "title": "Temperature Processing",
           "items": [
             {
               "name": "temp_celsius",
@@ -239,8 +239,8 @@ Request body:
       {
         "id": 3,
         "type": "initiate_attributes",
-        "title": "Humidity Processing",
         "data": {
+        "title": "Humidity Processing",
           "items": [
             {
               "name": "humidity_adjusted",
@@ -257,8 +257,8 @@ Request body:
       {
         "id": 4,
         "type": "initiate_attributes",
-        "title": "Combined Analysis",
         "data": {
+        "title": "Combined Analysis",
           "items": [
             {
               "name": "heat_index",
@@ -281,9 +281,9 @@ Request body:
       {
         "id": 5,
         "type": "output_endpoint",
-        "title": "Send to Navixy",
         "enabled": true,
         "data": {
+        "title": "Send to Navixy",
           "output_endpoint_type": "output_navixy"
         },
         "view": {
@@ -311,7 +311,7 @@ Response:
 
 ### Verifying the flow configuration
 
-#### [GET /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/get)
+#### [POST /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/post)
 
 Request body:
 ```json

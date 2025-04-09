@@ -9,7 +9,13 @@
     },
     {
       "type": "item",
-      "title": "Technical Details",
+      "title": "Authentication",
+      "uri": "docs/auth/Authentication.md",
+      "slug": "auth"
+    },
+    {
+      "type": "item",
+      "title": "Technical reference",
       "uri": "/docs/Technical-details.md",
       "slug": "technical-details"
     },
@@ -22,7 +28,7 @@
         {
           "type": "item",
           "title": "JSON-schema template",
-          "uri": "IoT Logic.json/components/schemas/Flow",
+          "uri": "IoT_Logic.json/components/schemas/Flow",
           "slug": "flow-schemas/json-schema-template"
         },
         {
@@ -74,6 +80,21 @@
       "title": "Navixy IoT Logic API",
       "uri": "/IoT_Logic.json",
       "slug": "resources"
+    },
+    {
+      "type": "divider",
+      "title": ""
+    },
+    {
+    "type": "item",
+    "title": "Contact us",
+    "uri": "docs/Contacts.md",
+    "slug": "contacts"
+    },
+    {
+    "type": "item",
+    "title": "Go to GitHub repository",
+    "uri": "https://github.com/SquareGPS/iot-logic-api"
     }
   ]
 }

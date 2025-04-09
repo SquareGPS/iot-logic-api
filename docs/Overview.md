@@ -4,94 +4,200 @@ stoplight-id: ie3rt9xv91kie
 
 # Navixy IoT Logic API
 
-*BETA Version*
-
 <!-- theme: warning -->
 > *BETA Version!* <br>
->Now the easrly access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned! 
+>Now the early access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned! 
 
 ## Introduction
 
-The Navixy IoT Logic API provides a powerful way to manage data flows from your IoT devices. This API allows you to:
+**Navixy IoT Logic** is a no-code/low-code tool that enables seamless IoT data processing and integration. Its API provides programmatic access to create, manage, and optimize data flows between IoT devices and destination systems without requiring extensive development resources.
 
-- Create custom data processing pipelines
-- Transform raw device data into meaningful business metrics
-- Route processed data to external systems 
-- Configure and manage data endpoints
-- Build complex IoT data workflows through a flexible node system
+### Purpose and core capabilities
 
-This guide will help you navigate the various API endpoints and create your own IoT data flows, starting with the most common use case - sending your device data to an external system.
+**Navixy IoT Logic** functions as a data flow manager that:
 
-## API Overview
+- Receives information from devices connected to the platform
+- Decodes and converts data in real-time
+- Sends processed data to other platforms and services
+- Enables building complex flows with nodes responsible for specific data processing tasks
+- Standardizes telematics data through the [Navixy Generic Protocol](https://docs.navixy.com/iot-logic/ngp)
 
-The Navixy IoT Logic API is organized around **Flows** - data processing pipelines.
+The **IoT Logic API** allows developers and system integrators to programmatically implement these capabilities, making it effective for organizations that need to:
 
-Each flow consists of:
-- **Nodes** - Processing elements (data sources, transformations, outputs)
-- **Transitions** (**Edges**) - Connections between nodes that define the data path
+- Work efficiently with decoded device data
+- Apply flexible data transformation to match specific business needs
+- Monitor and troubleshoot data streams
+- Create consistent data flows across multiple devices and protocols
 
-### API Response Structure
+### Key concepts
 
-All API responses follow a consistent pattern:
+**Navixy IoT Logic** operates based on two fundamental components that work together to process device data:
 
-* Success responses include a `success: true` field
-* Error responses include `success: false` and a `status` object with:
-  * `code`: Numeric error code
-  * `description`: Human-readable error description
+#### Flow
 
-### Flow Architecture
+A **Flow** is the foundation for all data logic in the product. It defines how data moves through stages of reception, enrichment, and transmission. Each flow consists of connected nodes that determine what happens to the data at each processing stage.
 
-Flows in Navixy IoT Logic follow a directed graph architecture:
+Key characteristics of flows:
+- Flows can be enabled or disabled to control data processing
+- Every flow requires at least one data source and one output endpoint
+- Each device can only be assigned to one flow at a time
+- Flows process data in real-time as it arrives from devices
 
-* Every flow must have at least one data source node (input)
-* Every flow must have at least one output endpoint node (termination point)
-* Each node has a unique ID within its flow (not globally unique)
-* Edges define directional data flow between nodes
-* Nodes can have multiple incoming and outgoing connections
-* Circular references are not supported
+#### Nodes
 
-## Getting Started
+**Nodes** are the functional elements of a **flow**, with each node handling a specific stage of the data lifecycle. There are three primary types of nodes:
 
-### Authentication
+- **Data Source node**: Receives data from M2M devices and serves as the entry point for all device data
+- **Initiate Attribute node**: Processes and enriches incoming data, including creating new calculated attributes trough mathematical operations in [Navixy IoT Logic Expression Language](https://docs.navixy.com/iot-logic/navixy-iot-logic-expression-language)
+- **Output Endpoint node**: Transmits data to target systems using the [Navixy Generic Protocol](https://docs.navixy.com/iot-logic/ngp). This node can be configured to use different endpoint types:
+  - **Default endpoint**: Pre-configured destination for sending data to the Navixy platform
+  - **MQTT endpoint**: Configurable connection for sending data to third-party systems and services
 
-All API requests require an API key in the header:
+Nodes are connected through transitions (`edges`) that define the path data follows through the flow.
 
+### Data flow architecture
+
+The following screenshot from IoT Logic UI illustrates the basic architecture of a flow in IoT Logic:
+
+![Flow-example.png](../assets/images/Flow-example.png)
+
+
+This represents a simple linear flow where:
+1. The **Data Source** node collects telemetry from selected devices
+2. The **Initiate Attribute** node processes and enriches this data
+3. The **Default Output Endpoint** node delivers the transformed data to its destination - Navixy platform
+
+More complex architectures can be created by:
+- Adding multiple data source nodes to process different device types
+- Chaining multiple attribute nodes for multi-stage data processing
+- Including several output endpoints to deliver data to multiple destinations outside Navixy simultaneously
+
+## Quick start for IoT Logic API
+
+To ensure a clear picture of the basic IoT Logic API capabilities, let's create your first flow.
+
+The following example demonstrates how to create a complete flow with three nodes that sends data to Navixy. This flow will:
+1. Collect data from specified devices
+2. Calculate temperature in Fahrenheit from Celsius readings
+3. Send the enriched data to the Navixy platform
+
+### Step 1: Authentication
+
+First, authenticate to obtain a session token. To do it, send a POST request to the user authentication endpoint `{baseURL}/v2/user/auth` providing your account's login and passord as parameters:
+
+```bash
+curl -X POST "https://your.server.com/v2/user/auth" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "login": "your_email_or_username",
+    "password": "your_password"
+  }'
 ```
-Authorization: NVX your_api_key_here
-```
 
-The API key must be prefixed with "NVX " (note the space after NVX). This is a custom Bearer format used by Navixy.
-
-According to the API specification:
-
-```
-"securitySchemes": {
-  "api_key": {
-    "description": "Enter an API key with the \"NVX: \" prefix, e.g. \"NVX 123456abcdefg\"",
-    "example": "NVX 123456abcdefg",
-    "type": "apiKey",
-    "name": "Authorization",
-    "in": "header",
-    "bearerFormat": "NVX "
-  }
+Response (example):
+```jsonResponse
+{
+  "success": true,
+  "hash": "22eac1c27af4be7b9d04da2ce1af111b"
 }
 ```
 
-### Base URLs
+Copy the `hash` value from the response.
 
-Two regional servers are available:
-- Europe: `https://api.eu.navixy.com/`
-- Americas: `https://api.us.navixy.com/`
+> For more details on how to authenticate your requests, see [Authentication](auth/Authentication.md).
 
-### HTTP Methods
+### Step 2: Create a complete flow with nodes and connections
 
-The API uses specific HTTP methods for different operations:
-- `GET`: For retrieving information (flow list, flow details)
-- `POST`: For creating, updating, and deleting resources
+Create a flow with all nodes and connections in a single request:
 
-### Content Type
-
-All requests and responses use JSON format:
+```bash
+curl -X POST "https://your.server.com/iot/logic/flow/create" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: NVX hash_value" \
+  -d '{
+    "flow": {                                   # Flow entity creation
+      "title": "Basic Temperature Monitoring",
+      "enabled": true,                          # If true, the flow starts to process data immediately after creation
+      "nodes": [                                # Node entity creation right inside new flow
+        {
+          "id": 1,                              # First node creation with an ID unique within a flow
+          "type": "data_source",
+          "enabled": true,
+          "data": {                             # Node-specific parameters, depend on node type
+            "title": "Fleet Vehicles",
+            "sources": [394892, 394893, 394894] # Actual data sources from your accountm can be found in Devices and Settings
+          },
+          "view": {                             # First node postion, defining the display in UI
+            "position": {
+              "x": 50,
+              "y": 100
+            }
+          }
+        },
+        {                                       # Second node creation
+          "id": 2,              
+          "type": "initiate_attributes",
+          "data": {
+            "title": "Temperature Conversion",
+            "items": [
+              {
+                "name": "temperature_f",
+                "value": "value(\"temperature\")*1.8 + 32",
+                "generation_time": "genTime(\"temperature\", 0, \"valid\")",
+                "server_time": "now()"
+              }
+            ]
+          },
+          "view": {                           # Second node postion, defining the display in UI
+            "position": {
+              "x": 300,
+              "y": 100
+            }
+          }
+        },
+        {
+          "id": 3,                            # third node creation
+          "type": "output_endpoint",
+          "enabled": true,
+          "data": {
+            "title": "Navixy Platform",
+            "output_endpoint_type": "output_navixy"
+          },
+          "view": {                           # Third node postion, defining the display in UI
+            "position": {
+              "x": 550,
+              "y": 100
+            }
+          }
+        }
+      ],
+      "edges": [                              # Transitions that connect nodes in a flow
+        {
+          "from": 1,                          # Notice, that nodes are referenced by their IDs
+          "to": 2
+        },
+        {
+          "from": 2,
+          "to": 3
+        }
+      ]
+    }
+  }'
 ```
-Content-Type: application/json
+
+Response (example):
+```json
+{
+  "success": true,
+  "id": 123
+}
 ```
+<!-- theme: success -->
+> This single request creates a complete flow that:
+> 1. Collects data from three specific devices (IDs: 394892, 394893, 394894)
+> 2. Converts temperature values from Celsius to Fahrenheit
+> 3. Transmits all data, including the new calculated attribute, to the Navixy platform
+> 
+> The success response includes the ID of the newly created flow, which you can use for future operations like updating the flow or adding additional nodes.
+> 
+> You can expand this example by adding more devices, creating additional calculated attributes, or configuring MQTT endpoints to send data to external systems.
