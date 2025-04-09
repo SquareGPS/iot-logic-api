@@ -9,7 +9,13 @@
     },
     {
       "type": "item",
-      "title": "Technical Details",
+      "title": "Authentication",
+      "uri": "docs/auth/Authentication.md",
+      "slug": "auth"
+    },
+    {
+      "type": "item",
+      "title": "Technical reference",
       "uri": "/docs/Technical-details.md",
       "slug": "technical-details"
     },
