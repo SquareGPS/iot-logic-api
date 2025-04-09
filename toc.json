@@ -80,6 +80,21 @@
       "title": "Navixy IoT Logic API",
       "uri": "/IoT_Logic.json",
       "slug": "resources"
+    },
+    {
+      "type": "divider",
+      "title": ""
+    },
+    {
+    "type": "item",
+    "title": "Contact us",
+    "uri": "docs/Contacts.md",
+    "slug": "contacts"
+    },
+    {
+    "type": "item",
+    "title": "Go to GitHub repository",
+    "uri": "https://github.com/SquareGPS/iot-logic-api"
     }
   ]
 }
