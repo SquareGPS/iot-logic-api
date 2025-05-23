@@ -11,7 +11,7 @@ The simplest approach is to define both your data sources and MQTT output endpoi
 
 ``` bash
 # Sample curl command (replace with your actual token)
-curl -X POST "https://api.eu.navixy.com/v2/iot/logic/flow/create" \
+curl -X POST "https://api.{region}.navixy.com/v2/iot/logic/flow/create" \
   -H "Content-Type: application/json" \
   -H "Authorization: NVX your_token_here" \
   -d '{
@@ -78,10 +78,74 @@ The response will include the flow ID:
 
 ### Try it out
 
-```json http
+```EUserver json http
 {
   "method": "post",
-  "url": "https://api.{region}.navixy.com/v2iot/logic/flow/create",
+  "url": "https://api.eu.navixy.com/v2/iot/logic/flow/create",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  },
+  "body":
+  {
+  "flow": {
+    "title": "Fleet data to external system",
+    "enabled": true,
+    "nodes": [
+      {
+        "id": 1,
+        "type": "data_source",
+        "title": "Fleet vehicles",
+        "enabled": true,
+        "data": {
+          "title": "Fleet vehicles",
+          "sources": [12345, 12346, 12347]
+        },
+        "view": {
+          "position": { "x": 50, "y": 50 }
+        }
+      },
+      {
+        "id": 2,
+        "type": "output_endpoint",
+        "enabled": true,
+        "data": {
+          "title": "External MQTT System",
+          "output_endpoint_type": "output_mqtt_client",
+          "output_endpoint_id": "45678"
+          "properties": {
+            "protocol": "NGP",
+            "domain": "mqtt.mycompany.com",
+            "port": 1883,
+            "client_id": "navixy-integration",
+            "qos": 1,
+            "topics": ["fleet/vehicles/data"],
+            "version": "5.0",
+            "use_ssl": true,
+            "mqtt_auth": true,
+            "user_name": "mqtt_username",
+            "user_password": "mqtt_password"
+          }
+        },
+        "view": {
+          "position": { "x": 250, "y": 50 }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": 1,
+        "to": 2
+      }
+    ]
+  }
+}
+}
+```
+
+```USserver json http
+{
+  "method": "post",
+  "url": "https://api.us.navixy.com/v2/iot/logic/flow/create",
   "headers": {
     "Authorization": "NVX your_hash_here"
   },
