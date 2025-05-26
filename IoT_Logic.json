@@ -32,7 +32,7 @@
     "/iot/logic/flow/create": {
       "post": {
         "summary": "flowCreate",
-        "description": "Create a new flowchart",
+        "description": "Create a new data flow.",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
@@ -79,7 +79,7 @@
     "/iot/logic/flow/read": {
       "post": {
         "summary": "flowRead",
-        "description": "Read a flowchart",
+        "description": "Read an existing flow details.",
         "operationId": "flowRead",
         "requestBody": {
           "content": {
@@ -156,7 +156,7 @@
     "/iot/logic/flow/update": {
       "post": {
         "summary": "flowUpdate",
-        "description": "Update a flowchart",
+        "description": "Update details of an existing flow.",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
@@ -206,7 +206,7 @@
     "/iot/logic/flow/delete": {
       "post": {
         "summary": "flowDelete",
-        "description": "Delete a flowchart",
+        "description": "Delete a flow.",
         "operationId": "flowDelete",
         "requestBody": {
           "content": {
@@ -267,7 +267,7 @@
     "/iot/logic/flow/list": {
       "get": {
         "summary": "flowList",
-        "description": "Get list of flows",
+        "description": "Get list of flows existing in a user account.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -344,7 +344,7 @@
     "/iot/logic/flow/endpoint/create": {
       "post": {
         "summary": "endpointCreate",
-        "description": "Create a new endpoint",
+        "description": "Create a new node.\r\n\r\nAll node types are created through this endpoint, the type is defined in the request body.",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
@@ -394,7 +394,7 @@
     "/iot/logic/flow/endpoint/read": {
       "post": {
         "summary": "endpointRead",
-        "description": "Read an endpoint",
+        "description": "Read an existing node details.",
         "operationId": "endpointRead",
         "requestBody": {
           "content": {
@@ -468,7 +468,7 @@
     "/iot/logic/flow/endpoint/update": {
       "post": {
         "summary": "endpointUpdate",
-        "description": "Update an endpoint",
+        "description": "Update an existing node details.",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
@@ -518,7 +518,7 @@
     "/iot/logic/flow/endpoint/delete": {
       "post": {
         "summary": "endpointDelete",
-        "description": "Delete an endpoint",
+        "description": "Delete a node.",
         "operationId": "endpointDelete",
         "requestBody": {
           "content": {
@@ -572,7 +572,7 @@
     "/iot/logic/flow/endpoint/list": {
       "post": {
         "summary": "endpointList",
-        "description": "Get list of user's endpoints",
+        "description": "Get list of nodes existing in a user account.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {

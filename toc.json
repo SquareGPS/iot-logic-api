@@ -87,14 +87,29 @@
     },
     {
     "type": "item",
-    "title": "Contact us",
-    "uri": "docs/Contacts.md",
-    "slug": "contacts"
+    "title": "GitHub repository",
+    "uri": "https://github.com/SquareGPS/iot-logic-api"
     },
     {
     "type": "item",
-    "title": "Go to GitHub repository",
-    "uri": "https://github.com/SquareGPS/iot-logic-api"
+    "title": "User documentation",
+    "uri": "https://docs.navixy.com/user-guide/iot-logic"
+    },
+    {
+    "type": "divider",
+    "title": " "
+    },
+    {
+    "type": "item",
+    "title": "Back to Navixy website",
+    "uri": "https://navixy.com/"
+    },
+    
+    {
+    "type": "item",
+    "title": "Contact us",
+    "uri": "docs/Contacts.md",
+    "slug": "contacts"
     }
   ]
 }
