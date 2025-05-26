@@ -36,11 +36,11 @@ curl -X POST "https://api.{region}.navixy.com/v2/iot/logic/flow/create" \
         "type": "output_endpoint",
         "enabled": true,
         "data": {
-          "title": "External MQTT System",       // Title must be in the data object
+          "title": "External MQTT System",       // Title must be located in the data object
           "output_endpoint_type": "output_mqtt_client",  // Defines this as an MQTT output
           "output_endpoint_id": 45678,           // Required ID (can be any unique number)
           "properties": {
-            "protocol": "NGP",                   // Navixy Generic Protocol
+            "protocol": "Navixy Generic Protocol (NGP)", // Navixy Generic Protocol
             "domain": "mqtt.mycompany.com",      // Your MQTT broker address
             "port": 1883,                        // Standard MQTT port
             "client_id": "navixy-integration",   // Identifier for this client
