@@ -4,13 +4,13 @@ Let's create a flow that sends your device data to an external system through MQ
 
 ## Creating a complete flow with integrated MQTT node
 
-The simplest approach is to define both your data sources and MQTT output endpoint directly in your flow creation request:
+The simplest approach is to define both your data sources and MQTT output endpoint directly in your flow creation request. To do it, send a request to the following endpoint: 
 
-### [POST /iot/logic/flow/create](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1create/post)
+[POST /iot/logic/flow/create](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1create/post)
 
+Request example:
 
 ``` bash
-# Sample curl command (replace with your actual token)
 curl -X POST "https://api.{region}.navixy.com/v2/iot/logic/flow/create" \
   -H "Content-Type: application/json" \
   -H "Authorization: NVX your_token_here" \

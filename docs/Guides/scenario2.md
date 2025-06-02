@@ -1,5 +1,7 @@
 # Managing your flows and endpoints
 
+After you create one or multiple flows, you can proceed with managing thm. This guide demonstrates how to view, read details, and update existing IoT Logic flows using the Navixy IoT Logic API. You'll learn how to list all your flows, examine specific flow configurations including nodes and connections, and modify flows by adding new data processing rules. The examples show practical scenarios like managing fleet vehicle data flows, adding calculated attributes for business metrics, and connecting to MQTT endpoints for external system integration.
+
 ## Prerequisites
 
 For this example, let's presume that we have already:
@@ -12,11 +14,20 @@ For this example, let's presume that we have already:
 
 ## Viewing your flows
 
+[GET /iot/logic/flow/list](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1list/get)
+
+The flow list endpoint provides a quick overview of all IoT Logic flows in your account. This is useful for getting flow IDs and titles before performing detailed operations. Each flow in the response includes its unique identifier and descriptive title, allowing you to identify which flows you want to examine or modify further.
+
 To see all your existing flows, send the request:
 
-### [GET /iot/logic/flow/list](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1list/get)
+```bash
+curl -X GET "https://api.eu.navixy.com/v2/iot/logic/flow/list" \
+  -H "Authorization: NVX your_session_token_here" \
+  -H "Content-Type: application/json"
+```
 
-Response:
+You will receive `id` and `title` parameters in the response:
+
 ```json
 {
   "success": true,
@@ -29,81 +40,107 @@ Response:
 }
 ```
 
-## Viewing flow details
+### Try it out
 
-To see the details of a specific flow, send the request:
-
-### [POST /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/post)
-
-Request body:
-```json
+```EUserver json http
 {
-  "flow_id": 1234
+  "method": "post",
+  "url": "https://api.eu.navixy.com/v2/iot/logic/flow/list",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  }
+}
+```
+```USserver json http
+{
+  "method": "post",
+  "url": "https://api.us.navixy.com/v2/iot/logic/flow/list",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  }
 }
 ```
 
-Response:
+## Viewing flow details
+
+[POST /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/post)
+
+The flow read endpoint retrieves complete configuration details for a specific flow, including all nodes, their properties, and the connections between them. This detailed view shows you the entire data processing pipeline - from data sources through transformation nodes to output endpoints. Use this when you need to understand the current flow structure before making modifications or troubleshooting data processing issues.
+
+To see the details of a specific flow, copy the `id` value of the needed flow from [GET /iot/logic/flow/list](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1list/get) response. Add it in the respective field of this request:
+
+```bash
+curl -X POST "https://api.eu.navixy.com/v2/iot/logic/flow/read" \
+  -H "Authorization: NVX your_session_token_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "flow_id": 1234
+  }'
+```
+
+You will receive the complete structure of the flow in the response:
+
 ```json
 {
   "success": true,
   "value": {
     "id": 1234,
     "title": "Fleet Data to External System",
+    "description": null,
     "enabled": true,
+    "default_flow": false,
     "nodes": [
       {
         "id": 1,
         "type": "data_source",
-        "title": "Fleet Vehicles",
-        "enabled": true,
-        "data": {
-          "sources": [12345, 12346, 12347]
-        },
         "view": {
           "position": { "x": 50, "y": 50 }
+        },
+        "data": {
+          "title": "Fleet Vehicles",
+          "source_ids": [12345, 12346, 12347]
         }
       },
       {
         "id": 2,
         "type": "initiate_attributes",
-        "title": "Calculate Business Metrics",
+        "view": {
+          "position": { "x": 200, "y": 50 }
+        },
         "data": {
+          "title": "Calculate Business Metrics",
           "items": [
             {
               "name": "fuel_efficiency",
-              "value": "distance_traveled / fuel_consumed",
-              "generation_time": "now()",
+              "value": "value(\"distance_traveled\") / value(\"fuel_consumed\")",
+              "generation_time": "genTime(\"distance_traveled\", 0, \"valid\")",
               "server_time": "now()"
             },
             {
               "name": "idle_time_percent",
-              "value": "(idle_time / (idle_time + moving_time)) * 100",
-              "generation_time": "now()",
+              "value": "(value(\"idle_time\") / (value(\"idle_time\") + value(\"moving_time\"))) * 100",
+              "generation_time": "genTime(\"idle_time\", 0, \"valid\")",
               "server_time": "now()"
             },
             {
               "name": "vehicle_status",
-              "value": "speed > 0 ? 'moving' : (engine_on ? 'idle' : 'stopped')",
-              "generation_time": "now()",
+              "value": "value(\"speed\") gt 0 ? \"moving\" : \"stopped\"",
+              "generation_time": "genTime(\"speed\", 0, \"valid\")",
               "server_time": "now()"
             }
           ]
-        },
-        "view": {
-          "position": { "x": 200, "y": 50 }
         }
       },
       {
         "id": 3,
         "type": "output_endpoint",
-        "title": "Send to External System",
-        "enabled": true,
-        "data": {
-          "output_endpoint_type": "output_mqtt_client",
-          "output_endpoint_id": 45678
-        },
         "view": {
           "position": { "x": 350, "y": 50 }
+        },
+        "data": {
+          "title": "Send to External System",
+          "output_endpoint_type": "output_mqtt_client",
+          "output_endpoint_id": 45678
         }
       }
     ],
@@ -117,104 +154,301 @@ Response:
         "to": 3
       }
     ]
+  }
+}
+```
+
+### Try it out
+
+```EUserver json http
+{
+  "method": "post",
+  "url": "https://api.eu.navixy.com/v2/iot/logic/flow/read",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  },
+  "body": {
+    "flow_id": 1234
+  }
+}
+```
+
+```USserver json http
+{
+  "method": "post",
+  "url": "https://api.us.navixy.com/v2/iot/logic/flow/read",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  },
+  "body": {
+    "flow_id": 1234
   }
 }
 ```
 
 ## Updating a flow
 
-Let's add another processing rule to calculate engine temperature in Celsius:
+[POST /iot/logic/flow/update](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
 
-### [POST /iot/logic/flow/update](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1update/post)
+The flow update endpoint allows you to modify existing flows by changing node configurations, adding new processing rules, or adjusting connections. When updating a flow, you must provide the complete flow structure including all nodes and edges, even if you're only modifying one element. This ensures data consistency and prevents accidental deletion of existing components. In this example, we're adding a new calculated attribute to convert engine temperature from Fahrenheit to Celsius while preserving all existing functionality.
 
-Request body:
+Copy the flow obgect structure from [POST /iot/logic/flow/read](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1read/post) response and add the new attribute to the Initiate Atribute node (`id": 2`). Then paste the resulting object in the body of this request:
+
+```bash
+curl -X POST "https://api.eu.navixy.com/v2/iot/logic/flow/update" \
+  -H "Authorization: NVX your_session_token_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "flow": {
+      "id": 1234,
+      "title": "Fleet Data to External System",
+      "description": null,
+      "enabled": true,
+      "default_flow": false,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "data_source",
+          "view": {
+            "position": { "x": 50, "y": 50 }
+          },
+          "data": {
+            "title": "Fleet Vehicles",
+            "source_ids": [12345, 12346, 12347]
+          }
+        },
+        {
+          "id": 2,
+          "type": "initiate_attributes",
+          "view": {
+            "position": { "x": 200, "y": 50 }
+          },
+          "data": {
+            "title": "Calculate Business Metrics",
+            "items": [
+              {
+                "name": "fuel_efficiency",
+                "value": "value(\"distance_traveled\") / value(\"fuel_consumed\")",
+                "generation_time": "genTime(\"distance_traveled\", 0, \"valid\")",
+                "server_time": "now()"
+              },
+              {
+                "name": "idle_time_percent",
+                "value": "(value(\"idle_time\") / (value(\"idle_time\") + value(\"moving_time\"))) * 100",
+                "generation_time": "genTime(\"idle_time\", 0, \"valid\")",
+                "server_time": "now()"
+              },
+              {
+                "name": "engine_temp_celsius",
+                "value": "(value(\"engine_temp_f\") - 32) * 5/9",
+                "generation_time": "genTime(\"engine_temp_f\", 0, \"valid\")",
+                "server_time": "now()"
+              }
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "type": "output_endpoint",
+          "view": {
+            "position": { "x": 350, "y": 50 }
+          },
+          "data": {
+            "title": "Send to External System",
+            "output_endpoint_type": "output_mqtt_client",
+            "output_endpoint_id": 45678
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": 1,
+          "to": 2
+        },
+        {
+          "from": 2,
+          "to": 3
+        }
+      ]
+    }
+  }'
+```
+
+You will receive thes request status in response:
+
 ```json
 {
-  "flow": {
-    "id": 1234,
-    "title": "Fleet Data to External System",
-    "enabled": true,
-    "nodes": [
-      {
-        "id": 1,
-        "type": "data_source",
-        "enabled": true,
-        "data": {
-          "title": "Fleet Vehicles",
-          "sources": [12345, 12346, 12347]
+  "success": true
+}
+```
+
+### Try it out
+
+```EUserver json http
+{
+  "method": "post",
+  "url": "https://api.eu.navixy.com/v2/iot/logic/flow/update",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  },
+  "body": {
+    "flow": {
+      "id": 1234,
+      "title": "Fleet Data to External System",
+      "description": null,
+      "enabled": true,
+      "default_flow": false,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "data_source",
+          "view": {
+            "position": { "x": 50, "y": 50 }
+          },
+          "data": {
+            "title": "Fleet Vehicles",
+            "source_ids": [12345, 12346, 12347]
+          }
         },
-        "view": {
-          "position": { "x": 50, "y": 50 }
-        }
-      },
-      {
-        "id": 2,
-        "type": "initiate_attributes",
-        "data": {
-          "title": "Calculate Business Metrics",
-          "items": [
-            {
-              "name": "fuel_efficiency",
-              "value": "distance_traveled / fuel_consumed",
-              "generation_time": "now()",
-              "server_time": "now()"
-            },
-            {
-              "name": "idle_time_percent",
-              "value": "(idle_time / (idle_time + moving_time)) * 100",
-              "generation_time": "now()",
-              "server_time": "now()"
-            },
-            {
-              "name": "vehicle_status",
-              "value": "speed > 0 ? 'moving' : (engine_on ? 'idle' : 'stopped')",
-              "generation_time": "now()",
-              "server_time": "now()"
-            },
-            {
-              "name": "engine_temp_celsius",
-              "value": "(engine_temp_f - 32) * 5/9",
-              "generation_time": "now()",
-              "server_time": "now()"
-            }
-          ]
+        {
+          "id": 2,
+          "type": "initiate_attributes",
+          "view": {
+            "position": { "x": 200, "y": 50 }
+          },
+          "data": {
+            "title": "Calculate Business Metrics",
+            "items": [
+              {
+                "name": "fuel_efficiency",
+                "value": "value(\"distance_traveled\") / value(\"fuel_consumed\")",
+                "generation_time": "genTime(\"distance_traveled\", 0, \"valid\")",
+                "server_time": "now()"
+              },
+              {
+                "name": "idle_time_percent",
+                "value": "(value(\"idle_time\") / (value(\"idle_time\") + value(\"moving_time\"))) * 100",
+                "generation_time": "genTime(\"idle_time\", 0, \"valid\")",
+                "server_time": "now()"
+              },
+              {
+                "name": "engine_temp_celsius",
+                "value": "(value(\"engine_temp_f\") - 32) * 5/9",
+                "generation_time": "genTime(\"engine_temp_f\", 0, \"valid\")",
+                "server_time": "now()"
+              }
+            ]
+          }
         },
-        "view": {
-          "position": { "x": 200, "y": 50 }
+        {
+          "id": 3,
+          "type": "output_endpoint",
+          "view": {
+            "position": { "x": 350, "y": 50 }
+          },
+          "data": {
+            "title": "Send to External System",
+            "output_endpoint_type": "output_mqtt_client",
+            "output_endpoint_id": 45678
+          }
         }
-      },
-      {
-        "id": 3,
-        "type": "output_endpoint",
-        "enabled": true,
-        "data": {
-          "title": "Send to External System",
-          "output_endpoint_type": "output_mqtt_client",
-          "output_endpoint_id": 45678
+      ],
+      "edges": [
+        {
+          "from": 1,
+          "to": 2
         },
-        "view": {
-          "position": { "x": 350, "y": 50 }
+        {
+          "from": 2,
+          "to": 3
         }
-      }
-    ],
-    "edges": [
-      {
-        "from": 1,
-        "to": 2
-      },
-      {
-        "from": 2,
-        "to": 3
-      }
-    ]
+      ]
+    }
   }
 }
 ```
 
-Response:
-```json
+```USserver json http
 {
-  "success": true
+  "method": "post",
+  "url": "https://api.us.navixy.com/v2/iot/logic/flow/update",
+  "headers": {
+    "Authorization": "NVX your_hash_here"
+  },
+  "body": {
+    "flow": {
+      "id": 1234,
+      "title": "Fleet Data to External System",
+      "description": null,
+      "enabled": true,
+      "default_flow": false,
+      "nodes": [
+        {
+          "id": 1,
+          "type": "data_source",
+          "view": {
+            "position": { "x": 50, "y": 50 }
+          },
+          "data": {
+            "title": "Fleet Vehicles",
+            "source_ids": [12345, 12346, 12347]
+          }
+        },
+        {
+          "id": 2,
+          "type": "initiate_attributes",
+          "view": {
+            "position": { "x": 200, "y": 50 }
+          },
+          "data": {
+            "title": "Calculate Business Metrics",
+            "items": [
+              {
+                "name": "fuel_efficiency",
+                "value": "value(\"distance_traveled\") / value(\"fuel_consumed\")",
+                "generation_time": "genTime(\"distance_traveled\", 0, \"valid\")",
+                "server_time": "now()"
+              },
+              {
+                "name": "idle_time_percent",
+                "value": "(value(\"idle_time\") / (value(\"idle_time\") + value(\"moving_time\"))) * 100",
+                "generation_time": "genTime(\"idle_time\", 0, \"valid\")",
+                "server_time": "now()"
+              },
+              {
+                "name": "engine_temp_celsius",
+                "value": "(value(\"engine_temp_f\") - 32) * 5/9",
+                "generation_time": "genTime(\"engine_temp_f\", 0, \"valid\")",
+                "server_time": "now()"
+              }
+            ]
+          }
+        },
+        {
+          "id": 3,
+          "type": "output_endpoint",
+          "view": {
+            "position": { "x": 350, "y": 50 }
+          },
+          "data": {
+            "title": "Send to External System",
+            "output_endpoint_type": "output_mqtt_client",
+            "output_endpoint_id": 45678
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": 1,
+          "to": 2
+        },
+        {
+          "from": 2,
+          "to": 3
+        }
+      ]
+    }
+  }
 }
 ```
 
