@@ -65,14 +65,14 @@ API keys are a more stable and secure authentication method, it is recommended f
 
 > API key limitations:
 > - Every user account may have up to 20 API keys
-> - Sub-users don't have access to API keys functionality
-> - Requires a valid session hash to initially create
+> - IOnly account Owners have access to API keys functionality
+> - Requires a valid session hash to initially create a key
 
 ### Creating API keys
 
 #### Method 1: Through the web interface
 
-1. 1. **Login to the Web Interface**:
+1. **Login to the Web Interface**:
     - Access the Navixy user interface via the web.
     - Use your credentials to log in.
 
