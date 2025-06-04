@@ -153,7 +153,7 @@ This method works only with POST requests and mixes authentication with request 
 Append your authentication `hash` to the URL as a query parameter:
 
 ```
-https://api.navixy.com/iot/logic/flow/list?hash=your_hash_or_api_key
+https://api.navixy.com/v2/iot/logic/flow/list?hash=your_hash_or_api_key
 ```
 
 <!-- theme: warning -->
