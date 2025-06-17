@@ -4,13 +4,15 @@ Let's create a flow that sends your device data to an external system through MQ
 
 ## Creating a complete flow with integrated MQTT node
 
-The simplest approach is to define both your data sources and MQTT output endpoint directly in your flow creation request. To do it, send a request to the following endpoint: 
+The simplest approach is to define both your data sources and MQTT output endpoint directly in your flow creation request. To do it, send a request to the following endpoint:
 
-[POST /iot/logic/flow/create](../../IoT_Logic.json/paths/~1iot~1logic~1flow~1create/post)
+{% openapi-operation spec="iot-logic" path="/iot/logic/flow/create" method="post" %}
+[Broken link](broken-reference)
+{% endopenapi-operation %}
 
-Request example:
+### Request example
 
-``` bash
+```bash
 curl -X POST "https://api.{region}.navixy.com/v2/iot/logic/flow/create" \
   -H "Content-Type: application/json" \
   -H "Authorization: NVX your_token_here" \
@@ -69,6 +71,7 @@ curl -X POST "https://api.{region}.navixy.com/v2/iot/logic/flow/create" \
 ```
 
 The response will include the flow ID:
+
 ```json
 {
   "success": true,
@@ -76,139 +79,9 @@ The response will include the flow ID:
 }
 ```
 
-### Try it out
-
-```EUserver json http
-{
-  "method": "post",
-  "url": "https://api.eu.navixy.com/v2/iot/logic/flow/create",
-  "headers": {
-    "Authorization": "NVX your_hash_here"
-  },
-  "body":
-  {
-  "flow": {
-    "title": "Fleet data to external system",
-    "enabled": true,
-    "nodes": [
-      {
-        "id": 1,
-        "type": "data_source",
-        "title": "Fleet vehicles",
-        "enabled": true,
-        "data": {
-          "title": "Fleet vehicles",
-          "sources": [12345, 12346, 12347]
-        },
-        "view": {
-          "position": { "x": 50, "y": 50 }
-        }
-      },
-      {
-        "id": 2,
-        "type": "output_endpoint",
-        "enabled": true,
-        "data": {
-          "title": "External MQTT System",
-          "output_endpoint_type": "output_mqtt_client",
-          "output_endpoint_id": "45678"
-          "properties": {
-            "protocol": "NGP",
-            "domain": "mqtt.mycompany.com",
-            "port": 1883,
-            "client_id": "navixy-integration",
-            "qos": 1,
-            "topics": ["fleet/vehicles/data"],
-            "version": "5.0",
-            "use_ssl": true,
-            "mqtt_auth": true,
-            "user_name": "mqtt_username",
-            "user_password": "mqtt_password"
-          }
-        },
-        "view": {
-          "position": { "x": 250, "y": 50 }
-        }
-      }
-    ],
-    "edges": [
-      {
-        "from": 1,
-        "to": 2
-      }
-    ]
-  }
-}
-}
-```
-
-```USserver json http
-{
-  "method": "post",
-  "url": "https://api.us.navixy.com/v2/iot/logic/flow/create",
-  "headers": {
-    "Authorization": "NVX your_hash_here"
-  },
-  "body":
-  {
-  "flow": {
-    "title": "Fleet data to external system",
-    "enabled": true,
-    "nodes": [
-      {
-        "id": 1,
-        "type": "data_source",
-        "title": "Fleet vehicles",
-        "enabled": true,
-        "data": {
-          "title": "Fleet vehicles",
-          "sources": [12345, 12346, 12347]
-        },
-        "view": {
-          "position": { "x": 50, "y": 50 }
-        }
-      },
-      {
-        "id": 2,
-        "type": "output_endpoint",
-        "enabled": true,
-        "data": {
-          "title": "External MQTT System",
-          "output_endpoint_type": "output_mqtt_client",
-          "output_endpoint_id": "45678"
-          "properties": {
-            "protocol": "NGP",
-            "domain": "mqtt.mycompany.com",
-            "port": 1883,
-            "client_id": "navixy-integration",
-            "qos": 1,
-            "topics": ["fleet/vehicles/data"],
-            "version": "5.0",
-            "use_ssl": true,
-            "mqtt_auth": true,
-            "user_name": "mqtt_username",
-            "user_password": "mqtt_password"
-          }
-        },
-        "view": {
-          "position": { "x": 250, "y": 50 }
-        }
-      }
-    ],
-    "edges": [
-      {
-        "from": 1,
-        "to": 2
-      }
-    ]
-  }
-}
-}
-```
-
-<!-- theme: success -->
-> **Congratulations!**<br>
+> **Congratulations!**\
 > You've now set up a flow that creates a complete end-to-end data pipeline in a single API call. This flow:
-> - Connects to multiple vehicles in your fleet through a data source endpoint
-> - Sends the device data to your external MQTT system
-> - Uses your custom MQTT broker settings for secure data transfer
+>
+> * Connects to multiple vehicles in your fleet through a data source endpoint
+> * Sends the device data to your external MQTT system
+> * Uses your custom MQTT broker settings for secure data transfer

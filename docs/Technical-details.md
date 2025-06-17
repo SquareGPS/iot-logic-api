@@ -119,7 +119,7 @@ Error responses include `success: false` and a `status` object with details:
 
 ## Endpoint reference
 
-> For OpenAPI reference, see [Navixy IoT Logic API](../IoT_Logic.json)
+> For OpenAPI reference, see [Navixy IoT Logic API](broken-reference)
 
 The Navixy IoT Logic API provides the following endpoints for managing flows and endpoints:
 

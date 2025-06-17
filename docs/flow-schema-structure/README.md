@@ -38,9 +38,9 @@ stoplight-id: cr4zu3e4l42hj
 
 ## Examples
 
-[Basic schema template](../Flow%20schemas/IoT-Logic-API.json/components/schemas/Flow/)
+[Flow object model](general-json-schema-example.md#flow-object-model)
 
-[Configured schema example](../Flow%20schemas/uGeneral-JSON-schema-example.mdrl)
+[Configured schema example](general-json-schema-example.md#example-schema)
 
 ## Customization for Manufacturers
 

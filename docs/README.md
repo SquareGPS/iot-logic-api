@@ -85,7 +85,7 @@ The following example demonstrates how to create a complete flow with three node
 
 ### Step 1: Authentication
 
-First, authenticate to obtain a session token. To do it, send a POST request to the user authentication endpoint `{baseURL}/v2/user/auth` providing your account's login and passord as parameters:
+First, authenticate to obtain a session token. To do it, send a POST request to the user authentication endpoint `{baseURL}/v2/user/auth` providing your account's login and password as parameters:
 
 ```bash
 curl -X POST "https://your.server.com/v2/user/auth" \
@@ -209,11 +209,11 @@ Response (example):
     * Position coordinates control UI display location
   * **Node 2 (initiate\_attributes)**:
     * Transforms data with custom calculations
-    * Creates new "temperature\_f" attribute using formula
+    * Creates new `temperature_f` attribute using formula
     * Uses timestamps for data validity tracking
   * **Node 3 (output\_endpoint)**:
     * Destination for processed data
-    * Type "output\_navixy" sends to Navixy platform
+    * Type `output_navixy` sends to Navixy platform
     * Final step in the processing pipeline
 * **Edges**: Define connections between nodes
   * Reference nodes by their IDs to create the processing sequence
