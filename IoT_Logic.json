@@ -28,9 +28,20 @@
       "description": "Navixy production server on American platform"
     }
   ],
+  "tags": [
+    {
+      "name": "Flow",
+      "description": "Operations for managing data flows"
+    },
+    {
+      "name": "Node", 
+      "description": "Operations for managing flow nodes (endpoints)"
+    }
+  ],
   "paths": {
     "/iot/logic/flow/create": {
       "post": {
+        "tags": ["Flow"],
         "summary": "flowCreate",
         "description": "Create a new data flow.",
         "operationId": "flowCreate",
@@ -78,6 +89,7 @@
     },
     "/iot/logic/flow/read": {
       "post": {
+        "tags": ["Flow"],
         "summary": "flowRead",
         "description": "Read an existing flow details.",
         "operationId": "flowRead",
@@ -155,6 +167,7 @@
     },
     "/iot/logic/flow/update": {
       "post": {
+        "tags": ["Flow"],
         "summary": "flowUpdate",
         "description": "Update details of an existing flow.",
         "operationId": "flowUpdate",
@@ -205,6 +218,7 @@
     },
     "/iot/logic/flow/delete": {
       "post": {
+        "tags": ["Flow"],
         "summary": "flowDelete",
         "description": "Delete a flow.",
         "operationId": "flowDelete",
@@ -266,6 +280,7 @@
     },
     "/iot/logic/flow/list": {
       "get": {
+        "tags": ["Flow"],
         "summary": "flowList",
         "description": "Get list of flows existing in a user account.",
         "operationId": "flowList",
@@ -343,6 +358,7 @@
     },
     "/iot/logic/flow/endpoint/create": {
       "post": {
+        "tags": ["Node"],
         "summary": "endpointCreate",
         "description": "Create a new node.\r\n\r\nAll node types are created through this endpoint, the type is defined in the request body.",
         "operationId": "endpointCreate",
@@ -393,6 +409,7 @@
     },
     "/iot/logic/flow/endpoint/read": {
       "post": {
+        "tags": ["Node"],
         "summary": "endpointRead",
         "description": "Read an existing node details.",
         "operationId": "endpointRead",
@@ -467,6 +484,7 @@
     },
     "/iot/logic/flow/endpoint/update": {
       "post": {
+        "tags": ["Node"],
         "summary": "endpointUpdate",
         "description": "Update an existing node details.",
         "operationId": "endpointUpdate",
@@ -517,6 +535,7 @@
     },
     "/iot/logic/flow/endpoint/delete": {
       "post": {
+        "tags": ["Node"],
         "summary": "endpointDelete",
         "description": "Delete a node.",
         "operationId": "endpointDelete",
@@ -571,6 +590,7 @@
     },
     "/iot/logic/flow/endpoint/list": {
       "post": {
+        "tags": ["Node"],
         "summary": "endpointList",
         "description": "Get list of nodes existing in a user account.",
         "operationId": "endpointList",
