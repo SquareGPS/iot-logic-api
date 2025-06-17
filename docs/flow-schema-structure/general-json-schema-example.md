@@ -6,9 +6,15 @@ stoplight-id: h8mpgrged6ndl
 
 Here's an example of a JSON structure describing a complete flow.
 
+### Flow object model
+
+{% openapi-schemas spec="iot-logic" schemas="Flow" grouped="true" %}
+[Broken link](broken-reference)
+{% endopenapi-schemas %}
+
 ## Example schema
 
-```json json_schema
+```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Navixy IoT Gateway Flow",
@@ -437,8 +443,8 @@ The example template shows a flow that:
 
 1. Collects data from vehicle tracking devices
 2. Processes the data in two parallel paths:
-   - Calculating fuel-related metrics (level, consumption, range)
-   - Calculating engine metrics (temperature, load, maintenance status)
+   * Calculating fuel-related metrics (level, consumption, range)
+   * Calculating engine metrics (temperature, load, maintenance status)
 3. Sends the processed data to:
-   - The Navixy platform for tracking and visualization
-   - An external MQTT broker for integration with other systems
+   * The Navixy platform for tracking and visualization
+   * An external MQTT broker for integration with other systems
