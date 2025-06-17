@@ -13,13 +13,14 @@
 
 ## RESOURCES
 
-* ```yaml
-  type: builtin:openapi
-  props:
-    models: true
-  dependencies:
-    spec:
-      ref:
-        kind: openapi
-        spec: iot-logic
-  ```
+* [API reference](resources/api-reference/README.md)
+  * ```yaml
+    type: builtin:openapi
+    props:
+      models: true
+    dependencies:
+      spec:
+        ref:
+          kind: openapi
+          spec: iot-logic
+    ```
