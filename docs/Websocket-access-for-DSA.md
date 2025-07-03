@@ -10,31 +10,29 @@ The WebSocket functionality provides real-time, event-driven access to device da
 
 WebSocket communication is ideal for applications that require immediate data delivery, such as monitoring dashboards, alert systems, or integrations that rely on timely IoT events.
 
-For more details, see [WebSocket in Navixy API](https://developers.navixy.com/docs/navixy-api/2c02b575c8af8-web-socket-api)
+For more details, see [WebSocket in Navixy API](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket).\
 This guide covers connection setup, authentication, event types, and message formats.
 
-The iot_monitor event stream is designed for Data Stream Analyzer (DSA) and delivers real-time telemetry from selected devices. It provides both the latest data and short-term history, allowing you to track attribute changes over time.
+The iot\_monitor event stream is designed for Data Stream Analyzer (DSA) and delivers real-time telemetry from selected devices. It provides both the latest data and short-term history, allowing you to track attribute changes over time.
 
 This feature supports use cases like diagnostics, trend visualization, and alerting—where understanding recent attribute patterns is as important as receiving the newest values. Its structured format also helps you distinguish between missing and inactive data, improving clarity and reliability in IoT monitoring.
 
-## Data Stream Analyzer's "iot_monitor" event subscription
+## Data Stream Analyzer's "iot\_monitor" event subscription
 
-<!-- theme: warning -->
-> This is a DSA-focused snippet showcasing subscription parameters. For complete information, see [WebSocket Subscription](https://developers.navixy.com/docs/navixy-api/8437c2abc0274-web-socket-subscription)
+> This is a DSA-focused snippet showcasing subscription parameters. For complete information, see [WebSocket Subscription](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/subscription)
 
-This subscription type is intended for the Data Stream Analyzer tool, 
-which allows viewing the attribute values of the last N messages received from a tracker.
-The server stores attributes for no more than the last 12 messages, sorted in descending order by message timestamp.
+This subscription type is intended for the Data Stream Analyzer tool,\
+which allows viewing the attribute values of the last N messages received from a tracker.\
+The server stores attributes for no more than the last 12 messages, sorted in descending order by message timestamp.\
 For each attribute, data is stored in two queues:
 
 * Without data gaps – only messages where the specific attribute was present (not null).
 * With data gaps – if an attribute was missing in one of the last messages, a null value is recorded in the queue.
 
-After subscribing to "iot_monitor", server will send values of attributes from the latest messages for 
-all non-blocked trackers included in the subscription in a single packet.
-Receiver must be able to parse data from different devices in this packet.
-New data will arrive in real-time in the [event message](https://developers.navixy.com/docs/navixy-api/bdb1d20bafe28-web-socket-events), 
-but no more frequently than the specified `rate_limit`.
+After subscribing to "iot\_monitor", server will send values of attributes from the latest messages for\
+all non-blocked trackers included in the subscription in a single packet.\
+Receiver must be able to parse data from different devices in this packet.\
+New data will arrive in real-time in the [event message](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/events), but no more frequently than the specified `rate_limit`.
 
 ```json
 {
@@ -57,10 +55,9 @@ but no more frequently than the specified `rate_limit`.
 
 Request fields:
 
-* `type` – required, text: _"iot_monitor"_. Event type.
-* `target` – required, [target](https://developers.navixy.com/docs/navixy-api/8437c2abc0274-web-socket-subscription). Trackers to subscribe. Maximum 10 trackers.
+* `type` – required, text: _"iot\_monitor"_. Event type.
+* `target` – required, [target](Websocket-access-for-DSA.md#Request-targets). Trackers to subscribe. Maximum 10 trackers.
 * `rate_limit` – optional, string. A timespan for batching.
-
 
 ### Response
 
@@ -68,24 +65,25 @@ Response parameters:
 
 * `type` – required, text: _"response"_.
 * `action` – required, text: _"subscription/subscribe"_.
-* `events` – required, array of [enum](https://developers.navixy.com/docs/navixy-api/d87ce89118d15-introduction#data-types), without nulls. List of the subscribed events types ("", "" or "iot_monitor").
-* `data` – required, map <string, object>. Map with events subscription result. One key per subscribed event.
-    * `state` – present if the "state" subscription requested, see sub response below.
-    * `state_batch` – present if the "state_batch" subscription requested, see sub response below.
-    * `readings_batch` – present if the "readings_batch" subscription requested, see sub response below.
+* `events` – required, array of [enum](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api#data-types), without nulls. List of the subscribed events types ("", "" or "iot\_monitor").
+* `data` – required, map \<string, object>. Map with events subscription result. One key per subscribed event.
+  * `state` – present if the "state" subscription requested, see sub response below.
+  * `state_batch` – present if the "state\_batch" subscription requested, see sub response below.
+  * `readings_batch` – present if the "readings\_batch" subscription requested, see sub response below.
 
 Sub response:
+
 * `success` – required, boolean.
-* `value` – required, map <string, enum>, present if success. The current status of requested trackers.
+* `value` – required, map \<string, enum>, present if success. The current status of requested trackers.
 
 Keys is a tracker IDs, values – one of the item:
 
-* `normal` – non-blocked, normal status. [State events](https://developers.navixy.com/docs/navixy-api/bdb1d20bafe28-web-socket-events#state-event) for this
+* `normal` – non-blocked, normal status. [State events](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/events#state-event) for this\
   tracker will be delivered to client.
-* `blocked` – tracker blocked. [State events](https://developers.navixy.com/docs/navixy-api/bdb1d20bafe28-web-socket-events#state-event) for this tracker 
-`will *not* be delivered to client. [Lifecycle events](https://developers.navixy.com/docs/navixy-api/bdb1d20bafe28-web-socket-events#lifecycle-event) will be delivered. After unblocking, 
-current tracker state will be sent automatically.
-* `unknown` – tracker ID missed in the database or not belong to current user.  
+* `blocked` – tracker blocked. [State events](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/events#state-event) for this tracker\
+  \`will _not_ be delivered to client. [Lifecycle events](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/events#lifecycle-event) will be delivered. After unblocking,\
+  current tracker state will be sent automatically.
+* `unknown` – tracker ID missed in the database or not belong to current user.
 * `disallowed` – subscription for this tracker not allowed by the current session.
 
 Response sample:
@@ -110,12 +108,9 @@ Response sample:
 
 ## Data Stream Analyzer event
 
-<!-- theme: warning -->
-> This is a DSA-focused snippet showcasing only its event. For complete information, see [WebSocket Events](https://developers.navixy.com/docs/navixy-api/bdb1d20bafe28-web-socket-events)
+> This is a DSA-focused snippet showcasing only its event. For complete information, see [WebSocket Events](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/events)
 
-You can receive Data Stream Analyser messages through websocket. These messages are coming from server if client [subscribed](https://developers.navixy.com/docs/navixy-api/8437c2abc0274-web-socket-subscription)
-to the `iot_monitor` events of the specific tracker that is not blocked. These packets contain values 
-of attributes from the latest messages sent by the selected tracker.
+You can receive Data Stream Analyser messages through websocket. These messages are coming from server if client [subscribed](https://app.gitbook.com/s/6dtcPLayxXVB2qaaiuIL/user-api/backend-api/websocket/subscription) to the `iot_monitor` events of the specific tracker that is not blocked. These packets contain values of attributes from the latest messages sent by the selected tracker.\
 It occurs in the next cases:
 
 * Immediately after subscription.
@@ -124,7 +119,7 @@ It occurs in the next cases:
 Message fields:
 
 * `type` – "event".
-* `event` – "iot_monitor".
+* `event` – "iot\_monitor".
 * `data`:
   * `iot_last_values` – list of objects:
     * `tracker_id` – tracker ID.

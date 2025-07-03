@@ -52,10 +52,10 @@ For this example, let's presume that we have already:
 The flow update operation allows you to modify the entire flow structure, including adding new output endpoints and creating the necessary connections. In this example, we're adding two output endpoint nodes that will receive the same processed data from the transformation chain. This creates a branching pattern where data goes through the processing nodes and then splits to multiple destinations simultaneously.
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/update" method="post" %}
-[Broken link](broken-reference)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
 {% endopenapi-operation %}
 
-> You can also create a completely new flow with this configuration by using `POST /iot/logic/flow/create`
+> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/s/tEf7EQbPINBBRxlTcloz/)
 
 To update an existing flow with additional output destinations, send the following request:
 
@@ -162,10 +162,13 @@ You will receive thes request status in response:
 
 #### Verifying the flow configuration
 
-You can then validate the configuration of the updated flow using the `read` endpoint: `POST /iot/logic/flow/read`
+You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-read)
 
-> **Congratulations!**\
-> You have successfully configured a flow to send processed data to multiple destinations simultaneously. This setup allows your IoT data to be processed once and then distributed to both Navixy platform and an external system.
+{% hint style="success" %}
+#### Congratulations!
+
+You have successfully configured a flow to send processed data to multiple destinations simultaneously. This setup allows your IoT data to be processed once and then distributed to both Navixy platform and an external system.
+{% endhint %}
 
 ## Complex data transformations
 
@@ -182,7 +185,7 @@ For this example, let's presume that we have already:
 
 This example updates a flow with sequential branches that process temperature and humidity data in series before combining them into advanced analytics. The flow demonstrates several important patterns: sequential processing of different sensor attributes, chained transformation steps, and the accumulation of multiple data transformations into unified analysis nodes. This approach is particularly useful for environmental monitoring, industrial sensors, or any scenario where multiple related measurements need to be processed through different algorithms in a specific order before being combined.
 
-> You can also create a completely new flow with this configuration by using `POST /iot/logic/flow/create`
+> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-create)
 
 To update an existing flow with additional output destinations, send the following request:
 
@@ -301,13 +304,16 @@ You will receive this request status in response:
 
 #### Verifying the flow configuration
 
-You can then validate the configuration of the updated flow using the `read` endpoint: `POST /iot/logic/flow/read`
+You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-read)
 
-> **Congratulations!**\
-> You have successfully built a complex data transformation chain that processes multiple sensor inputs through a series of calculations. This flow demonstrates advanced patterns including:
->
-> 1. Sequential processing of different sensor attributes (temperature and humidity)
-> 2. Chaining processed data through multiple transformation steps into a unified analysis
-> 3. Creating derived values that reference previously calculated attributes from earlier nodes
->
-> This type of multi-step transformation is powerful for implementing complex business logic and data processing requirements within your IoT system, allowing each processing stage to build upon the results of previous calculations.
+{% hint style="success" %}
+#### Congratulations!
+
+You have successfully built a complex data transformation chain that processes multiple sensor inputs through a series of calculations. This flow demonstrates advanced patterns including:
+
+* Sequential processing of different sensor attributes (temperature and humidity)
+* Chaining processed data through multiple transformation steps into a unified analysis
+* Creating derived values that reference previously calculated attributes from earlier nodes
+
+This type of multi-step transformation is powerful for implementing complex business logic and data processing requirements within your IoT system, allowing each processing stage to build upon the results of previous calculations.
+{% endhint %}

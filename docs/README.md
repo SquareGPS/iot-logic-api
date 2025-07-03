@@ -219,12 +219,14 @@ Response (example):
   * Reference nodes by their IDs to create the processing sequence
   * Create a clear path for data to follow from source to destination
 
-> This single request creates a complete flow that:
->
-> 1. Collects data from three specific devices (IDs: 394892, 394893, 394894)
-> 2. Converts temperature values from Celsius to Fahrenheit
-> 3. Transmits all data, including the new calculated attribute, to the Navixy platform
->
-> The success response includes the ID of the newly created flow, which you can use for future operations like updating the flow or adding additional nodes.
->
-> You can expand this example by adding more devices, creating additional calculated attributes, or configuring MQTT endpoints to send data to external systems.
+{% hint style="success" %}
+This single request creates a complete flow that:
+
+* Collects data from three specific devices (IDs: 394892, 394893, 394894)
+* Converts temperature values from Celsius to Fahrenheit
+* Transmits all data, including the new calculated attribute, to the Navixy platform
+
+The success response includes the ID of the newly created flow, which you can use for future operations like updating the flow or adding additional nodes.
+
+You can expand this example by adding more devices, creating additional calculated attributes, or configuring MQTT endpoints to send data to external systems.
+{% endhint %}

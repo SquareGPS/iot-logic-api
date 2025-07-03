@@ -17,7 +17,7 @@ For this example, let's presume that we have already:
 The flow list endpoint provides a quick overview of all IoT Logic flows in your account. This is useful for getting flow IDs and titles before performing detailed operations. Each flow in the response includes its unique identifier and descriptive title, allowing you to identify which flows you want to examine or modify further.
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/list" method="get" %}
-[Broken link](broken-reference)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
 {% endopenapi-operation %}
 
 To see all your existing flows, send the request:
@@ -47,7 +47,7 @@ You will receive `id` and `title` parameters in the response:
 The flow read endpoint retrieves complete configuration details for a specific flow, including all nodes, their properties, and the connections between them. This detailed view shows you the entire data processing pipeline - from data sources through transformation nodes to output endpoints. Use this when you need to understand the current flow structure before making modifications or troubleshooting data processing issues.
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/read" method="post" %}
-[Broken link](broken-reference)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
 {% endopenapi-operation %}
 
 To see the details of a specific flow, copy the `id` value of the needed flow from [GET /iot/logic/flow/list](scenario2.md#viewing-your-flows) response. Add it in the respective field of this request:
@@ -146,7 +146,7 @@ You will receive the complete structure of the flow in the response:
 The flow update endpoint allows you to modify existing flows by changing node configurations, adding new processing rules, or adjusting connections. When updating a flow, you must provide the complete flow structure, including all nodes and edges, even if you're only modifying one element. This ensures data consistency and prevents accidental deletion of existing components. In this example, we're adding a new calculated attribute to convert engine temperature from Fahrenheit to Celsius while preserving all existing functionality.
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/update" method="post" %}
-[Broken link](broken-reference)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
 {% endopenapi-operation %}
 
 Copy the flow obgect structure from [POST /iot/logic/flow/read](scenario2.md#viewing-flow-details) response and add the new attribute to the Initiate Atribute node (`id": 2`). Then paste the resulting object in the body of this request:
@@ -239,10 +239,12 @@ You will receive this request status in response:
 }
 ```
 
-> ### **Congratulations!**
->
-> You've now successfully enhanced your data flow by:
->
-> * Adding an engine temperature conversion calculation (Fahrenheit to Celsius)
-> * Maintaining your existing business metrics calculations
-> * Updating your flow while preserving the connection to your fleet vehicles and MQTT endpoint
+{% hint style="success" %}
+### **Congratulations!**
+
+You've now successfully enhanced your data flow by:
+
+* Adding an engine temperature conversion calculation (Fahrenheit to Celsius)
+* Maintaining your existing business metrics calculations
+* Updating your flow while preserving the connection to your fleet vehicles and MQTT endpoint
+{% endhint %}

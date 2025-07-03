@@ -7,7 +7,7 @@ Let's create a flow that sends your device data to an external system through MQ
 The simplest approach is to define both your data sources and MQTT output endpoint directly in your flow creation request. To do it, send a request to the following endpoint:
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/create" method="post" %}
-[Broken link](broken-reference)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
 {% endopenapi-operation %}
 
 ### Request example
@@ -79,9 +79,12 @@ The response will include the flow ID:
 }
 ```
 
-> **Congratulations!**\
-> You've now set up a flow that creates a complete end-to-end data pipeline in a single API call. This flow:
->
-> * Connects to multiple vehicles in your fleet through a data source endpoint
-> * Sends the device data to your external MQTT system
-> * Uses your custom MQTT broker settings for secure data transfer
+{% hint style="success" %}
+#### Congratulations!
+
+You've now set up a flow that creates a complete end-to-end data pipeline in a single API call. This flow:
+
+* Connects to multiple vehicles in your fleet through a data source endpoint
+* Sends the device data to your external MQTT system
+* Uses your custom MQTT broker settings for secure data transfer
+{% endhint %}

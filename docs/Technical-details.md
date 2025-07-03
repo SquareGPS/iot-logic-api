@@ -119,7 +119,7 @@ Error responses include `success: false` and a `status` object with details:
 
 ## Endpoint reference
 
-> For OpenAPI reference, see [Navixy IoT Logic API](broken-reference)
+> For OpenAPI reference, see [API reference](resources/api-reference/)
 
 The Navixy IoT Logic API provides the following endpoints for managing flows and endpoints:
 
@@ -419,6 +419,10 @@ The output endpoint node supports different destination types:
 
 ## Best practices
 
+<details>
+
+<summary>Practical tips for IoT Logic implementations</summary>
+
 #### Flow design
 
 1. **Plan your flow design** before implementation
@@ -492,6 +496,8 @@ When working with the Navixy IoT Logic API:
 3. **SSL**: Enable SSL (`use_ssl: true`) for MQTT connections whenever possible
 4. **Data Privacy**: Be mindful of what device data you transmit to external systems
 5. **Endpoint Security**: Regularly audit your endpoints and disable unused ones
+
+</details>
 
 ## Troubleshooting
 
