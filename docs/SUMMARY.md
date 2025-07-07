@@ -9,6 +9,7 @@
   * [Sending device data to an external system](navixy-iot-guide/scenario1.md)
   * [Managing your flows and endpoints](navixy-iot-guide/scenario2.md)
   * [Advanced configurations](navixy-iot-guide/advanced-configurations.md)
+  * [Adding calculated attributes to Navixy UI](navixy-iot-guide/adding-calculated-attributes-to-navixy-ui.md)
 * [Websocket access to Data Stream Analyzer](Websocket-access-for-DSA.md)
 
 ## RESOURCES
