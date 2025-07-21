@@ -1,6 +1,0 @@
-# Point search engines to the sitemap
-Sitemap: https://www.navixy.com/iot-logic-api-sitemap.xml
-
-# Allow all crawlers to access the site
-User-agent: *
-Allow: /
