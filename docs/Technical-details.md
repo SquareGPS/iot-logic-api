@@ -117,31 +117,9 @@ Error responses include `success: false` and a `status` object with details:
 | 5    | Rate limit exceeded | Too many requests in short time period        |
 | 6    | Validation error    | Flow structure issues, invalid connections    |
 
-## Endpoint reference
+## Eendpoint reference
 
-> For OpenAPI reference, see [API reference](resources/api-reference/)
-
-The Navixy IoT Logic API provides the following endpoints for managing flows and endpoints:
-
-### Flow management endpoints
-
-| Endpoint                 | Method | Description             | Key Parameters                             |
-| ------------------------ | ------ | ----------------------- | ------------------------------------------ |
-| `/iot/logic/flow/create` | POST   | Create a new flow       | `flow` object with title, nodes, edges     |
-| `/iot/logic/flow/read`   | GET    | Read an existing flow   | `flow_id`                                  |
-| `/iot/logic/flow/update` | POST   | Update an existing flow | `flow` object with id, title, nodes, edges |
-| `/iot/logic/flow/delete` | POST   | Delete a flow           | `flow_id`                                  |
-| `/iot/logic/flow/list`   | GET    | List all flows          | none                                       |
-
-### Node management endpoints
-
-| Endpoint                          | Method | Description                 | Key Parameters                                 |
-| --------------------------------- | ------ | --------------------------- | ---------------------------------------------- |
-| `/iot/logic/flow/endpoint/create` | POST   | Create a new endpoint       | `endpoint` object with type, title, properties |
-| `/iot/logic/flow/endpoint/read`   | POST   | Read an existing endpoint   | `endpoint_id`                                  |
-| `/iot/logic/flow/endpoint/update` | POST   | Update an existing endpoint | `endpoint` object with id and updated fields   |
-| `/iot/logic/flow/endpoint/delete` | POST   | Delete an endpoint          | `endpoint_id`                                  |
-| `/iot/logic/flow/endpoint/list`   | POST   | List all endpoints          | none                                           |
+See OpenAPI specification in [API reference](resources/api-reference/).
 
 ## Flow architecture
 
@@ -423,7 +401,7 @@ The output endpoint node supports different destination types:
 
 <summary>Practical tips for IoT Logic implementations</summary>
 
-#### Flow design
+**Flow design**
 
 1. **Plan your flow design** before implementation
    * Sketch your flow structure including all nodes and connections
@@ -442,7 +420,7 @@ The output endpoint node supports different destination types:
    * Verify data is flowing as expected
    * Check for proper attribute transformation
 
-#### Data processing
+**Data processing**
 
 6. **Keep expressions simple** where possible
    * Complex expressions are harder to debug and maintain
@@ -457,7 +435,7 @@ The output endpoint node supports different destination types:
    * High-frequency data may impact performance
    * Multiple outputs multiply processing requirements
 
-#### Security
+**Security**
 
 10. **Secure your MQTT connections** with SSL when possible
     * Enable `use_ssl: true` for production environments
@@ -472,7 +450,7 @@ The output endpoint node supports different destination types:
     * Limit permissions to only necessary topics
     * Use topic structures that enable precise access control
 
-#### Maintenance
+**Maintenance**
 
 14. **Back up your flow configurations**
     * Store JSON responses from successful flow creation
@@ -487,7 +465,7 @@ The output endpoint node supports different destination types:
     * Reuse successful flow patterns across applications
     * Standardize approaches to similar problems
 
-#### Data security considerations
+**Data security considerations**
 
 When working with the Navixy IoT Logic API:
 
