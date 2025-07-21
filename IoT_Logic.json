@@ -1,13 +1,8 @@
 {
   "openapi": "3.1.0",
-  "x-stoplight": {
-    "id": "styw9fdggkza8"
-  },
   "info": {
+    "title": "Navixy IoT Gateway API",
     "version": "1.0.0",
-    "title": "Navixy IoT Logic API",
-    "summary": "API calls for Flow and Node management",
-    "description": "This is an API reference for calls for Flow and Node management\r\n<!-- theme: warning -->\r\n> *BETA Version!* <br>\r\n>Now the easrly access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned! ",
     "contact": {
       "name": "Navixy support",
       "email": "support@navixy.com",
@@ -18,38 +13,35 @@
       "identifier": "Apache-2.0"
     }
   },
+  "externalDocs": {
+    "description": "Find more info here",
+    "url": "https://developers.navixy.com/"
+  },
   "servers": [
     {
-      "url": "https://api.eu.navixy.com/v2",
+      "url": "https://api.eu.navixy.com/",
       "description": "Navixy production server on European platform"
     },
     {
-      "url": "https://api.us.navixy.com/v2",
+      "url": "https://api.us.navixy.com/",
       "description": "Navixy production server on American platform"
     }
   ],
-  "tags": [
+  "security": [
     {
-      "name": "Flow",
-      "description": "Operations for managing data flows"
-    },
-    {
-      "name": "Node", 
-      "description": "Operations for managing flow nodes (endpoints)"
+      "api_key": []
     }
   ],
+  "tags": [],
   "paths": {
     "/iot/logic/flow/create": {
       "post": {
-        "tags": ["Flow"],
-        "summary": "flowCreate",
-        "description": "Create a new data flow.",
+        "description": "Create a new flowchart",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
                 "properties": {
                   "flow": {
                     "$ref": "#/components/schemas/FlowDraft"
@@ -61,76 +53,48 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/OK"
+            "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "0i7pj2aricgxh"
         }
       }
     },
     "/iot/logic/flow/read": {
-      "post": {
-        "tags": ["Flow"],
-        "summary": "flowRead",
-        "description": "Read an existing flow details.",
+      "get": {
+        "description": "Read a flowchart",
         "operationId": "flowRead",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "flow_id"
+                ],
                 "properties": {
                   "flow_id": {
                     "type": "integer",
                     "description": "Flow ID",
-                    "examples": [
-                      12
-                    ]
+                    "example": 12
                   }
-                },
-                "required": [
-                  "flow_id"
-                ]
-              },
-              "examples": {}
+                }
+              }
             }
-          },
-          "description": ""
+          }
         },
         "responses": {
           "200": {
-            "description": "",
+            "description": "Successful response to read a flow",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "description": "`true` if request finished successfully.",
                       "readOnly": true,
-                      "examples": [
-                        true
-                      ]
+                      "description": "`true` if request finished successfully.",
+                      "example": true
                     },
                     "value": {
                       "$ref": "#/components/schemas/Flow"
@@ -143,47 +107,25 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "k1ho66hqjjvoy"
-        },
-        "parameters": []
+        }
       }
     },
     "/iot/logic/flow/update": {
       "post": {
-        "tags": ["Flow"],
-        "summary": "flowUpdate",
-        "description": "Update details of an existing flow.",
+        "description": "Update a flowchart",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "flow"
+                ],
                 "properties": {
                   "flow": {
                     "$ref": "#/components/schemas/Flow"
                   }
-                },
-                "required": [
-                  "flow"
-                ]
+                }
               }
             }
           }
@@ -195,57 +137,34 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "eipuzudflydkf"
         }
       }
     },
     "/iot/logic/flow/delete": {
       "post": {
-        "tags": ["Flow"],
-        "summary": "flowDelete",
-        "description": "Delete a flow.",
+        "description": "Delete a flowchart",
         "operationId": "flowDelete",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "flow_id"
+                ],
                 "properties": {
                   "flow_id": {
                     "type": "integer",
                     "description": "Flow ID",
-                    "examples": [
-                      12
-                    ]
+                    "example": 12
                   }
-                },
-                "required": [
-                  "flow_id"
-                ]
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "",
+            "description": "Successful response to delete a flow",
             "content": {
               "application/json": {
                 "schema": {
@@ -257,74 +176,47 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "axlnoylqwlhzp"
         }
       }
     },
     "/iot/logic/flow/list": {
       "get": {
-        "tags": ["Flow"],
-        "summary": "flowList",
-        "description": "Get list of flows existing in a user account.",
+        "description": "Get list of flows",
         "operationId": "flowList",
         "responses": {
           "200": {
-            "description": "",
+            "description": "Successful response to read a list of flows",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "description": "`true` if request finished successfully",
                       "readOnly": true,
-                      "examples": [
-                        true
-                      ]
+                      "description": "`true` if request finished successfully",
+                      "example": true
                     },
                     "list": {
                       "type": "array",
-                      "description": "List of user's scripts",
                       "readOnly": true,
+                      "description": "List of user's scripts",
                       "items": {
                         "type": "object",
+                        "readOnly": true,
                         "properties": {
                           "id": {
                             "type": "integer",
-                            "description": "Flow ID",
                             "readOnly": true,
-                            "examples": [
-                              1234
-                            ]
+                            "description": "Flow ID",
+                            "example": 1234
                           },
                           "title": {
                             "type": "string",
-                            "description": "Flow name",
                             "readOnly": true,
-                            "examples": [
-                              "Super flow"
-                            ]
+                            "description": "Flow name",
+                            "example": "Super flow"
                           }
-                        },
-                        "readOnly": true
+                        }
                       }
                     }
                   }
@@ -335,120 +227,73 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "gf06cw39qi8rd"
         }
       }
     },
     "/iot/logic/flow/endpoint/create": {
       "post": {
-        "tags": ["Node"],
-        "summary": "endpointCreate",
-        "description": "Create a new node.\r\n\r\nAll node types are created through this endpoint, the type is defined in the request body.",
+        "description": "Create a new endpoint",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "endpoint": {
-                    "$ref": "#/components/schemas/IotEndpoint"
-                  }
-                },
                 "required": [
                   "endpoint"
-                ]
+                ],
+                "properties": {
+                  "endpoint": {
+                    "$ref": "#/components/schemas/IotEndpointDraft"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/OK"
+            "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "kqhfgre30qxr9"
         }
       }
     },
     "/iot/logic/flow/endpoint/read": {
       "post": {
-        "tags": ["Node"],
-        "summary": "endpointRead",
-        "description": "Read an existing node details.",
+        "description": "Read an endpoint",
         "operationId": "endpointRead",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "endpoint_id"
+                ],
                 "properties": {
                   "endpoint_id": {
                     "type": "integer",
                     "description": "Endpoint ID in database",
-                    "examples": [
-                      1723
-                    ]
+                    "example": 1723
                   }
-                },
-                "required": [
-                  "endpoint_id"
-                ]
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "",
+            "description": "Successful response to read endpoint",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "description": "`true` if request finished successfully",
                       "readOnly": true,
-                      "examples": [
-                        true
-                      ]
+                      "description": "`true` if request finished successfully",
+                      "example": true
                     },
                     "value": {
                       "$ref": "#/components/schemas/IotEndpoint"
@@ -461,46 +306,25 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "kt4gd151kc1ae"
         }
       }
     },
     "/iot/logic/flow/endpoint/update": {
       "post": {
-        "tags": ["Node"],
-        "summary": "endpointUpdate",
-        "description": "Update an existing node details.",
+        "description": "Update an endpoint",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "endpoint"
+                ],
                 "properties": {
                   "endpoint": {
                     "$ref": "#/components/schemas/IotEndpoint"
                   }
-                },
-                "required": [
-                  "endpoint"
-                ]
+                }
               }
             }
           }
@@ -512,50 +336,27 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "qgyk52n14bo35"
         }
       }
     },
     "/iot/logic/flow/endpoint/delete": {
       "post": {
-        "tags": ["Node"],
-        "summary": "endpointDelete",
-        "description": "Delete a node.",
+        "description": "Delete an endpoint",
         "operationId": "endpointDelete",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "endpoint_id"
+                ],
                 "properties": {
                   "endpoint_id": {
                     "type": "integer",
                     "description": "Endpoint ID in database",
-                    "examples": [
-                      1723
-                    ]
+                    "example": 1723
                   }
-                },
-                "required": [
-                  "endpoint_id"
-                ]
+                }
               }
             }
           }
@@ -567,62 +368,40 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "7kane067f6rpj"
         }
       }
     },
     "/iot/logic/flow/endpoint/list": {
       "post": {
-        "tags": ["Node"],
-        "summary": "endpointList",
-        "description": "Get list of nodes existing in a user account.",
+        "description": "Get list of user's endpoints",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "properties": {
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "",
+            "description": "Successful response to read a list of endpoints",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "description": "`true` if request finished successfully",
                       "readOnly": true,
-                      "examples": [
-                        true
-                      ]
+                      "description": "`true` if request finished successfully",
+                      "example": true
                     },
                     "list": {
                       "type": "array",
-                      "description": "List of user's scripts",
                       "readOnly": true,
+                      "description": "List of user's scripts",
                       "items": {
                         "$ref": "#/components/schemas/IotEndpoint"
                       }
@@ -635,162 +414,218 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        },
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
-        "servers": [
-          {
-            "url": "https://api.eu.navixy.com/v2",
-            "description": "Navixy production server on European platform"
-          },
-          {
-            "url": "https://api.us.navixy.com/v2",
-            "description": "Navixy production server on American platform"
-          }
-        ],
-        "x-stoplight": {
-          "id": "qcqqu4uvv14xz"
         }
       }
     }
   },
-  "externalDocs": {
-    "url": "https://developers.navixy.com/",
-    "description": "Find more info here"
-  },
   "components": {
     "securitySchemes": {
       "api_key": {
-        "type": "apiKey",
         "description": "Enter an API key with the \"NVX: \" prefix, e.g. \"NVX 123456abcdefg\"",
+        "type": "apiKey",
         "name": "Authorization",
         "in": "header"
       }
     },
-    "responses": {
-      "OK": {
-        "description": "Successful response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "description": "`true` if request finished successfully.",
-                  "readOnly": true,
-                  "examples": [
-                    true
-                  ]
-                }
-              }
-            }
+    "schemas": {
+      "Success": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "`true` if request finished successfully, otherwise `false`",
+            "example": true
           }
         }
       },
-      "ResponseError": {
-        "description": "Error response object",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "description": "Always false.",
-                  "examples": [
-                    false
-                  ]
-                },
-                "status": {
-                  "type": "object",
-                  "description": "Error status. It only presence when an error occurred.",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "An error code in this API (not a HTTP code)",
-                      "examples": [
-                        1
-                      ]
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "An error description",
-                      "examples": [
-                        "Database error"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
+      "FlowId": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Flow ID",
+            "example": 12
           }
         }
-      }
-    },
-    "schemas": {
-      "FlowDraft": {
+      },
+      "Edge": {
+        "description": "Edge between two Nodes",
         "type": "object",
-        "description": "Flowchart object without ID",
+        "required": [
+          "from",
+          "to"
+        ],
         "properties": {
+          "from": {
+            "type": "integer",
+            "example": 1
+          },
+          "to": {
+            "type": "integer",
+            "example": 2
+          },
+          "type": {
+            "description": "Edge type, optional, if not specified it is `simple_edge`",
+            "$ref": "#/components/schemas/EdgeType"
+          }
+        }
+      },
+      "EdgeType": {
+        "type": "string",
+        "enum": ["simple_edge", "then_edge", "else_edge"],
+        "example": "simple_edge"
+      },
+      "IotEndpoint": {
+        "type": "object",
+        "description": "Input or output endpoint",
+        "allOf": [
+          {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Endpoint ID inside user account",
+                "example": 1723
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/IotEndpointDraft"
+          }
+        ]
+      },
+      "IotEndpointDraft": {
+        "description": "Input or output endpoint",
+        "type": "object",
+        "required": [
+          "title",
+          "type",
+          "status"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "description": "Master user ID",
+            "example": 8
+          },
+          "type": {
+            "type": "string",
+            "description": "Endpoint type. One of: 'output_navixy', 'output_mqtt_client'.",
+            "example": "output_mqtt_client"
+          },
           "title": {
             "type": "string",
-            "description": "Flow name",
-            "examples": [
-              "Super flow"
+            "example": "MQTT Endpoint Client Properties"
+          },
+          "status": {
+            "type": "string",
+            "description": "Endpoint status. One of: 'active', 'suspend', 'disabled'."
+          },
+          "properties": {
+            "type": "object",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/IotEndpointMqttClientProperties"
+              },
+              {
+                "type": "object",
+                "description": "Navixy endpoint - empty object (no properties)",
+                "properties": {
+                }
+              }
             ]
-          },
-          "enabled": {
-            "type": "boolean",
-            "description": "Enable/disable flag",
-            "examples": [
-              true
-            ]
-          },
-          "nodes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Node"
-            }
-          },
-          "edges": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Edge"
-            }
           }
-        },
-        "required": [
-          "title"
-        ],
-        "x-stoplight": {
-          "id": "vy1xblw7ao1lb"
         }
       },
-      "Node": {
+      "IotEndpointMqttClientProperties": {
+        "description": "MQTT client endpoint",
         "type": "object",
-        "description": "Flowchart Node",
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/NodeDataSource"
-          },
-          {
-            "$ref": "#/components/schemas/NodeInitiateAttributes"
-          },
-          {
-            "$ref": "#/components/schemas/NodeOutputEndpoint"
-          }
+        "required": [
+          "protocol",
+          "domain",
+          "port",
+          "client_id",
+          "qos",
+          "topics",
+          "version",
+          "use_ssl",
+          "mqtt_auth"
         ],
-        "x-stoplight": {
-          "id": "z0r6o29oalxup"
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "description": "Protocol of messages: \"NGP\" (Navixy Generic Protocol)",
+            "example": "NGP"
+          },
+          "domain": {
+            "type": "string",
+            "description": "MQTT domain or IP address",
+            "example": "127.0.0.1"
+          },
+          "port": {
+            "type": "integer",
+            "description": "MQTT port",
+            "example": 1883
+          },
+          "client_id": {
+            "type": "string",
+            "description": "MQTT client ID",
+            "example": "Navixy (panel #123)"
+          },
+          "qos": {
+            "type": "integer",
+            "description": "MQTT QoS: 0 or 1 (2 is unsupported at the moment)",
+            "example": 1
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "MQTT topic name",
+              "example": "iot/navixy"
+            }
+          },
+          "version": {
+            "type": "string",
+            "description": "MQTT version: \"3.1.1\" or \"5.0\"",
+            "example": "5.0"
+          },
+          "use_ssl": {
+            "type": "boolean",
+            "description": "Use or not SSL encryption for MQTT connection",
+            "example": false
+          },
+          "mqtt_auth": {
+            "type": "boolean",
+            "description": "Use or not MQTT authentication",
+            "example": true
+          },
+          "user_name": {
+            "type": "string",
+            "description": "MQTT user name",
+            "example": "navixy"
+          },
+          "user_password": {
+            "type": "string",
+            "description": "MQTT password",
+            "example": "your_super_strong_password"
+          }
         }
       },
       "NodeDataSource": {
+        "description": "Node: Data Source",
         "type": "object",
-        "description": "Node: input endpoint",
+        "required": [
+          "type",
+          "data"
+        ],
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -798,30 +633,21 @@
           "type": {
             "type": "string",
             "description": "Node type. Always \"data_source\".",
-            "examples": [
-              "data_source"
-            ]
-          },
-          "enabled": {
-            "$ref": "#/components/schemas/Enabled"
+            "example": "data_source"
           },
           "data": {
             "type": "object",
             "properties": {
               "title": {
                 "type": "string",
-                "examples": [
-                  "Standard Input Endpoint"
-                ]
+                "example": "Standard Data Source"
               },
               "sources": {
                 "type": "array",
                 "items": {
                   "type": "integer",
                   "description": "Source ID",
-                  "examples": [
-                    123458
-                  ]
+                  "example": 123458
                 }
               }
             }
@@ -829,135 +655,15 @@
           "view": {
             "$ref": "#/components/schemas/NodeView"
           }
-        },
-        "required": [
-          "type",
-          "title",
-          "enabled",
-          "data"
-        ],
-        "x-stoplight": {
-          "id": "fycafhsdare9y"
-        }
-      },
-      "NodeID": {
-        "type": "integer",
-        "description": "Node ID inside current flow",
-        "examples": [
-          1
-        ],
-        "x-stoplight": {
-          "id": "nm4zd49udz6ch"
-        }
-      },
-      "Enabled": {
-        "type": "boolean",
-        "examples": [
-          true
-        ],
-        "x-stoplight": {
-          "id": "cckuyyxnkasoc"
-        }
-      },
-      "NodeView": {
-        "type": "object",
-        "description": "Flowchart Node view properties",
-        "properties": {
-          "position": {
-            "type": "object",
-            "description": "Position of the left top corner",
-            "properties": {
-              "x": {
-                "type": "integer",
-                "examples": [
-                  25
-                ]
-              },
-              "y": {
-                "type": "integer",
-                "examples": [
-                  25
-                ]
-              }
-            }
-          }
-        },
-        "x-stoplight": {
-          "id": "ff5apemgqd1ct"
-        }
-      },
-      "NodeInitiateAttributes": {
-        "type": "object",
-        "description": "Node: initiate attributes",
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/NodeID"
-          },
-          "type": {
-            "type": "string",
-            "description": "Node type. Always \"initiate_attributes\".",
-            "examples": [
-              "initiate_attributes"
-            ]
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string",
-                "examples": [
-                  "Add/modify attributes"
-                ]
-              },
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "examples": [
-                        "fuel_tank_2"
-                      ]
-                    },
-                    "value": {
-                      "type": "string",
-                      "examples": [
-                        "(analog_1 + 100)/2"
-                      ]
-                    },
-                    "generation_time": {
-                      "type": "string",
-                      "examples": [
-                        "now()"
-                      ]
-                    },
-                    "server_time": {
-                      "type": "string",
-                      "examples": [
-                        "now()"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "view": {
-            "$ref": "#/components/schemas/NodeView"
-          }
-        },
-        "required": [
-          "type",
-          "title"
-        ],
-        "x-stoplight": {
-          "id": "6fzzft9vrfvon"
         }
       },
       "NodeOutputEndpoint": {
-        "type": "object",
         "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent. By default, it is Navixy.",
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -965,18 +671,7 @@
           "type": {
             "type": "string",
             "description": "Node type. Always \"output_endpoint\".",
-            "examples": [
-              "output_endpoint"
-            ]
-          },
-          "title": {
-            "type": "string",
-            "examples": [
-              "Navixy output endpoint"
-            ]
-          },
-          "enabled": {
-            "$ref": "#/components/schemas/Enabled"
+            "example": "output_endpoint"
           },
           "data": {
             "type": "object",
@@ -992,75 +687,221 @@
           "view": {
             "$ref": "#/components/schemas/NodeView"
           }
-        },
-        "required": [
-          "type",
-          "title",
-          "enabled",
-          "data"
-        ],
-        "x-stoplight": {
-          "id": "dd693vy49t0pw"
         }
       },
       "NodeOutputEndpointDataNavixy": {
         "type": "object",
         "description": "Data of Navixy output endpoint",
+        "required": [
+          "title",
+          "output_endpoint_type"
+        ],
         "properties": {
+          "title": {
+            "type": "string",
+            "example": "Navixy output endpoint"
+          },
           "output_endpoint_type": {
             "type": "string",
             "description": "Type of endpoint. Always 'output_navixy'.",
-            "examples": [
-              "output_navixy"
-            ]
+            "example": "output_navixy"
           }
-        },
-        "x-stoplight": {
-          "id": "c7vzv38spunvi"
         }
       },
       "NodeOutputEndpointDataStoredEndpoint": {
         "type": "object",
-        "description": "Data of Navixy output endpoint",
+        "description": "Data of MQTT output endpoint",
+        "required": [
+          "title",
+          "output_endpoint_type",
+          "output_endpoint_id"
+        ],
         "properties": {
+          "title": {
+            "type": "string",
+            "example": "MQTT output endpoint"
+          },
           "output_endpoint_type": {
             "type": "string",
             "description": "Type of endpoint. Always 'output_mqtt_client'.",
-            "examples": [
-              "output_mqtt_client"
-            ]
+            "example": "output_mqtt_client"
           },
           "output_endpoint_id": {
             "type": "integer",
             "description": "Output Endpoint identifier within the user account. It is required for only some types of node (e.g. output_mqtt_client) which has specific properties.",
-            "examples": [
-              44551
-            ]
+            "example": 44551
           }
-        },
-        "x-stoplight": {
-          "id": "20a70csk84fht"
         }
       },
-      "Edge": {
+      "NodeInitiateAttributes": {
+        "description": "Node: initiate attributes",
         "type": "object",
-        "description": "Edge between two Nodes",
+        "required": [
+          "type",
+          "data"
+        ],
         "properties": {
-          "from": {
-            "type": "integer",
-            "examples": [
-              1
-            ]
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
           },
-          "to": {
-            "type": "integer",
-            "examples": [
-              2
-            ]
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"initiate_attributes\".",
+            "example": "initiate_attributes"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "Add/modify attributes"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "fuel_tank_2"
+                    },
+                    "value": {
+                      "type": "string",
+                      "example": "(analog_1 + 100)/2"
+                    },
+                    "generation_time": {
+                      "type": "string",
+                      "example": "now()"
+                    },
+                    "server_time": {
+                      "type": "string",
+                      "example": "now()"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
           }
-        },
-        "x-stoplight": {
-          "id": "qupueeg0ne8dg"
+        }
+      },
+      "NodeLogic": {
+        "description": "Node: logic",
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"logic\".",
+            "example": "logic"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "title",
+              "name",
+              "condition"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "New logic node"
+              },
+              "name": {
+                "type": "string",
+                "example": "logic_1"
+              },
+              "condition": {
+                "type": "string",
+                "example": "!driver_identified && (vibration_active || speed > 3)"
+              }
+            }
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        }
+      },
+      "Node": {
+        "description": "Flowchart Node",
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/NodeDataSource"
+          },
+          {
+            "$ref": "#/components/schemas/NodeInitiateAttributes"
+          },
+          {
+            "$ref": "#/components/schemas/NodeLogic"
+          },
+          {
+            "$ref": "#/components/schemas/NodeOutputEndpoint"
+          }
+        ]
+      },
+      "NodeView": {
+        "description": "Flowchart Node view properties",
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "object",
+            "description": "Position of the left top corner",
+            "properties": {
+              "x": {
+                "type": "integer",
+                "example": 25
+              },
+              "y": {
+                "type": "integer",
+                "example": 25
+              }
+            }
+          }
+        }
+      },
+      "NodeID": {
+        "type": "integer",
+        "description": "Node ID inside current flow",
+        "example": 1
+      },
+      "FlowDraft": {
+        "description": "Flowchart object without ID",
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Flow name",
+            "example": "Super flow"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable/disable flag",
+            "example": true
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Node"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Edge"
+            }
+          }
         }
       },
       "Flow": {
@@ -1073,204 +914,82 @@
           {
             "$ref": "#/components/schemas/FlowDraft"
           }
-        ],
-        "x-stoplight": {
-          "id": "y7epe89ijp24s"
-        }
-      },
-      "FlowId": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Flow ID",
-            "examples": [
-              543
-            ],
-            "readonly": true
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "x-stoplight": {
-          "id": "9n1exb0xipgo8"
-        }
-      },
-      "Success": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "description": "`true` if request finished successfully, otherwise `false`",
-            "readOnly": true,
-            "examples": [
-              true
-            ]
-          }
-        },
-        "x-stoplight": {
-          "id": "mkbzavgtarann"
-        }
-      },
-      "IotEndpoint": {
-        "type": "object",
-        "description": "Input or output endpoint",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Endpoint ID inside user account",
-            "examples": [
-              12345
-            ]
-          },
-          "user_id": {
-            "type": "integer",
-            "description": "Master user ID",
-            "examples": [
-              8
-            ]
-          },
-          "type": {
-            "type": "string",
-            "description": "Endpoint type. One of: 'input_navixy', 'output_navixy', 'output_mqtt_client'.",
-            "examples": [
-              "output_mqtt_client"
-            ]
-          },
-          "title": {
-            "type": "string",
-            "examples": [
-              "MQTT Endpoint Client Properties"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "description": "Endpoint status. One of: 'active', 'suspend', 'disabled'."
-          },
-          "properties": {
-            "type": "object",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/IotEndpointMqttClientProperties"
+        ]
+      }
+    },
+    "responses": {
+      "OK": {
+        "description": "Successful response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "readOnly": true,
+                  "description": "`true` if request finished successfully.",
+                  "example": true
+                }
               }
-            ]
+            }
           }
-        },
-        "required": [
-          "type",
-          "title",
-          "status"
-        ],
-        "x-stoplight": {
-          "id": "03oc4qevyqkyb"
         }
       },
-      "IotEndpointMqttClientProperties": {
-        "type": "object",
-        "description": "MQTT client endpoint",
-        "properties": {
-          "protocol": {
-            "type": "string",
-            "description": "Protocol of messages: \"NGP\" (Navixy Generic Protocol)",
-            "examples": [
-              "NGP"
-            ]
-          },
-          "domain": {
-            "type": "string",
-            "description": "MQTT domain or IP address",
-            "examples": [
-              "127.0.0.1"
-            ]
-          },
-          "port": {
-            "type": "integer",
-            "description": "MQTT port",
-            "examples": [
-              1883
-            ]
-          },
-          "client_id": {
-            "type": "string",
-            "description": "MQTT client ID",
-            "examples": [
-              "Navixy (panel #123)"
-            ]
-          },
-          "qos": {
-            "type": "integer",
-            "description": "MQTT QoS: 0 or 1 (2 is unsupported at the moment)",
-            "examples": [
-              1
-            ]
-          },
-          "topics": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "MQTT topic name",
-              "examples": [
-                "iot/navixy"
-              ]
+      "EntityCreatedResponse": {
+        "description": "Error response object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "readOnly": true,
+                  "description": "`true` if request finished successfully",
+                  "example": true
+                },
+                "id": {
+                  "type": "integer",
+                  "readOnly": true,
+                  "description": "ID of the created entity",
+                  "example": 1723
+                }
+              }
             }
-          },
-          "version": {
-            "type": "string",
-            "description": "MQTT version: \"3.1.1\" or \"5.0\"",
-            "examples": [
-              "5.0"
-            ]
-          },
-          "use_ssl": {
-            "type": "boolean",
-            "description": "Use or not SSL encryption for MQTT connection",
-            "examples": [
-              false
-            ]
-          },
-          "mqtt_auth": {
-            "type": "boolean",
-            "description": "Use or not MQTT authentication",
-            "examples": [
-              true
-            ]
-          },
-          "user_name": {
-            "type": "string",
-            "description": "MQTT user name",
-            "examples": [
-              "navixy"
-            ]
-          },
-          "user_password": {
-            "type": "string",
-            "description": "MQTT password",
-            "examples": [
-              "your_super_strong_password"
-            ]
           }
-        },
-        "required": [
-          "protocol",
-          "domain",
-          "port",
-          "client_id",
-          "qos",
-          "topics",
-          "version",
-          "use_ssl",
-          "mqtt_auth"
-        ],
-        "x-stoplight": {
-          "id": "f7bj8plhen1fw"
+        }
+      },
+      "ResponseError": {
+        "description": "Error response object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Always false.",
+                  "example": false
+                },
+                "status": {
+                  "description": "Error status. It only presence when an error occurred.",
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "description": "An error code in this API (not an HTTP code)",
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "description": {
+                      "description": "An error description",
+                      "type": "string",
+                      "example": "Database error"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
-  },
-  "security": [
-    {
-      "api_key": []
-    }
-  ]
+  }
 }
