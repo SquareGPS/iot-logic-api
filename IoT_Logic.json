@@ -32,7 +32,16 @@
       "api_key": []
     }
   ],
-  "tags": [],
+  "tags": [
+    {
+      "name": "Flow",
+      "description": "Operations for managing data flows"
+    },
+    {
+      "name": "Node", 
+      "description": "Operations for managing flow nodes (endpoints)"
+    }
+  ],
   "paths": {
     "/iot/logic/flow/create": {
       "post": {
