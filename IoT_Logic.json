@@ -1,8 +1,10 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Navixy IoT Gateway API",
     "version": "1.0.0",
+    "title": "Navixy IoT Logic API",
+    "summary": "API calls for Flow and Node management",
+    "description": "This is an API reference for calls for Flow and Node management\n\n> **BETA Version!**  \n> Now the early access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned!",
     "contact": {
       "name": "Navixy support",
       "email": "support@navixy.com",
@@ -13,23 +15,14 @@
       "identifier": "Apache-2.0"
     }
   },
-  "externalDocs": {
-    "description": "Find more info here",
-    "url": "https://developers.navixy.com/"
-  },
   "servers": [
     {
-      "url": "https://api.eu.navixy.com/",
+      "url": "https://api.eu.navixy.com/v2",
       "description": "Navixy production server on European platform"
     },
     {
-      "url": "https://api.us.navixy.com/",
+      "url": "https://api.us.navixy.com/v2",
       "description": "Navixy production server on American platform"
-    }
-  ],
-  "security": [
-    {
-      "api_key": []
     }
   ],
   "tags": [
@@ -46,12 +39,14 @@
     "/iot/logic/flow/create": {
       "post": {
         "tags": ["Flow"],
-        "description": "Create a new flowchart",
+        "summary": "flowCreate",
+        "description": "Create a new data flow.",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
+                "type": "object",
                 "properties": {
                   "flow": {
                     "$ref": "#/components/schemas/FlowDraft"
@@ -68,43 +63,44 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/read": {
       "get": {
         "tags": ["Flow"],
-        "description": "Read a flowchart",
+        "summary": "flowRead",
+        "description": "Read an existing flow details.",
         "operationId": "flowRead",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "required": [
-                  "flow_id"
-                ],
-                "properties": {
-                  "flow_id": {
-                    "type": "integer",
-                    "description": "Flow ID",
-                    "example": 12
-                  }
-                }
-              }
+        "parameters": [
+          {
+            "name": "flow_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "Flow ID",
+              "example": 12
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Successful response to read a flow",
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "readOnly": true,
                       "description": "`true` if request finished successfully.",
+                      "readOnly": true,
                       "example": true
                     },
                     "value": {
@@ -118,26 +114,33 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/update": {
       "post": {
         "tags": ["Flow"],
-        "description": "Update a flowchart",
+        "summary": "flowUpdate",
+        "description": "Update details of an existing flow.",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "flow"
-                ],
+                "type": "object",
                 "properties": {
                   "flow": {
                     "$ref": "#/components/schemas/Flow"
                   }
-                }
+                },
+                "required": [
+                  "flow"
+                ]
               }
             }
           }
@@ -149,28 +152,35 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/delete": {
       "post": {
         "tags": ["Flow"],
-        "description": "Delete a flowchart",
+        "summary": "flowDelete",
+        "description": "Delete a flow.",
         "operationId": "flowDelete",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "flow_id"
-                ],
+                "type": "object",
                 "properties": {
                   "flow_id": {
                     "type": "integer",
                     "description": "Flow ID",
                     "example": 12
                   }
-                }
+                },
+                "required": [
+                  "flow_id"
+                ]
               }
             }
           }
@@ -189,13 +199,19 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/list": {
       "get": {
         "tags": ["Flow"],
-        "description": "Get list of flows",
+        "summary": "flowList",
+        "description": "Get list of flows existing in a user account.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -203,34 +219,35 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "readOnly": true,
                       "description": "`true` if request finished successfully",
+                      "readOnly": true,
                       "example": true
                     },
                     "list": {
                       "type": "array",
+                      "description": "List of user's flows",
                       "readOnly": true,
-                      "description": "List of user's scripts",
                       "items": {
                         "type": "object",
-                        "readOnly": true,
                         "properties": {
                           "id": {
                             "type": "integer",
-                            "readOnly": true,
                             "description": "Flow ID",
+                            "readOnly": true,
                             "example": 1234
                           },
                           "title": {
                             "type": "string",
-                            "readOnly": true,
                             "description": "Flow name",
+                            "readOnly": true,
                             "example": "Super flow"
                           }
-                        }
+                        },
+                        "readOnly": true
                       }
                     }
                   }
@@ -241,26 +258,33 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/endpoint/create": {
       "post": {
         "tags": ["Node"],
-        "description": "Create a new endpoint",
+        "summary": "endpointCreate",
+        "description": "Create a new node.\n\nAll node types are created through this endpoint, the type is defined in the request body.",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "endpoint"
-                ],
+                "type": "object",
                 "properties": {
                   "endpoint": {
                     "$ref": "#/components/schemas/IotEndpointDraft"
                   }
-                }
+                },
+                "required": [
+                  "endpoint"
+                ]
               }
             }
           }
@@ -272,28 +296,35 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/endpoint/read": {
       "post": {
         "tags": ["Node"],
-        "description": "Read an endpoint",
+        "summary": "endpointRead",
+        "description": "Read an existing node details.",
         "operationId": "endpointRead",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "endpoint_id"
-                ],
+                "type": "object",
                 "properties": {
                   "endpoint_id": {
                     "type": "integer",
                     "description": "Endpoint ID in database",
                     "example": 1723
                   }
-                }
+                },
+                "required": [
+                  "endpoint_id"
+                ]
               }
             }
           }
@@ -304,11 +335,12 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "readOnly": true,
                       "description": "`true` if request finished successfully",
+                      "readOnly": true,
                       "example": true
                     },
                     "value": {
@@ -322,26 +354,33 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/endpoint/update": {
       "post": {
         "tags": ["Node"],
-        "description": "Update an endpoint",
+        "summary": "endpointUpdate",
+        "description": "Update an existing node details.",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "endpoint"
-                ],
+                "type": "object",
                 "properties": {
                   "endpoint": {
                     "$ref": "#/components/schemas/IotEndpoint"
                   }
-                }
+                },
+                "required": [
+                  "endpoint"
+                ]
               }
             }
           }
@@ -353,28 +392,35 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/endpoint/delete": {
       "post": {
         "tags": ["Node"],
-        "description": "Delete an endpoint",
+        "summary": "endpointDelete",
+        "description": "Delete a node.",
         "operationId": "endpointDelete",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "endpoint_id"
-                ],
+                "type": "object",
                 "properties": {
                   "endpoint_id": {
                     "type": "integer",
                     "description": "Endpoint ID in database",
                     "example": 1723
                   }
-                }
+                },
+                "required": [
+                  "endpoint_id"
+                ]
               }
             }
           }
@@ -386,20 +432,25 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/iot/logic/flow/endpoint/list": {
       "post": {
         "tags": ["Node"],
-        "description": "Get list of user's endpoints",
+        "summary": "endpointList",
+        "description": "Get list of nodes existing in a user account.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                }
+                "type": "object"
               }
             }
           }
@@ -410,17 +461,18 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "object",
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "readOnly": true,
                       "description": "`true` if request finished successfully",
+                      "readOnly": true,
                       "example": true
                     },
                     "list": {
                       "type": "array",
+                      "description": "List of user's endpoints",
                       "readOnly": true,
-                      "description": "List of user's scripts",
                       "items": {
                         "$ref": "#/components/schemas/IotEndpoint"
                       }
@@ -433,17 +485,103 @@
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     }
+  },
+  "externalDocs": {
+    "url": "https://developers.navixy.com/",
+    "description": "Find more info here"
   },
   "components": {
     "securitySchemes": {
       "api_key": {
-        "description": "Enter an API key with the \"NVX: \" prefix, e.g. \"NVX 123456abcdefg\"",
         "type": "apiKey",
+        "description": "Enter an API key with the \"NVX: \" prefix, e.g. \"NVX 123456abcdefg\"",
         "name": "Authorization",
         "in": "header"
+      }
+    },
+    "responses": {
+      "OK": {
+        "description": "Successful response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "`true` if request finished successfully.",
+                  "readOnly": true,
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "EntityCreatedResponse": {
+        "description": "Successful creation response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "`true` if request finished successfully",
+                  "readOnly": true,
+                  "example": true
+                },
+                "id": {
+                  "type": "integer",
+                  "description": "ID of the created entity",
+                  "readOnly": true,
+                  "example": 1723
+                }
+              }
+            }
+          }
+        }
+      },
+      "ResponseError": {
+        "description": "Error response object",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Always false.",
+                  "example": false
+                },
+                "status": {
+                  "type": "object",
+                  "description": "Error status. It only presence when an error occurred.",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "An error code in this API (not a HTTP code)",
+                      "example": 1
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "An error description",
+                      "example": "Database error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "schemas": {
@@ -452,8 +590,8 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "readOnly": true,
             "description": "`true` if request finished successfully, otherwise `false`",
+            "readOnly": true,
             "example": true
           }
         }
@@ -467,17 +605,57 @@
           "id": {
             "type": "integer",
             "description": "Flow ID",
-            "example": 12
+            "example": 543,
+            "readOnly": true
           }
         }
       },
-      "Edge": {
-        "description": "Edge between two Nodes",
+      "FlowDraft": {
         "type": "object",
+        "description": "Flowchart object without ID",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Flow name",
+            "example": "Super flow"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable/disable flag",
+            "example": true
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Node"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Edge"
+            }
+          }
+        },
         "required": [
-          "from",
-          "to"
-        ],
+          "title"
+        ]
+      },
+      "Flow": {
+        "type": "object",
+        "description": "Flowchart object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/FlowId"
+          },
+          {
+            "$ref": "#/components/schemas/FlowDraft"
+          }
+        ]
+      },
+      "Edge": {
+        "type": "object",
+        "description": "Edge between two Nodes",
         "properties": {
           "from": {
             "type": "integer",
@@ -491,12 +669,270 @@
             "description": "Edge type, optional, if not specified it is `simple_edge`",
             "$ref": "#/components/schemas/EdgeType"
           }
-        }
+        },
+        "required": [
+          "from",
+          "to"
+        ]
       },
       "EdgeType": {
         "type": "string",
         "enum": ["simple_edge", "then_edge", "else_edge"],
         "example": "simple_edge"
+      },
+      "Node": {
+        "type": "object",
+        "description": "Flowchart Node",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/NodeDataSource"
+          },
+          {
+            "$ref": "#/components/schemas/NodeInitiateAttributes"
+          },
+          {
+            "$ref": "#/components/schemas/NodeLogic"
+          },
+          {
+            "$ref": "#/components/schemas/NodeOutputEndpoint"
+          }
+        ]
+      },
+      "NodeID": {
+        "type": "integer",
+        "description": "Node ID inside current flow",
+        "example": 1
+      },
+      "NodeView": {
+        "type": "object",
+        "description": "Flowchart Node view properties",
+        "properties": {
+          "position": {
+            "type": "object",
+            "description": "Position of the left top corner",
+            "properties": {
+              "x": {
+                "type": "integer",
+                "example": 25
+              },
+              "y": {
+                "type": "integer",
+                "example": 25
+              }
+            }
+          }
+        }
+      },
+      "NodeDataSource": {
+        "type": "object",
+        "description": "Node: Data Source",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"data_source\".",
+            "example": "data_source"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "Standard Data Source"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "description": "Source ID",
+                  "example": 123458
+                }
+              }
+            }
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "NodeInitiateAttributes": {
+        "type": "object",
+        "description": "Node: initiate attributes",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"initiate_attributes\".",
+            "example": "initiate_attributes"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "Add/modify attributes"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "fuel_tank_2"
+                    },
+                    "value": {
+                      "type": "string",
+                      "example": "(analog_1 + 100)/2"
+                    },
+                    "generation_time": {
+                      "type": "string",
+                      "example": "now()"
+                    },
+                    "server_time": {
+                      "type": "string",
+                      "example": "now()"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "NodeLogic": {
+        "type": "object",
+        "description": "Node: logic",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"logic\".",
+            "example": "logic"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "New logic node"
+              },
+              "name": {
+                "type": "string",
+                "example": "logic_1"
+              },
+              "condition": {
+                "type": "string",
+                "example": "!driver_identified && (vibration_active || speed > 3)"
+              }
+            },
+            "required": [
+              "title",
+              "name",
+              "condition"
+            ]
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "NodeOutputEndpoint": {
+        "type": "object",
+        "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent. By default, it is Navixy.",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"output_endpoint\".",
+            "example": "output_endpoint"
+          },
+          "data": {
+            "type": "object",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NodeOutputEndpointDataNavixy"
+              },
+              {
+                "$ref": "#/components/schemas/NodeOutputEndpointDataStoredEndpoint"
+              }
+            ]
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
+      },
+      "NodeOutputEndpointDataNavixy": {
+        "type": "object",
+        "description": "Data of Navixy output endpoint",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Navixy output endpoint"
+          },
+          "output_endpoint_type": {
+            "type": "string",
+            "description": "Type of endpoint. Always 'output_navixy'.",
+            "example": "output_navixy"
+          }
+        },
+        "required": [
+          "title",
+          "output_endpoint_type"
+        ]
+      },
+      "NodeOutputEndpointDataStoredEndpoint": {
+        "type": "object",
+        "description": "Data of MQTT output endpoint",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "MQTT output endpoint"
+          },
+          "output_endpoint_type": {
+            "type": "string",
+            "description": "Type of endpoint. Always 'output_mqtt_client'.",
+            "example": "output_mqtt_client"
+          },
+          "output_endpoint_id": {
+            "type": "integer",
+            "description": "Output Endpoint identifier within the user account. It is required for only some types of node (e.g. output_mqtt_client) which has specific properties.",
+            "example": 44551
+          }
+        },
+        "required": [
+          "title",
+          "output_endpoint_type",
+          "output_endpoint_id"
+        ]
       },
       "IotEndpoint": {
         "type": "object",
@@ -504,16 +940,17 @@
         "allOf": [
           {
             "type": "object",
-            "required": [
-              "id"
-            ],
             "properties": {
               "id": {
                 "type": "integer",
                 "description": "Endpoint ID inside user account",
-                "example": 1723
+                "example": 12345,
+                "readOnly": true
               }
-            }
+            },
+            "required": [
+              "id"
+            ]
           },
           {
             "$ref": "#/components/schemas/IotEndpointDraft"
@@ -521,13 +958,8 @@
         ]
       },
       "IotEndpointDraft": {
-        "description": "Input or output endpoint",
         "type": "object",
-        "required": [
-          "title",
-          "type",
-          "status"
-        ],
+        "description": "Input or output endpoint draft (for creation)",
         "properties": {
           "user_id": {
             "type": "integer",
@@ -536,7 +968,7 @@
           },
           "type": {
             "type": "string",
-            "description": "Endpoint type. One of: 'output_navixy', 'output_mqtt_client'.",
+            "description": "Endpoint type. One of: 'input_navixy', 'output_navixy', 'output_mqtt_client'.",
             "example": "output_mqtt_client"
           },
           "title": {
@@ -556,27 +988,20 @@
               {
                 "type": "object",
                 "description": "Navixy endpoint - empty object (no properties)",
-                "properties": {
-                }
+                "properties": {}
               }
             ]
           }
-        }
+        },
+        "required": [
+          "type",
+          "title",
+          "status"
+        ]
       },
       "IotEndpointMqttClientProperties": {
-        "description": "MQTT client endpoint",
         "type": "object",
-        "required": [
-          "protocol",
-          "domain",
-          "port",
-          "client_id",
-          "qos",
-          "topics",
-          "version",
-          "use_ssl",
-          "mqtt_auth"
-        ],
+        "description": "MQTT client endpoint",
         "properties": {
           "protocol": {
             "type": "string",
@@ -636,379 +1061,24 @@
             "description": "MQTT password",
             "example": "your_super_strong_password"
           }
-        }
-      },
-      "NodeDataSource": {
-        "description": "Node: Data Source",
-        "type": "object",
+        },
         "required": [
-          "type",
-          "data"
-        ],
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/NodeID"
-          },
-          "type": {
-            "type": "string",
-            "description": "Node type. Always \"data_source\".",
-            "example": "data_source"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string",
-                "example": "Standard Data Source"
-              },
-              "sources": {
-                "type": "array",
-                "items": {
-                  "type": "integer",
-                  "description": "Source ID",
-                  "example": 123458
-                }
-              }
-            }
-          },
-          "view": {
-            "$ref": "#/components/schemas/NodeView"
-          }
-        }
-      },
-      "NodeOutputEndpoint": {
-        "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent. By default, it is Navixy.",
-        "type": "object",
-        "required": [
-          "type",
-          "data"
-        ],
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/NodeID"
-          },
-          "type": {
-            "type": "string",
-            "description": "Node type. Always \"output_endpoint\".",
-            "example": "output_endpoint"
-          },
-          "data": {
-            "type": "object",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/NodeOutputEndpointDataNavixy"
-              },
-              {
-                "$ref": "#/components/schemas/NodeOutputEndpointDataStoredEndpoint"
-              }
-            ]
-          },
-          "view": {
-            "$ref": "#/components/schemas/NodeView"
-          }
-        }
-      },
-      "NodeOutputEndpointDataNavixy": {
-        "type": "object",
-        "description": "Data of Navixy output endpoint",
-        "required": [
-          "title",
-          "output_endpoint_type"
-        ],
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "Navixy output endpoint"
-          },
-          "output_endpoint_type": {
-            "type": "string",
-            "description": "Type of endpoint. Always 'output_navixy'.",
-            "example": "output_navixy"
-          }
-        }
-      },
-      "NodeOutputEndpointDataStoredEndpoint": {
-        "type": "object",
-        "description": "Data of MQTT output endpoint",
-        "required": [
-          "title",
-          "output_endpoint_type",
-          "output_endpoint_id"
-        ],
-        "properties": {
-          "title": {
-            "type": "string",
-            "example": "MQTT output endpoint"
-          },
-          "output_endpoint_type": {
-            "type": "string",
-            "description": "Type of endpoint. Always 'output_mqtt_client'.",
-            "example": "output_mqtt_client"
-          },
-          "output_endpoint_id": {
-            "type": "integer",
-            "description": "Output Endpoint identifier within the user account. It is required for only some types of node (e.g. output_mqtt_client) which has specific properties.",
-            "example": 44551
-          }
-        }
-      },
-      "NodeInitiateAttributes": {
-        "description": "Node: initiate attributes",
-        "type": "object",
-        "required": [
-          "type",
-          "data"
-        ],
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/NodeID"
-          },
-          "type": {
-            "type": "string",
-            "description": "Node type. Always \"initiate_attributes\".",
-            "example": "initiate_attributes"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "title": {
-                "type": "string",
-                "example": "Add/modify attributes"
-              },
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "example": "fuel_tank_2"
-                    },
-                    "value": {
-                      "type": "string",
-                      "example": "(analog_1 + 100)/2"
-                    },
-                    "generation_time": {
-                      "type": "string",
-                      "example": "now()"
-                    },
-                    "server_time": {
-                      "type": "string",
-                      "example": "now()"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "view": {
-            "$ref": "#/components/schemas/NodeView"
-          }
-        }
-      },
-      "NodeLogic": {
-        "description": "Node: logic",
-        "type": "object",
-        "required": [
-          "type",
-          "data"
-        ],
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/NodeID"
-          },
-          "type": {
-            "type": "string",
-            "description": "Node type. Always \"logic\".",
-            "example": "logic"
-          },
-          "data": {
-            "type": "object",
-            "required": [
-              "title",
-              "name",
-              "condition"
-            ],
-            "properties": {
-              "title": {
-                "type": "string",
-                "example": "New logic node"
-              },
-              "name": {
-                "type": "string",
-                "example": "logic_1"
-              },
-              "condition": {
-                "type": "string",
-                "example": "!driver_identified && (vibration_active || speed > 3)"
-              }
-            }
-          },
-          "view": {
-            "$ref": "#/components/schemas/NodeView"
-          }
-        }
-      },
-      "Node": {
-        "description": "Flowchart Node",
-        "type": "object",
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/NodeDataSource"
-          },
-          {
-            "$ref": "#/components/schemas/NodeInitiateAttributes"
-          },
-          {
-            "$ref": "#/components/schemas/NodeLogic"
-          },
-          {
-            "$ref": "#/components/schemas/NodeOutputEndpoint"
-          }
+          "protocol",
+          "domain",
+          "port",
+          "client_id",
+          "qos",
+          "topics",
+          "version",
+          "use_ssl",
+          "mqtt_auth"
         ]
-      },
-      "NodeView": {
-        "description": "Flowchart Node view properties",
-        "type": "object",
-        "properties": {
-          "position": {
-            "type": "object",
-            "description": "Position of the left top corner",
-            "properties": {
-              "x": {
-                "type": "integer",
-                "example": 25
-              },
-              "y": {
-                "type": "integer",
-                "example": 25
-              }
-            }
-          }
-        }
-      },
-      "NodeID": {
-        "type": "integer",
-        "description": "Node ID inside current flow",
-        "example": 1
-      },
-      "FlowDraft": {
-        "description": "Flowchart object without ID",
-        "type": "object",
-        "required": [
-          "title"
-        ],
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "Flow name",
-            "example": "Super flow"
-          },
-          "enabled": {
-            "type": "boolean",
-            "description": "Enable/disable flag",
-            "example": true
-          },
-          "nodes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Node"
-            }
-          },
-          "edges": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Edge"
-            }
-          }
-        }
-      },
-      "Flow": {
-        "type": "object",
-        "description": "Flowchart object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/FlowId"
-          },
-          {
-            "$ref": "#/components/schemas/FlowDraft"
-          }
-        ]
-      }
-    },
-    "responses": {
-      "OK": {
-        "description": "Successful response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "readOnly": true,
-                  "description": "`true` if request finished successfully.",
-                  "example": true
-                }
-              }
-            }
-          }
-        }
-      },
-      "EntityCreatedResponse": {
-        "description": "Error response object",
-        "content": {
-          "application/json": {
-            "schema": {
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "readOnly": true,
-                  "description": "`true` if request finished successfully",
-                  "example": true
-                },
-                "id": {
-                  "type": "integer",
-                  "readOnly": true,
-                  "description": "ID of the created entity",
-                  "example": 1723
-                }
-              }
-            }
-          }
-        }
-      },
-      "ResponseError": {
-        "description": "Error response object",
-        "content": {
-          "application/json": {
-            "schema": {
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "description": "Always false.",
-                  "example": false
-                },
-                "status": {
-                  "description": "Error status. It only presence when an error occurred.",
-                  "type": "object",
-                  "properties": {
-                    "code": {
-                      "description": "An error code in this API (not an HTTP code)",
-                      "type": "integer",
-                      "example": 1
-                    },
-                    "description": {
-                      "description": "An error description",
-                      "type": "string",
-                      "example": "Database error"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ]
 }
