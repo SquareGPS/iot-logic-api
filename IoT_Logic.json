@@ -36,6 +36,7 @@
   "paths": {
     "/iot/logic/flow/create": {
       "post": {
+        "tags": ["Flow"],
         "description": "Create a new flowchart",
         "operationId": "flowCreate",
         "requestBody": {
@@ -63,6 +64,7 @@
     },
     "/iot/logic/flow/read": {
       "get": {
+        "tags": ["Flow"],
         "description": "Read a flowchart",
         "operationId": "flowRead",
         "requestBody": {
@@ -112,6 +114,7 @@
     },
     "/iot/logic/flow/update": {
       "post": {
+        "tags": ["Flow"],
         "description": "Update a flowchart",
         "operationId": "flowUpdate",
         "requestBody": {
@@ -142,6 +145,7 @@
     },
     "/iot/logic/flow/delete": {
       "post": {
+        "tags": ["Flow"],
         "description": "Delete a flowchart",
         "operationId": "flowDelete",
         "requestBody": {
@@ -181,6 +185,7 @@
     },
     "/iot/logic/flow/list": {
       "get": {
+        "tags": ["Flow"],
         "description": "Get list of flows",
         "operationId": "flowList",
         "responses": {
@@ -232,6 +237,7 @@
     },
     "/iot/logic/flow/endpoint/create": {
       "post": {
+        "tags": ["Node"],
         "description": "Create a new endpoint",
         "operationId": "endpointCreate",
         "requestBody": {
@@ -262,6 +268,7 @@
     },
     "/iot/logic/flow/endpoint/read": {
       "post": {
+        "tags": ["Node"],
         "description": "Read an endpoint",
         "operationId": "endpointRead",
         "requestBody": {
@@ -311,6 +318,7 @@
     },
     "/iot/logic/flow/endpoint/update": {
       "post": {
+        "tags": ["Node"],
         "description": "Update an endpoint",
         "operationId": "endpointUpdate",
         "requestBody": {
@@ -341,6 +349,7 @@
     },
     "/iot/logic/flow/endpoint/delete": {
       "post": {
+        "tags": ["Node"],
         "description": "Delete an endpoint",
         "operationId": "endpointDelete",
         "requestBody": {
@@ -373,6 +382,7 @@
     },
     "/iot/logic/flow/endpoint/list": {
       "post": {
+        "tags": ["Node"],
         "description": "Get list of user's endpoints",
         "operationId": "endpointList",
         "requestBody": {
