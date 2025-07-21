@@ -23,5 +23,5 @@
       spec:
         ref:
           kind: openapi
-          spec: iot-logic
+          spec: iot-logic-test
     ```
