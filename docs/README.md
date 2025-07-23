@@ -21,7 +21,7 @@ Now the early access of IoT Logic's API is implemented, which means possible cha
 * Decodes and converts data in real-time
 * Sends processed data to other platforms and services
 * Enables building complex flows with nodes responsible for specific data processing tasks
-* Standardizes telematics data through the [Navixy Generic Protocol](https://docs.navixy.com/iot-logic/ngp)
+* Standardizes telematics data through the [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md)
 
 The **IoT Logic API** allows developers and system integrators to programmatically implement these capabilities, making it effective for organizations that need to:
 
@@ -50,8 +50,8 @@ Key characteristics of flows:
 **Nodes** are the functional elements of a **flow**, with each node handling a specific stage of the data lifecycle. There are three primary types of nodes:
 
 * **Data Source node**: Receives data from M2M devices and serves as the entry point for all device data
-* **Initiate Attribute node**: Processes and enriches incoming data, including creating new calculated attributes trough mathematical operations in [Navixy IoT Logic Expression Language](https://docs.navixy.com/iot-logic/navixy-iot-logic-expression-language)
-* **Output Endpoint node**: Transmits data to target systems using the [Navixy Generic Protocol](https://docs.navixy.com/iot-logic/ngp). This node can be configured to use different endpoint types:
+* **Initiate Attribute node**: Processes and enriches incoming data, including creating new calculated attributes trough mathematical operations in [Navixy IoT Logic Expression Language](Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md)
+* **Output Endpoint node**: Transmits data to target systems using the [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md). This node can be configured to use different endpoint types:
   * **Default endpoint**: Pre-configured destination for sending data to the Navixy platform
   * **MQTT endpoint**: Configurable connection for sending data to third-party systems and services
 
@@ -109,7 +109,9 @@ Response (example):
 
 Copy the `hash` value from the response.
 
-> For more details on how to authenticate your requests, see [Authentication](authentication.md).
+{% hint style="info" %}
+For more details on how to authenticate your requests, see [Authentication](authentication.md).
+{% endhint %}
 
 ### Step 2: Create a complete flow with nodes and connections
 

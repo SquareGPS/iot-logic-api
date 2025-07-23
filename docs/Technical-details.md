@@ -184,7 +184,9 @@ While optional for API functionality, including this data helps maintain visual 
 
 To ensure system stability for all customers, the platform limits API requests to 50 requests per second per user and per IP address (for applications serving multiple users). These limits are applied based on user session hash and API keys.
 
-> When a rate limit is exceeded, the API returns a 429 Too Many Requests status code with a specific error message
+{% hint style="info" %}
+When a rate limit is exceeded, the API returns a 429 Too Many Requests status code with a specific error message
+{% endhint %}
 
 To avoid rate limiting issues:
 
@@ -275,7 +277,7 @@ This node transforms raw data into meaningful information. It allows for creatin
 
 #### Expression language
 
-For calculations IoT Logic API uses [Navixy IoT Logic Expression Language](https://docs.navixy.com/iot-logic/navixy-iot-logic-expression-language).\
+For calculations IoT Logic API uses [Navixy IoT Logic Expression Language](Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md).\
 Here's a guick reference:
 
 | Feature                | Operators/Examples                  | Description                    |
@@ -292,7 +294,75 @@ Here's a guick reference:
 | Distance calculation   | `sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))`                 | Calculate distance between points |
 | Time-based condition   | `hour(time) >= 22 \|\| hour(time) <= 6 ? 'night' : 'day'` | Determine day/night status        |
 
-### 3. Output endpoint node (`output_endpoint`)
+### 3. Logic node (`logic`)
+
+This node creates conditional branching points that route incoming data down different paths based on logical expressions. It evaluates conditions against real-time data and creates boolean attributes for monitoring and decision-making.
+
+#### Logic node structure
+
+```json
+{
+  "id": 2,
+  "type": "logic",
+  "data": {
+    "title": "Temperature Alert Check",
+    "name": "high_temperature_alert",
+    "condition": "value('temperature', 0, 'valid') > 75"
+  },
+  "view": {
+    "position": { "x": 150, "y": 50 }
+  }
+}
+```
+
+#### Key properties
+
+<table><thead><tr><th width="158.9090576171875">Property</th><th width="103.3636474609375">Type</th><th width="108.5455322265625">Required</th><th>Description</th></tr></thead><tbody><tr><td><code>id</code></td><td>integer</td><td>Yes</td><td>Unique identifier within the flow</td></tr><tr><td><code>type</code></td><td>string</td><td>Yes</td><td>Must be "logic"</td></tr><tr><td><code>data.title</code></td><td>string</td><td>Yes</td><td>Human-readable name for the node</td></tr><tr><td><code>data.name</code></td><td>string</td><td>Yes</td><td>Name for the boolean attribute created by this node</td></tr><tr><td><code>data.condition</code></td><td>string</td><td>Yes</td><td>Logical expression using Navixy IoT Logic Expression Language</td></tr></tbody></table>
+
+#### Output connections
+
+The Logic node supports two output connection types:
+
+**THEN connection (`then_edge`)**
+
+* Activates when the expression evaluates to `true`
+* At least one THEN connection is required
+
+**ELSE connection (`else_edge`)**
+
+* Activates when the expression evaluates to `false`, `null`, or encounters errors
+* Optional connection
+
+#### Expression language
+
+For logical conditions IoT Logic API uses [Navixy IoT Logic Expression Language](Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md).
+
+Here's a quick reference:
+
+| Operator category    | Operators                         | Description                       |
+| -------------------- | --------------------------------- | --------------------------------- |
+| Comparison operators | `==`, `!=`, `<`, `<=`, `>`, `>=`  | Basic comparison operations       |
+| Logical operators    | `&&`, `\|\|`, `!`                 | Logical operations (and, or, not) |
+| Pattern matching     | `=~`, `!~`                        | Pattern matching operations       |
+| String operators     | `=^`, `!^`, `=$`, `!$`            | String comparison operations      |
+| Attribute references | `speed`, `fuel_level`, `analog_1` | Reference to device attributes    |
+
+#### Expression examples
+
+| Expression                                                                   | Description                               |
+| ---------------------------------------------------------------------------- | ----------------------------------------- |
+| `value('temperature', 0, 'valid') > 75`                                      | Temperature monitoring                    |
+| `value('speed', 0, 'valid') > 60 && value('current_hour', 0, 'valid') >= 18` | Complex conditions with logical operators |
+| `value('lock_state', 0, 'valid') =~ ['locked', 'unlocked']`                  | Pattern matching with arrays              |
+
+#### Usage notes
+
+* The Logic node creates a boolean attribute using the `data.name` value
+* This attribute appears in Data Stream Analyzer and can be referenced by subsequent nodes
+* When expressions cannot be evaluated, the result is treated as `false` and data flows through the ELSE path
+* Multiple Logic nodes can be chained together for complex decision trees
+
+### 4. Output endpoint node (`output_endpoint`)
 
 This node defines where your data will be sent. It's the termination point for data flow paths.
 
