@@ -15,7 +15,7 @@ The API is organized around two main resource types:
 
 **Endpoints (Nodes)** - Configure input and output endpoints for data routing. Understand different node types and their configuration in the [core concepts documentation](../../Technical-details.md#node-reference).
 
-For a complete walkthrough of creating your first flow, see our [step-by-step tutorial](https://www.navixy.com/docs/iot-logic-api/tutorial).
+For a complete walkthrough of creating your first flow, see our [step-by-step tutorial](../../#quick-start-for-iot-logic-api).
 
 ### Authentication
 
@@ -40,4 +40,4 @@ The Navixy IoT Logic API provides the following endpoints for managing flows and
 
 ## Support
 
-For questions and support, contact [support@navixy.com](mailto:support@navixy.com) or visit our [developer portal](https://developers.navixy.com/).
+For questions and support, contact [support@navixy.com](mailto:support@navixy.com).
