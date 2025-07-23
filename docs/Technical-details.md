@@ -117,7 +117,7 @@ Error responses include `success: false` and a `status` object with details:
 | 5    | Rate limit exceeded | Too many requests in short time period        |
 | 6    | Validation error    | Flow structure issues, invalid connections    |
 
-## Eendpoint reference
+## Endpoint reference
 
 See OpenAPI specification in [API reference](resources/api-reference/).
 
