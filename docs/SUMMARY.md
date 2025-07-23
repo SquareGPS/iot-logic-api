@@ -16,12 +16,23 @@
 
 * [API reference](resources/api-reference/README.md)
   * ```yaml
-    type: builtin:openapi
     props:
       models: true
+    type: builtin:openapi
     dependencies:
       spec:
         ref:
           kind: openapi
-          spec: iot-logic
+          spec: iot-logic-test
     ```
+
+## TECHNOLOGIES
+
+* [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md)
+  * [Navixy Generic Protocol 1.0](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10.md)
+    * [Transport layer](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/transport-layer.md)
+    * [Data types and encoding standards](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/data-types-and-encoding-standards.md)
+    * [Message structure and attributes](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md)
+    * [Predefined event identifiers](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md)
+  * [Navixy Generic Protocol 1.1a (on demand)](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md)
+* [Navixy IoT Logic Expression Language](Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md)

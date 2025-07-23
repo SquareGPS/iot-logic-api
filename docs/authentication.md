@@ -140,7 +140,9 @@ Append your authentication `hash`to the URL as a query parameter:
 https://api.navixy.com/v2/iot/logic/flow/list?hash=your_hash_or_api_key
 ```
 
-> This method is for testing purposes only as it exposes your authentication credentials in URLs, server logs, and browser history. Never use this method in production environments.
+{% hint style="danger" %}
+This method is for testing purposes only as it exposes your authentication credentials in URLs, server logs, and browser history. Never use this method in production environments.
+{% endhint %}
 
 ## Managing API keys
 

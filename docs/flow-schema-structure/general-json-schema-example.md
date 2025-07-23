@@ -9,7 +9,7 @@ Here's an example of a JSON structure describing a complete flow.
 ### Flow object model
 
 {% openapi-schemas spec="iot-logic" schemas="Flow" grouped="true" %}
-[Broken link](broken-reference)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
 {% endopenapi-schemas %}
 
 ## Example schema
@@ -289,6 +289,16 @@ Here's an example of a JSON structure describing a complete flow.
 
 ## Example flow
 
+The example template shows a flow that:
+
+1. Collects data from vehicle tracking devices
+2. Processes the data in two parallel paths:
+   * Calculating fuel-related metrics (level, consumption, range)
+   * Calculating engine metrics (temperature, load, maintenance status)
+3. Sends the processed data to:
+   * The Navixy platform for tracking and visualization
+   * An external MQTT broker for integration with other systems
+
 ```json
 {
   "id": 1001,
@@ -437,14 +447,3 @@ Here's an example of a JSON structure describing a complete flow.
 }
 ```
 
-## Example flow explanation
-
-The example template shows a flow that:
-
-1. Collects data from vehicle tracking devices
-2. Processes the data in two parallel paths:
-   * Calculating fuel-related metrics (level, consumption, range)
-   * Calculating engine metrics (temperature, load, maintenance status)
-3. Sends the processed data to:
-   * The Navixy platform for tracking and visualization
-   * An external MQTT broker for integration with other systems
