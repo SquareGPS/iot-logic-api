@@ -26,6 +26,11 @@ All requests require authentication using an API key with `NVX:` prefix in the A
 * **European platform**: `https://api.eu.navixy.com/v2`
 * **American platform**: `https://api.us.navixy.com/v2`
 
+### OpenAPI spec <a href="#openapi-spec" id="openapi-spec"></a>
+
+Under this section you can find a complete and interactive API reference generated from an up-to-date OpenAPI specification. There you can discover endpoint paths, parameters,object schemas (models), and test API calls right from the documentation.\
+You can view the original OpenAPI spec used to generate our API docs [here](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json).
+
 ### Quick endpoint reference
 
 The Navixy IoT Logic API provides the following endpoints for managing flows and endpoints:
