@@ -694,6 +694,9 @@
             "$ref": "#/components/schemas/NodeLogic"
           },
           {
+            "$ref": "#/components/schemas/NodeAction"
+          },
+          {
             "$ref": "#/components/schemas/NodeOutputEndpoint"
           }
         ]
@@ -857,6 +860,84 @@
           "type",
           "data"
         ]
+      },
+      "NodeAction": {
+        "description": "Node: Action",
+        "type": "object",
+        "required": [
+          "type",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"action\".",
+            "example": "action"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "example": "Actions"
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SetOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/SendCommand"
+                    }
+                  ]
+                },
+                "maxItems": 10,
+                "uniqueItems": true
+              }
+            }
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        }
+      },
+      "SetOutput": {
+        "type": "object",
+        "required": ["number", "value"],
+        "properties": {
+          "number": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Output number as seen in UI."
+          },
+          "value": {
+            "type": "boolean",
+            "description": "The state to set to."
+          }
+        }
+      },
+      "SendCommand": {
+        "type": "object",
+        "required": ["command"],
+        "properties": {
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "A custom command to send to the device. Consult its documentation for details."
+          },
+          "reliable": {
+            "type": "boolean",
+            "default": true,
+            "description": "Reliable commands will be retried in case if a tracker is not online at the moment."
+          }
+        }
       },
       "NodeOutputEndpoint": {
         "type": "object",
