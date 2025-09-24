@@ -61,61 +61,12 @@
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "400": {
-            "description": "Validation error - Invalid flow structure or node configuration. Contains detailed field-level errors in the 'errors' array. See https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "description": "Always false for errors",
-                      "example": false
-                    },
-                    "status": {
-                      "type": "object",
-                      "properties": {
-                        "code": {
-                          "type": "integer",
-                          "description": "Validation error code (292 for IoT Flow Invalid, 293 for IoT Endpoint Invalid, etc.)",
-                          "example": 292
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "Validation error description",
-                          "example": "IoT Flow Invalid"
-                        }
-                      }
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Detailed field-level validation errors",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "parameter": {
-                            "type": "string",
-                            "example": "flow.title"
-                          },
-                          "error": {
-                            "type": "string",
-                            "example": "Flow title is required"
-                          }
-                        }
-                      },
-                      "example": [
-                        {
-                          "parameter": "flow.title",
-                          "error": "Flow title is required"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/ValidationError"
           },
-          "default": {
+          "401": {
+            "$ref": "#/components/responses/ResponseError"
+          },
+          "500": {
             "$ref": "#/components/responses/ResponseError"
           }
         },
@@ -205,55 +156,12 @@
             "$ref": "#/components/responses/OK"
           },
           "400": {
-            "description": "Validation error - Invalid flow structure or node configuration. Contains detailed field-level errors in the 'errors' array. See https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "description": "Always false for errors",
-                      "example": false
-                    },
-                    "status": {
-                      "type": "object",
-                      "properties": {
-                        "code": {
-                          "type": "integer",
-                          "description": "Validation error code (292 for IoT Flow Invalid, 293 for IoT Endpoint Invalid, etc.)",
-                          "example": 292
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "Validation error description",
-                          "example": "IoT Flow Invalid"
-                        }
-                      }
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Detailed field-level validation errors",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "parameter": {
-                            "type": "string",
-                            "example": "flow.nodes[0].data.sources"
-                          },
-                          "error": {
-                            "type": "string",
-                            "example": "At least one data source must be specified"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/ValidationError"
           },
-          "default": {
+          "401": {
+            "$ref": "#/components/responses/ResponseError"
+          },
+          "500": {
             "$ref": "#/components/responses/ResponseError"
           }
         },
@@ -398,55 +306,12 @@
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "400": {
-            "description": "Validation error - Invalid node configuration or properties. Contains detailed field-level errors in the 'errors' array. See https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "description": "Always false for errors",
-                      "example": false
-                    },
-                    "status": {
-                      "type": "object",
-                      "properties": {
-                        "code": {
-                          "type": "integer",
-                          "description": "Validation error code (293 for IoT Endpoint Invalid, etc.)",
-                          "example": 293
-                        },
-                        "description": {
-                          "type": "string",
-                          "description": "Validation error description",
-                          "example": "IoT Endpoint Invalid"
-                        }
-                      }
-                    },
-                    "errors": {
-                      "type": "array",
-                      "description": "Detailed field-level validation errors",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "parameter": {
-                            "type": "string",
-                            "example": "endpoint.title"
-                          },
-                          "error": {
-                            "type": "string",
-                            "example": "Endpoint title is required"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/ValidationError"
           },
-          "default": {
+          "401": {
+            "$ref": "#/components/responses/ResponseError"
+          },
+          "500": {
             "$ref": "#/components/responses/ResponseError"
           }
         },
@@ -591,7 +456,10 @@
               }
             }
           },
-          "default": {
+          "401": {
+            "$ref": "#/components/responses/ResponseError"
+          },
+          "500": {
             "$ref": "#/components/responses/ResponseError"
           }
         },
@@ -752,8 +620,74 @@
           }
         }
       },
+      "ValidationError": {
+        "description": "Validation error response (HTTP 400) with detailed field-level errors. See the complete error reference at https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Always `false` for error responses.",
+                  "example": false
+                },
+                "status": {
+                  "type": "object",
+                  "description": "Error status information for validation errors",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Internal validation error code (e.g., 292 for IoT Flow Invalid, 293 for IoT Endpoint Invalid)",
+                      "example": 292
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Validation error description",
+                      "example": "IoT Flow Invalid"
+                    }
+                  },
+                  "required": ["code", "description"]
+                },
+                "errors": {
+                  "type": "array",
+                  "description": "Detailed field-level validation errors. Always present in HTTP 400 responses.",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "parameter": {
+                        "type": "string",
+                        "description": "Name of the invalid parameter",
+                        "example": "flow.title"
+                      },
+                      "error": {
+                        "type": "string", 
+                        "description": "Specific validation error message",
+                        "example": "Flow title is required"
+                      }
+                    },
+                    "required": ["parameter", "error"]
+                  },
+                  "example": [
+                    {
+                      "parameter": "flow.title",
+                      "error": "Flow title is required"
+                    },
+                    {
+                      "parameter": "flow.nodes[0].data.sources", 
+                      "error": "At least one data source must be specified"
+                    }
+                  ]
+                }
+              },
+              "required": ["success", "status", "errors"]
+            }
+          }
+        }
+      },
       "ResponseError": {
-        "description": "Error response object for system errors (authentication, authorization, server errors, etc.)",
+        "description": "General error response for system errors (authentication, authorization, server errors, etc.)",
         "content": {
           "application/json": {
             "schema": {
