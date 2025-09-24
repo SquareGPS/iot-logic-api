@@ -25,6 +25,10 @@
       "description": "Navixy production server on American platform"
     }
   ],
+  "externalDocs": {
+    "description": "Complete API Documentation including Error Reference",
+    "url": "https://www.navixy.com/docs/iot-logic-api/"
+  },
   "tags": [
     {
       "name": "Flow",
@@ -40,7 +44,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowCreate",
-        "description": "Create a new data flow.",
+        "description": "Create a new data flow.\n\n⚠️ **Validation**: Returns HTTP 400 with detailed error messages if validation fails. See [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for complete validation rules.",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
@@ -60,8 +64,12 @@
           "200": {
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
-          "default": {
+          "400": {
+            "description": "Validation failed - see [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for all possible validation errors",
             "$ref": "#/components/responses/ResponseError"
+          },
+          "default": {
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -112,7 +120,7 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -126,7 +134,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowUpdate",
-        "description": "Update details of an existing flow.",
+        "description": "Update details of an existing flow.\n\n⚠️ **Validation**: Returns HTTP 400 with detailed error messages if validation fails. See [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for complete validation rules.",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
@@ -149,8 +157,12 @@
           "200": {
             "$ref": "#/components/responses/OK"
           },
-          "default": {
+          "400": {
+            "description": "Validation failed - see [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for all possible validation errors",
             "$ref": "#/components/responses/ResponseError"
+          },
+          "default": {
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -197,7 +209,7 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -256,7 +268,7 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -270,7 +282,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointCreate",
-        "description": "Create a new node.\n\nAll node types are created through this endpoint, the type is defined in the request body.",
+        "description": "Create a new node.\n\nAll node types are created through this endpoint, the type is defined in the request body.\n\n⚠️ **Validation**: Returns HTTP 400 with detailed error messages if validation fails. See [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for complete validation rules.",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
@@ -293,8 +305,12 @@
           "200": {
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
-          "default": {
+          "400": {
+            "description": "Validation failed - see [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for all possible validation errors",
             "$ref": "#/components/responses/ResponseError"
+          },
+          "default": {
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -352,7 +368,7 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -366,7 +382,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointUpdate",
-        "description": "Update an existing node details.",
+        "description": "Update an existing node details.\n\n⚠️ **Validation**: Returns HTTP 400 with detailed error messages if validation fails. See [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for complete validation rules.",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
@@ -389,8 +405,12 @@
           "200": {
             "$ref": "#/components/responses/OK"
           },
-          "default": {
+          "400": {
+            "description": "Validation failed - see [Error Reference](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) for all possible validation errors",
             "$ref": "#/components/responses/ResponseError"
+          },
+          "default": {
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -430,7 +450,7 @@
             "$ref": "#/components/responses/OK"
           },
           "default": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -483,7 +503,7 @@
             }
           },
           "default": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/GeneralError"
           }
         },
         "security": [
@@ -493,10 +513,6 @@
         ]
       }
     }
-  },
-  "externalDocs": {
-    "url": "https://developers.navixy.com/",
-    "description": "Find more info here"
   },
   "components": {
     "securitySchemes": {
@@ -551,7 +567,83 @@
         }
       },
       "ResponseError": {
-        "description": "Error response object",
+        "description": "**Validation Error Response (HTTP 400)**\n\nReturns detailed validation errors when flow creation/update fails.\n\n📋 **Complete Error Reference**: [IoT Logic Error Responses](https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses) - includes all validation rules and error messages.\n\n**Key Points:**\n- `errors` array is always present in HTTP 400 responses\n- Use `node_ids` to highlight problematic nodes in your UI\n- Error messages are human-readable and safe to display to users",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Always false for error responses.",
+                  "const": false
+                },
+                "status": {
+                  "type": "object",
+                  "description": "Error status information",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Internal error code (292 for IoT Flow Invalid, 293 for IoT Endpoint Invalid, etc.)",
+                      "example": 292
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Human-readable error category",
+                      "example": "IoT Flow Invalid"
+                    }
+                  },
+                  "required": ["code", "description"]
+                },
+                "errors": {
+                  "type": "array",
+                  "description": "Array of detailed validation errors with human-readable messages and affected node IDs",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "description": "Human-readable error message describing the validation failure",
+                        "example": "Node #2 is missing, but has a link from edge"
+                      },
+                      "node_ids": {
+                        "type": "array",
+                        "description": "Array of node IDs related to this error (optional)",
+                        "items": {
+                          "type": "integer"
+                        },
+                        "example": [2]
+                      }
+                    },
+                    "required": ["message"]
+                  }
+                }
+              },
+              "required": ["success", "status", "errors"],
+              "example": {
+                "success": false,
+                "status": {
+                  "code": 292,
+                  "description": "IoT Flow Invalid"
+                },
+                "errors": [
+                  {
+                    "node_ids": [2],
+                    "message": "Node #2 is missing, but has a link from edge"
+                  },
+                  {
+                    "node_ids": [1],
+                    "message": "Data source node \"Standard Data Source\" (#1) must be at the start of flow"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "GeneralError": {
+        "description": "General error response for system errors (authentication, authorization, server errors)",
         "content": {
           "application/json": {
             "schema": {
@@ -569,12 +661,12 @@
                     "code": {
                       "type": "integer",
                       "description": "An error code in this API (not a HTTP code)",
-                      "example": 1
+                      "example": 14
                     },
                     "description": {
                       "type": "string",
                       "description": "An error description",
-                      "example": "Database error"
+                      "example": "Invalid session"
                     }
                   }
                 }
