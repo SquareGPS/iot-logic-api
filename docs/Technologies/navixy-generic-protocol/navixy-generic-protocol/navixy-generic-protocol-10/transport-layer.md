@@ -6,9 +6,9 @@ The Navixy Generic Protocol supports both MQTT and HTTP/HTTPS as transport layer
 
 Navixy Generic Protocol supports **HTTP/HTTPS version 1.1 and 2.0** as a transport method. This is a common, well-known, and user-friendly option for developers and technicians. Below are the HTTP/HTTPS parameters and headers used for Navixy Generic Protocol:
 
-- Method: POST
-- Body: UTF-8 encoded JSON text
-- Content-Type: application/json
+* Method: POST
+* Body: UTF-8 encoded JSON text
+* Content-Type: application/json
 
 Moreover, Navixy Generic Protocol supports response codes for HTTP that telematics platform can send in reply to the HTTP request:
 
@@ -20,7 +20,7 @@ Moreover, Navixy Generic Protocol supports response codes for HTTP that telemati
 
 `500` INTERNAL\_SERVER\_ERROR - unexpected server error. Something went wrong on the server. Please contact the technical support team of the recipient’s side.
 
- For your convenience below you can find the **CURL example** of possible HTTP request:
+&#x20;For your convenience below you can find the **CURL example** of possible HTTP request:
 
 ```
 curl --location 'tracker.navixy.com:47642' \
@@ -42,8 +42,8 @@ The Navixy Generic Protocol uses [MQTT](https://www.navixy.com/blog/mqtt-gps-dev
 
 The protocol supports **MQTT 5.0** and **MQTT 3.1.1**, offering flexibility and compatibility with various devices and systems. To guarantee message delivery, two Quality of Service (QoS) levels are available:
 
-- **QoS 0:** Messages are delivered at most once, suitable for applications where occasional message loss is acceptable.
-- **QoS 1:** Messages are delivered at least once, ensuring reliable delivery.
+* **QoS 0:** Messages are delivered at most once, suitable for applications where occasional message loss is acceptable.
+* **QoS 1:** Messages are delivered at least once, ensuring reliable delivery.
 
 All message bodies must be encoded as **UTF-8 JSON** text, containing a single JSON object per message. Responses to messages are not currently supported. To maintain data integrity, Navixy strictly validates incoming messages, discarding those with invalid JSON or attributes that exceed defined value ranges.
 

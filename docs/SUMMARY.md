@@ -2,7 +2,8 @@
 
 * [Navixy IoT Logic API](README.md)
 * [Authentication](authentication.md)
-* [Technical reference](Technical-details.md)
+* [Technical reference](technical-details/README.md)
+  * [Nodes](technical-details/nodes.md)
 * [Flow object structure](flow-schema-structure/README.md)
   * [JSON-schema template](flow-schema-structure/general-json-schema-example.md)
 * [Guides](navixy-iot-guide/README.md)
@@ -23,7 +24,7 @@
       spec:
         ref:
           kind: openapi
-          spec: iot-logic-test
+          spec: iot-logic
     ```
 
 ## TECHNOLOGIES
