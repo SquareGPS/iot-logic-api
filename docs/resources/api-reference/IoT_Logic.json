@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "title": "Navixy IoT Logic API",
     "summary": "API calls for Flow and Node management",
-    "description": "This is an API reference for calls for Flow and Node management\n\n> **BETA Version!**  \n> Now the early access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned!",
+    "description": "This is an API reference for calls for Flow and Node management. For more information, see the [complete documentation](https://www.navixy.com/docs/iot-logic-api).",
     "contact": {
       "name": "Navixy support",
       "email": "support@navixy.com",
@@ -59,6 +59,9 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/EntityCreatedResponse"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -148,6 +151,9 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -293,6 +299,9 @@
           "200": {
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
@@ -388,6 +397,9 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -550,6 +562,72 @@
           }
         }
       },
+      "ValidationError": {
+        "description": "Validation error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Always `false` for error responses.",
+                  "example": false
+                },
+                "status": {
+                  "type": "object",
+                  "description": "Error status information",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Internal error code",
+                      "example": 6
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Error description",
+                      "example": "Validation error"
+                    }
+                  },
+                  "required": ["code", "description"]
+                },
+                "errors": {
+                  "type": "array",
+                  "description": "Detailed field-level validation errors",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "parameter": {
+                        "type": "string",
+                        "description": "Name of the invalid parameter",
+                        "example": "flow.title"
+                      },
+                      "error": {
+                        "type": "string", 
+                        "description": "Specific validation error message",
+                        "example": "Flow title is required"
+                      }
+                    },
+                    "required": ["parameter", "error"]
+                  },
+                  "example": [
+                    {
+                      "parameter": "flow.title",
+                      "error": "Flow title is required"
+                    },
+                    {
+                      "parameter": "flow.nodes[0].data.sources", 
+                      "error": "At least one data source must be specified"
+                    }
+                  ]
+                }
+              },
+              "required": ["success", "status", "errors"]
+            }
+          }
+        }
+      },
       "ResponseError": {
         "description": "Error response object",
         "content": {
@@ -564,16 +642,16 @@
                 },
                 "status": {
                   "type": "object",
-                  "description": "Error status. It only presence when an error occurred.",
+                  "description": "Error status information",
                   "properties": {
                     "code": {
                       "type": "integer",
-                      "description": "An error code in this API (not a HTTP code)",
+                      "description": "Internal error code",
                       "example": 1
                     },
                     "description": {
                       "type": "string",
-                      "description": "An error description",
+                      "description": "Error description",
                       "example": "Database error"
                     }
                   }
