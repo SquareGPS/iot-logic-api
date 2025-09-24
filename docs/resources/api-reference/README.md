@@ -11,9 +11,9 @@ This API is in early access. Functionality may change in future updates.
 
 The API is organized around two main resource types:
 
-**Flows** - Manage data processing workflows. Learn more about flow concepts and structure in our [technical overview](../../Technical-details.md#flow-architecture).
+**Flows** - Manage data processing workflows. Learn more about flow concepts and structure in our [technical overview](../../technical-details/#flow-architecture).
 
-**Endpoints (Nodes)** - Configure input and output endpoints for data routing. Understand different node types and their configuration in the [core concepts documentation](../../Technical-details.md#node-reference).
+**Endpoints (Nodes)** - Configure input and output endpoints for data routing. Understand different node types and their configuration in the [core concepts documentation](../../technical-details/#node-reference).
 
 For a complete walkthrough of creating your first flow, see our [step-by-step tutorial](../../#quick-start-for-iot-logic-api).
 
