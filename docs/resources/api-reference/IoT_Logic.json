@@ -61,7 +61,7 @@
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "400": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -153,7 +153,7 @@
             "$ref": "#/components/responses/OK"
           },
           "400": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -300,7 +300,7 @@
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "400": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -399,7 +399,7 @@
             "$ref": "#/components/responses/OK"
           },
           "400": {
-            "$ref": "#/components/responses/ResponseError"
+            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -562,8 +562,8 @@
           }
         }
       },
-      "ResponseError": {
-        "description": "Error response. For HTTP 400 validation errors, includes detailed field-level errors. See the complete error reference at https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses",
+      "ValidationError": {
+        "description": "Validation error response (HTTP 400) with detailed field-level errors. See the complete error reference at https://www.navixy.com/docs/iot-logic-api/technical-details#error-responses",
         "content": {
           "application/json": {
             "schema": {
@@ -576,16 +576,16 @@
                 },
                 "status": {
                   "type": "object",
-                  "description": "Error status information",
+                  "description": "Error status information for validation errors",
                   "properties": {
                     "code": {
                       "type": "integer",
-                      "description": "Internal error code. For validation errors, codes like 292, 293, 294 are used.",
+                      "description": "Internal validation error code (e.g., 292 for IoT Flow Invalid, 293 for IoT Endpoint Invalid)",
                       "example": 292
                     },
                     "description": {
                       "type": "string",
-                      "description": "Error description corresponding to the error code",
+                      "description": "Validation error description",
                       "example": "IoT Flow Invalid"
                     }
                   },
@@ -593,7 +593,8 @@
                 },
                 "errors": {
                   "type": "array",
-                  "description": "Detailed field-level validation errors. Present only in HTTP 400 validation error responses.",
+                  "description": "Detailed field-level validation errors. Always present in HTTP 400 responses.",
+                  "minItems": 1,
                   "items": {
                     "type": "object",
                     "properties": {
@@ -620,6 +621,41 @@
                       "error": "At least one data source must be specified"
                     }
                   ]
+                }
+              },
+              "required": ["success", "status", "errors"]
+            }
+          }
+        }
+      },
+      "ResponseError": {
+        "description": "General error response for system errors (authentication, authorization, server errors, etc.)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "Always `false` for error responses.",
+                  "example": false
+                },
+                "status": {
+                  "type": "object",
+                  "description": "Error status information",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "description": "Internal error code (not a HTTP code)",
+                      "example": 1
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Error description",
+                      "example": "Database error"
+                    }
+                  },
+                  "required": ["code", "description"]
                 }
               },
               "required": ["success", "status"]
