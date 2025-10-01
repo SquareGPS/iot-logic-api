@@ -88,7 +88,7 @@ This node transforms raw data into meaningful information. It allows for creatin
 
 ### Expression language
 
-For calculations IoT Logic API uses [Navixy IoT Logic Expression Language](../Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md).\
+For calculations IoT Logic API uses [Navixy IoT Logic Expression Language](../technologies/navixy-iot-logic-expression-language/).\
 Here's a guick reference:
 
 | Feature                | Operators/Examples                  | Description                    |
@@ -182,7 +182,7 @@ The Logic node supports two output connection types:
 
 ### Expression language
 
-For logical conditions IoT Logic API uses [Navixy IoT Logic Expression Language](../Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md).
+For logical conditions IoT Logic API uses [Navixy IoT Logic Expression Language](../technologies/navixy-iot-logic-expression-language/).
 
 Here's a quick reference:
 
@@ -336,8 +336,6 @@ Action execution depends on individual device capabilities:
 * Test actions in a controlled environment before deploying to production flows
 * For device compatibility information, refer to [Navixy integrated devices](https://www.navixy.com/devices/)
 
-
-
 ## Output endpoint node (`output_endpoint`)
 
 This node defines where your data will be sent. It's the termination point for data flow paths.
@@ -421,7 +419,7 @@ The output endpoint node supports different destination types:
 | `user_name`     | string           | Only if `mqtt_auth: true` | MQTT username               | `"mqtt_user"`                     |
 | `user_password` | string           | Only if `mqtt_auth: true` | MQTT password               | `"mqtt_password"`                 |
 
-#### MQTT QoS levels
+**MQTT QoS levels**
 
 | Level     | Description                                      | Use Case                                                           |
 | --------- | ------------------------------------------------ | ------------------------------------------------------------------ |
@@ -429,7 +427,7 @@ The output endpoint node supports different destination types:
 | **QoS 1** | "At least once" delivery (acknowledged delivery) | Important messages that must be delivered, can handle duplicates   |
 | **QoS 2** | Not currently supported by the API               | -                                                                  |
 
-#### MQTT protocol versions
+**MQTT protocol versions**
 
 | Version        | Description                          | Features                                                          |
 | -------------- | ------------------------------------ | ----------------------------------------------------------------- |
