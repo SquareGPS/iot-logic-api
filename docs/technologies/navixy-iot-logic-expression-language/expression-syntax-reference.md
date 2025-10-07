@@ -32,43 +32,62 @@ Attribute names must exactly match names from device telemetry. To make sure you
 
 ## Attribute access
 
-### Short syntax
+### Short syntax (current values)
 
-**Purpose:** Access current attribute values (most readable form)
+Direct attribute references provide the simplest way to access current device data in expressions. This syntax omits the `value()` function, using implicit default parameters for clean, readable formulas.
+
+**Use for:** Simple calculations with current data
 
 **Syntax:** `attribute_name`
 
-**Defaults:**
+**How it works:** Short syntax is a convenient shorthand that automatically uses `value()` function with default parameters:
 
-* Index: `0` (current value)
-* Validation: `'all'` (includes null values)
-
-**Example:** `temperature * 1.8 + 32`
-
-### Full syntax
-
-**Purpose:** Access historical values or explicit validation mode
-
-**Function:** `value(attribute_name, index, validation)`
-
-**Parameters:**
-
-| Parameter        | Type    | Range/Values         | Description                                                                        |
-| ---------------- | ------- | -------------------- | ---------------------------------------------------------------------------------- |
-| `attribute_name` | String  | Any valid attribute  | Exact name from device telemetry                                                   |
-| `index`          | Integer | 0-12                 | Historical position: 0=current, 1=previous, 12=12 readings ago                     |
-| `validation`     | String  | `'all'` or `'valid'` | `'all'`=includes nulls (exact index), `'valid'`=excludes nulls (Nth valid reading) |
-
-**Return value:** Attribute value at specified position, or `null` if unavailable
+* `temperature` is equivalent to `value('temperature', 0, 'all')`
+* Default index: `0` (current value)
+* Default validation: `'all'` (includes null values)
 
 **Examples:**
 
-| Expression                                     | Description                                                                  |
-| ---------------------------------------------- | ---------------------------------------------------------------------------- |
-| `temperature`                                  | Current value with short syntax (equals to `value('temperature', 0, 'all')`) |
-| `value('temperature', 1, 'all')`               | Previous reading                                                             |
-| `value('speed', 5, 'valid')`                   | 5th valid reading back                                                       |
-| `temperature - value('temperature', 1, 'all')` | Temperature change                                                           |
+| Expression                  | Purpose            |
+| --------------------------- | ------------------ |
+| `temperature * 1.8 + 32`    | Unit conversion    |
+| `speed > 80`                | Threshold check    |
+| `fuel_level + reserve_tank` | Combine attributes |
+
+### Full syntax (historical and advanced)
+
+The explicit `value()` function unlocks historical data access and precise control over null handling. This syntax is essential for trend analysis, change detection, and any calculation requiring data from previous readings.
+
+**Use for:** Historical data access, trend analysis, null handling control
+
+**Function:** `value(attribute_name, index, validation)`
+
+**How it works:** Full syntax explicitly defines all parameters of the `value()` function, enabling access to historical data and control over null handling.
+
+| Parameter        | Values               | Description                                 |
+| ---------------- | -------------------- | ------------------------------------------- |
+| `attribute_name` | String               | Attribute name from device                  |
+| `index`          | 0-12                 | 0=current, 1=previous, 12=oldest            |
+| `validation`     | `'all'` \| `'valid'` | `'all'`=include nulls, `'valid'`=skip nulls |
+
+#### **Parameter behavior explained:**
+
+Given history: `[25.5, null, 24.8, null, 23.2]` (index 0 to 4)
+
+<table><thead><tr><th>Expression</th><th width="87.18182373046875">Index</th><th width="118.6363525390625">Validation</th><th width="91.81817626953125">Result</th><th>Explanation</th></tr></thead><tbody><tr><td><code>value('temp', 1, 'all')</code></td><td>1</td><td>Include nulls</td><td><code>null</code></td><td>Returns value at exact index 1, which is null</td></tr><tr><td><code>value('temp', 1, 'valid')</code></td><td>1</td><td>Skip nulls</td><td><code>24.8</code></td><td>Skips null at index 1, returns first valid value</td></tr><tr><td><code>value('temp', 2, 'all')</code></td><td>2</td><td>Include nulls</td><td><code>24.8</code></td><td>Returns value at exact index 2</td></tr><tr><td><code>value('temp', 2, 'valid')</code></td><td>2</td><td>Skip nulls</td><td><code>23.2</code></td><td>Skips nulls at indices 1 and 3, returns second valid value</td></tr></tbody></table>
+
+#### **When to use each validation mode:**
+
+* `'all'` - For time-based analysis where null indicates missing data at specific time
+* `'valid'` - For trend analysis where you need actual values regardless of gaps
+
+#### **Formula examples:**
+
+{% hint style="info" %}
+Note that the examples in the table below showcase also a mix of short and full syntaxes used in the same formulas.
+{% endhint %}
+
+<table><thead><tr><th width="134.45458984375">Use case</th><th width="327.72723388671875">Formula</th><th>Calculation</th></tr></thead><tbody><tr><td>Detect temperature change</td><td><code>temperature - value('temperature', 1, 'all')</code></td><td>Difference between current and previous reading, null if previous missing</td></tr><tr><td>Calculate acceleration</td><td><code>speed - value('speed', 1, 'valid')</code></td><td>Difference between current and last valid reading, ignoring gaps</td></tr><tr><td>Detect gradual trends</td><td><code>(temp - value('temp', 2, 'valid')) / 2</code></td><td>Average change per reading over last 2 valid readings</td></tr><tr><td>Sustained speeding alert</td><td><code>speed > 80 &#x26;&#x26; value('speed', 1, 'valid') > 80</code></td><td>True if current AND previous valid reading both exceed 80</td></tr><tr><td>Smooth sensor fluctuations</td><td><code>(value('pressure', 0, 'valid') + value('pressure', 1, 'valid') + value('pressure', 2, 'valid')) / 3</code></td><td>Average of 3 most recent valid pressure readings</td></tr></tbody></table>
 
 ## Operators
 
@@ -155,21 +174,21 @@ The `util:` namespace provides specialized functions for binary data processing,
 
 #### Bit-level functions
 
-<table><thead><tr><th>Function</th><th>Parameters</th><th width="85.181884765625">Type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:signed(n, bytesAmount)</code></td><td><p><code>n</code> (Number): unsigned number</p><p><code>bytesAmount</code> (int): bytes (1, 2, 4, 8)</p></td><td>Long</td><td>Convert unsigned to signed number</td></tr><tr><td><code>util:checkBit(n, bitIndex)</code></td><td><p><code>n</code> (Number): number to check</p><p><code>bitIndex</code> (int): bit position (0=LSB)</p></td><td>Boolean</td><td>Check if bit is set (true) or not (false)</td></tr><tr><td><code>util:bit(n, bitIndex)</code></td><td><p><code>n</code> (Number): number to check</p><p><code>bitIndex</code> (int): bit position (0=LSB)</p></td><td>Integer</td><td>Get bit value (1 or 0)</td></tr><tr><td><code>util:bits(n, firstBit, lastBitInclusive)</code></td><td><p><code>n</code> (Number): source number</p><p><code>firstBit</code> (int): start position</p><p><code>lastBitInclusive</code> (int): end position</p></td><td>Long</td><td>Extract bit range; reverse if last &#x3C; first</td></tr><tr><td><code>util:bytes(n, firstByte, lastByteInclusive)</code></td><td><p><code>n</code> (Number): source number</p><p><code>firstByte</code> (int): start position</p><p><code>lastByteInclusive</code> (int): end position</p></td><td>Long</td><td>Extract byte range; byte swap if last &#x3C; first</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th>Parameters</th><th width="120.636474609375">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:signed(n, bytesAmount)</code></td><td><p><code>n</code> (Number): unsigned number</p><p><code>bytesAmount</code> (int): bytes (1, 2, 4, 8)</p></td><td>Long</td><td>Convert unsigned to signed number</td></tr><tr><td><code>util:checkBit(n, bitIndex)</code></td><td><p><code>n</code> (Number): number to check</p><p><code>bitIndex</code> (int): bit position (0=LSB)</p></td><td>Boolean</td><td>Check if bit is set (true) or not (false)</td></tr><tr><td><code>util:bit(n, bitIndex)</code></td><td><p><code>n</code> (Number): number to check</p><p><code>bitIndex</code> (int): bit position (0=LSB)</p></td><td>Integer</td><td>Get bit value (1 or 0)</td></tr><tr><td><code>util:bits(n, firstBit, lastBitInclusive)</code></td><td><p><code>n</code> (Number): source number</p><p><code>firstBit</code> (int): start position</p><p><code>lastBitInclusive</code> (int): end position</p></td><td>Long</td><td>Extract bit range; reverse if last &#x3C; first</td></tr><tr><td><code>util:bytes(n, firstByte, lastByteInclusive)</code></td><td><p><code>n</code> (Number): source number</p><p><code>firstByte</code> (int): start position</p><p><code>lastByteInclusive</code> (int): end position</p></td><td>Long</td><td>Extract byte range; byte swap if last &#x3C; first</td></tr></tbody></table>
 
 **Examples:**
 
-<table><thead><tr><th width="270.81817626953125">Expression</th><th width="109">Result</th><th>Use Case</th></tr></thead><tbody><tr><td><code>util:signed(65535, 2)</code></td><td><code>-1</code></td><td>Convert 0xFFFF to signed 16-bit</td></tr><tr><td><code>util:checkBit(4, 2)</code></td><td><code>true</code></td><td>Check status flag bit</td></tr><tr><td><code>util:bits(1321678, 0, 3)</code></td><td><code>14</code></td><td>Extract 4-bit sensor value</td></tr><tr><td><code>util:bytes(sensor_data, 1, 0)</code></td><td>Swapped</td><td>Little-endian byte swap</td></tr></tbody></table>
+<table><thead><tr><th width="270.81817626953125">Expression</th><th width="109">Result</th><th>Use case</th></tr></thead><tbody><tr><td><code>util:signed(65535, 2)</code></td><td><code>-1</code></td><td>Convert 0xFFFF to signed 16-bit</td></tr><tr><td><code>util:checkBit(4, 2)</code></td><td><code>true</code></td><td>Check status flag bit</td></tr><tr><td><code>util:bits(1321678, 0, 3)</code></td><td><code>14</code></td><td>Extract 4-bit sensor value</td></tr><tr><td><code>util:bytes(sensor_data, 1, 0)</code></td><td>Swapped</td><td>Little-endian byte swap</td></tr></tbody></table>
 
 #### HEX string operations
 
 Binary data is processed as HEX strings (uppercase) for readability and protocol compatibility.
 
-<table><thead><tr><th>Function</th><th>Parameters</th><th width="92.45452880859375">Type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:hex(n)</code></td><td><code>n</code> (Number): value to convert</td><td>String</td><td>Convert to HEX string; 16 chars for negative/float, variable for positive int; <code>null</code> if invalid</td></tr><tr><td><code>util:hex(n, bytesAmount)</code></td><td><code>n</code> (Number): value to convert<code>bytesAmount</code> (int): byte length</td><td>String</td><td>Convert to fixed-length HEX (bytesAmount * 2 chars); pad/truncate as needed; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s)</code></td><td><code>s</code> (String): HEX string</td><td>Long</td><td>Convert HEX string to Long; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s, firstByte, lastByteInclusive)</code></td><td><p><code>s</code> (String): HEX string</p><p><code>firstByte</code> (int): start byte (0=left)</p><p><code>lastByteInclusive</code> (int): end byte</p></td><td>Long</td><td>Extract bytes from HEX string to Long; reverse if last &#x3C; first; <code>null</code> if invalid</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th>Parameters</th><th width="120.63641357421875">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:hex(n)</code></td><td><code>n</code> (Number): value to convert</td><td>String</td><td>Convert to HEX string; 16 chars for negative/float, variable for positive int; <code>null</code> if invalid</td></tr><tr><td><code>util:hex(n, bytesAmount)</code></td><td><code>n</code> (Number): value to convert<code>bytesAmount</code> (int): byte length</td><td>String</td><td>Convert to fixed-length HEX (bytesAmount * 2 chars); pad/truncate as needed; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s)</code></td><td><code>s</code> (String): HEX string</td><td>Long</td><td>Convert HEX string to Long; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s, firstByte, lastByteInclusive)</code></td><td><p><code>s</code> (String): HEX string</p><p><code>firstByte</code> (int): start byte (0=left)</p><p><code>lastByteInclusive</code> (int): end byte</p></td><td>Long</td><td>Extract bytes from HEX string to Long; reverse if last &#x3C; first; <code>null</code> if invalid</td></tr></tbody></table>
 
 **Examples:**
 
-| Expression                       | Result           | Use Case                   |
+| Expression                       | Result           | Use case                   |
 | -------------------------------- | ---------------- | -------------------------- |
 | `util:hex(127)`                  | `"7F"`           | Variable length conversion |
 | `util:hex(127, 6)`               | `"00000000007F"` | Fixed-width formatting     |
@@ -178,11 +197,11 @@ Binary data is processed as HEX strings (uppercase) for readability and protocol
 
 ### Data format conversions
 
-<table><thead><tr><th>Function</th><th>Parameters</th><th width="100.6363525390625">Type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:fromBcd(o)</code></td><td><code>o</code> (Object): BCD number</td><td>Long</td><td>Convert BCD to decimal; <code>null</code> if invalid BCD</td></tr><tr><td><code>util:toBcd(o)</code></td><td><code>o</code> (Object): decimal (0 to 9999999999999999)</td><td>Long</td><td>Convert decimal to BCD; <code>null</code> if out of range</td></tr><tr><td><code>util:toFloat(o)</code></td><td><code>o</code> (Object): Long (IEEE 754 bits) or Double</td><td>Float</td><td>Convert to Float; interpret Long as IEEE 754 bits; <code>null</code> if invalid</td></tr><tr><td><code>util:toDouble(o)</code></td><td><code>o</code> (Object): Long (IEEE 754 bits) or Double</td><td>Double</td><td>Convert to Double; interpret Long as IEEE 754 bits; <code>null</code> if invalid</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th>Parameters</th><th width="120.636474609375">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:fromBcd(o)</code></td><td><code>o</code> (Object): BCD number</td><td>Long</td><td>Convert BCD to decimal; <code>null</code> if invalid BCD</td></tr><tr><td><code>util:toBcd(o)</code></td><td><code>o</code> (Object): decimal (0 to 9999999999999999)</td><td>Long</td><td>Convert decimal to BCD; <code>null</code> if out of range</td></tr><tr><td><code>util:toFloat(o)</code></td><td><code>o</code> (Object): Long (IEEE 754 bits) or Double</td><td>Float</td><td>Convert to Float; interpret Long as IEEE 754 bits; <code>null</code> if invalid</td></tr><tr><td><code>util:toDouble(o)</code></td><td><code>o</code> (Object): Long (IEEE 754 bits) or Double</td><td>Double</td><td>Convert to Double; interpret Long as IEEE 754 bits; <code>null</code> if invalid</td></tr></tbody></table>
 
 **Examples:**
 
-| Expression                 | Result          | Use Case                |
+| Expression                 | Result          | Use case                |
 | -------------------------- | --------------- | ----------------------- |
 | `util:fromBcd(0x1234)`     | `1234`          | Decode BCD device ID    |
 | `util:toBcd(1234)`         | `0x1234` (4660) | Encode for BCD protocol |
@@ -190,7 +209,7 @@ Binary data is processed as HEX strings (uppercase) for readability and protocol
 
 ### String padding functions
 
-<table><thead><tr><th>Function</th><th>Parameters</th><th width="78.81817626953125">Type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:leftPad(o, length)</code></td><td><code>o</code> (Object): value&#x3C;br><code>length</code> (int): target length</td><td>String</td><td>Pad left with "0" to length; <code>null</code> if input null</td></tr><tr><td><code>util:leftPad(o, length, padStr)</code></td><td><code>o</code> (Object): value&#x3C;br><code>length</code> (int): target length&#x3C;br><code>padStr</code> (String): padding</td><td>String</td><td>Pad left with custom string; <code>null</code> if input null</td></tr><tr><td><code>util:rightPad(o, length)</code></td><td><code>o</code> (Object): value&#x3C;br><code>length</code> (int): target length</td><td>String</td><td>Pad right with "0" to length; <code>null</code> if input null</td></tr><tr><td><code>util:rightPad(o, length, padStr)</code></td><td><code>o</code> (Object): value&#x3C;br><code>length</code> (int): target length&#x3C;br><code>padStr</code> (String): padding</td><td>String</td><td>Pad right with custom string; <code>null</code> if input null</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th>Parameters</th><th width="120.63641357421875">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:leftPad(o, length)</code></td><td><p><code>o</code> (Object): value</p><p><code>length</code> (int): target length</p></td><td>String</td><td>Pad left with "0" to length; <code>null</code> if input null</td></tr><tr><td><code>util:leftPad(o, length, padStr)</code></td><td><p><code>o</code> (Object): value</p><p><code>length</code> (int): target length</p><p><code>padStr</code> (String): padding</p></td><td>String</td><td>Pad left with custom string; <code>null</code> if input null</td></tr><tr><td><code>util:rightPad(o, length)</code></td><td><p><code>o</code> (Object): value</p><p><code>length</code> (int): target length</p></td><td>String</td><td>Pad right with "0" to length; <code>null</code> if input null</td></tr><tr><td><code>util:rightPad(o, length, padStr)</code></td><td><p><code>o</code> (Object): value</p><p><code>length</code> (int): target length</p><p><code>padStr</code> (String): padding</p></td><td>String</td><td>Pad right with custom string; <code>null</code> if input null</td></tr></tbody></table>
 
 **Examples:**
 
@@ -246,26 +265,26 @@ Mismatched attribute names prevent calculation execution (no null returned; calc
 
 ## Expression patterns
 
-<table><thead><tr><th width="159">Pattern Type</th><th>Expression</th><th>Use Case</th></tr></thead><tbody><tr><td><strong>Unit conversion</strong></td><td><code>temperature * 1.8 + 32</code></td><td>Celsius to Fahrenheit</td></tr><tr><td></td><td><code>distance / 1.609</code></td><td>Kilometers to miles</td></tr><tr><td></td><td><code>volume * 0.264172</code></td><td>Liters to gallons</td></tr><tr><td><strong>Change detection</strong></td><td><code>temperature - value('temperature', 1, 'all')</code></td><td>Temperature change</td></tr><tr><td></td><td><code>value('fuel_level', 1, 'valid') - fuel_level</code></td><td>Fuel consumption</td></tr><tr><td></td><td><code>speed - value('speed', 1, 'valid')</code></td><td>Speed change</td></tr><tr><td><strong>Binary parsing</strong></td><td><code>util:signed(util:hexToLong(hex_data, 0, 1), 2) / 10.0</code></td><td>Signed temp from HEX</td></tr><tr><td></td><td><code>util:checkBit(status_flags, 0)</code></td><td>Check status flag</td></tr><tr><td></td><td><code>util:bits(status_word, 4, 7)</code></td><td>Extract sensor value</td></tr><tr><td><strong>Time calculations</strong></td><td><code>now() - genTime('temperature', 0, 'all')</code></td><td>Data age</td></tr><tr><td></td><td><code>srvTime('temp', 0, 'all') - genTime('temp', 0, 'all')</code></td><td>Transmission delay</td></tr><tr><td></td><td><code>genTime('temperature', 0, 'valid') + 120000</code></td><td>Time offset (2 min)</td></tr></tbody></table>
+<table><thead><tr><th width="159">Pattern type</th><th>Expression</th><th>Use case</th></tr></thead><tbody><tr><td><strong>Unit conversion</strong></td><td><code>temperature * 1.8 + 32</code></td><td>Celsius to Fahrenheit</td></tr><tr><td></td><td><code>distance / 1.609</code></td><td>Kilometers to miles</td></tr><tr><td></td><td><code>volume * 0.264172</code></td><td>Liters to gallons</td></tr><tr><td><strong>Change detection</strong></td><td><code>temperature - value('temperature', 1, 'all')</code></td><td>Temperature change</td></tr><tr><td></td><td><code>value('fuel_level', 1, 'valid') - fuel_level</code></td><td>Fuel consumption</td></tr><tr><td></td><td><code>speed - value('speed', 1, 'valid')</code></td><td>Speed change</td></tr><tr><td><strong>Binary parsing</strong></td><td><code>util:signed(util:hexToLong(hex_data, 0, 1), 2) / 10.0</code></td><td>Signed temp from HEX</td></tr><tr><td></td><td><code>util:checkBit(status_flags, 0)</code></td><td>Check status flag</td></tr><tr><td></td><td><code>util:bits(status_word, 4, 7)</code></td><td>Extract sensor value</td></tr><tr><td><strong>Time calculations</strong></td><td><code>now() - genTime('temperature', 0, 'all')</code></td><td>Data age</td></tr><tr><td></td><td><code>srvTime('temp', 0, 'all') - genTime('temp', 0, 'all')</code></td><td>Transmission delay</td></tr><tr><td></td><td><code>genTime('temperature', 0, 'valid') + 120000</code></td><td>Time offset (2 min)</td></tr></tbody></table>
 
 ## Quick reference tables
 
 #### Core functions summary
 
-<table><thead><tr><th>Function</th><th width="99.90911865234375">Type</th><th>Primary Use</th></tr></thead><tbody><tr><td><code>value(attr, idx, val)</code></td><td>Any</td><td>Historical attribute value</td></tr><tr><td><code>genTime(attr, idx, val)</code></td><td>Long</td><td>Device generation time (default: <code>now()</code>)</td></tr><tr><td><code>srvTime(attr, idx, val)</code></td><td>Long</td><td>Server reception time (default: <code>now()</code>)</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th width="121.72735595703125">Result type</th><th>Primary use</th></tr></thead><tbody><tr><td><code>value(attr, idx, val)</code></td><td>Any</td><td>Historical attribute value</td></tr><tr><td><code>genTime(attr, idx, val)</code></td><td>Long</td><td>Device generation time (default: <code>now()</code>)</td></tr><tr><td><code>srvTime(attr, idx, val)</code></td><td>Long</td><td>Server reception time (default: <code>now()</code>)</td></tr></tbody></table>
 
 #### Bit operations summary
 
-<table><thead><tr><th>Function</th><th width="99.90911865234375">Type</th><th>Primary Use</th></tr></thead><tbody><tr><td><code>util:signed(n, bytes)</code></td><td>Long</td><td>Convert unsigned to signed</td></tr><tr><td><code>util:checkBit(n, bit)</code></td><td>Boolean</td><td>Check if bit is set</td></tr><tr><td><code>util:bit(n, bit)</code></td><td>Integer</td><td>Get bit value (0/1)</td></tr><tr><td><code>util:bits(n, first, last)</code></td><td>Long</td><td>Extract bit range</td></tr><tr><td><code>util:bytes(n, first, last)</code></td><td>Long</td><td>Extract byte range</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th width="120.81817626953125">Result type</th><th>Primary use</th></tr></thead><tbody><tr><td><code>util:signed(n, bytes)</code></td><td>Long</td><td>Convert unsigned to signed</td></tr><tr><td><code>util:checkBit(n, bit)</code></td><td>Boolean</td><td>Check if bit is set</td></tr><tr><td><code>util:bit(n, bit)</code></td><td>Integer</td><td>Get bit value (0/1)</td></tr><tr><td><code>util:bits(n, first, last)</code></td><td>Long</td><td>Extract bit range</td></tr><tr><td><code>util:bytes(n, first, last)</code></td><td>Long</td><td>Extract byte range</td></tr></tbody></table>
 
 #### HEX operations summary
 
-<table><thead><tr><th>Function</th><th width="99.90911865234375">Type</th><th>Primary Use</th></tr></thead><tbody><tr><td><code>util:hex(n)</code></td><td>String</td><td>Number to variable-length HEX</td></tr><tr><td><code>util:hex(n, bytes)</code></td><td>String</td><td>Number to fixed-length HEX</td></tr><tr><td><code>util:hexToLong(s)</code></td><td>Long</td><td>HEX string to number</td></tr><tr><td><code>util:hexToLong(s, first, last)</code></td><td>Long</td><td>Extract bytes from HEX string</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th width="120.81817626953125">Result type</th><th>Primary use</th></tr></thead><tbody><tr><td><code>util:hex(n)</code></td><td>String</td><td>Number to variable-length HEX</td></tr><tr><td><code>util:hex(n, bytes)</code></td><td>String</td><td>Number to fixed-length HEX</td></tr><tr><td><code>util:hexToLong(s)</code></td><td>Long</td><td>HEX string to number</td></tr><tr><td><code>util:hexToLong(s, first, last)</code></td><td>Long</td><td>Extract bytes from HEX string</td></tr></tbody></table>
 
 #### Data conversion summary
 
-<table><thead><tr><th>Function</th><th width="99.90911865234375">Type</th><th>Primary Use</th></tr></thead><tbody><tr><td><code>util:fromBcd(o)</code></td><td>Long</td><td>BCD to decimal</td></tr><tr><td><code>util:toBcd(o)</code></td><td>Long</td><td>Decimal to BCD</td></tr><tr><td><code>util:toFloat(o)</code></td><td>Float</td><td>IEEE 754 bits to float</td></tr><tr><td><code>util:toDouble(o)</code></td><td>Double</td><td>IEEE 754 bits to double</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th width="120.81817626953125">Result type</th><th>Primary use</th></tr></thead><tbody><tr><td><code>util:fromBcd(o)</code></td><td>Long</td><td>BCD to decimal</td></tr><tr><td><code>util:toBcd(o)</code></td><td>Long</td><td>Decimal to BCD</td></tr><tr><td><code>util:toFloat(o)</code></td><td>Float</td><td>IEEE 754 bits to float</td></tr><tr><td><code>util:toDouble(o)</code></td><td>Double</td><td>IEEE 754 bits to double</td></tr></tbody></table>
 
 #### String operations summary
 
-<table><thead><tr><th>Function</th><th width="99.9090576171875">Type</th><th>Primary Use</th></tr></thead><tbody><tr><td><code>util:leftPad(o, len)</code></td><td>String</td><td>Pad left with "0"</td></tr><tr><td><code>util:leftPad(o, len, pad)</code></td><td>String</td><td>Pad left with custom string</td></tr><tr><td><code>util:rightPad(o, len)</code></td><td>String</td><td>Pad right with "0"</td></tr><tr><td><code>util:rightPad(o, len, pad)</code></td><td>String</td><td>Pad right with custom string</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th width="121.7271728515625">Result type</th><th>Primary use</th></tr></thead><tbody><tr><td><code>util:leftPad(o, len)</code></td><td>String</td><td>Pad left with "0"</td></tr><tr><td><code>util:leftPad(o, len, pad)</code></td><td>String</td><td>Pad left with custom string</td></tr><tr><td><code>util:rightPad(o, len)</code></td><td>String</td><td>Pad right with "0"</td></tr><tr><td><code>util:rightPad(o, len, pad)</code></td><td>String</td><td>Pad right with custom string</td></tr></tbody></table>
