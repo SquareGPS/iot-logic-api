@@ -23,7 +23,7 @@ The new enhanced custom attributes include the following fields:
 | ------------------ | --------------- | ------------------ | ----------------------- | -------------------------------------------------------------------------------------- |
 | **Attribute**      | **Type**        | **Object**         | **Required for object** | **Description**                                                                        |
 | custom\_attributes | Array \[Object] | Root               | No                      | All custom parameters should be put into the custom\_attributes array of JSON objects. |
-| └─ name            | String          | custom\_attributes | Yes                     | Parameter that indicates the attribute’s name.                                         |
+| └─ type            | String          | custom\_attributes | Yes                     | Parameter that indicates the attribute’s name.                                         |
 | └─ id              | Integer         | custom\_attributes | No                      | Identifier that shows the attribute order number.                                      |
 | └─ value           | Mixed           | custom\_attributes | Yes                     | Value of the extended attribute that can have any data type.                           |
 | └─ units           | String          | custom\_attributes | No                      | If necessary units of measurement can be specified in this parameter.                  |
@@ -56,13 +56,13 @@ Below is an example showing both simple and enhanced custom attributes in the sa
     "custom_fuel": 86,
     /* Enhanced Custom Attributes (Version 1.1a) */
     "custom_attributes": [{
-        "name": "engine_rpm",
+        "type": "engine_rpm",
         "id": 1,
         "value": 2100,
         "units": "rpm"
     },
     {
-        "name": "vehicle_load",
+        "type": "vehicle_load",
         "id": 2,
         "value": 75,
         "units": "percent"
