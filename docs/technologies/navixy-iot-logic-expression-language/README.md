@@ -44,9 +44,9 @@ For comprehensive details on node configuration and flow architecture, see the [
 
 ### Attribute access
 
-Within IoT Logic, Navixy Epression Language allows calculations on actual data attributes that com from data sources. There are two options to access the readings:&#x20;
+Within IoT Logic, Navixy Expression Language allows calculations on actual data attributes that come from data sources. There are two options to access the readings:
 
-* **Current values:** Reference attributes by name directly in expressions. This provides clean, readable syntax for accessing real-time device data. [Short syntax](expression-syntax-reference.md#short-syntax-current-values) is supported in this case.
+* **Current values:** Reference attributes by name directly in expressions. This provides clean, readable syntax for accessing real-time device data. [Short syntax](expression-syntax-reference.md#short-syntax-current-values) is supported in this case (e.g., `temperature` = `value('temperature', 0, 'all')`).
 * **Historical values:** Access previous readings using the `value()` function with parameters for historical depth and validation mode. The system maintains the last 12 values per attribute for trend analysis and change detection. [Full syntax](expression-syntax-reference.md#full-syntax-historical-and-advanced) is needed.
 
 {% hint style="warning" %}
@@ -127,6 +127,10 @@ For parameter details and historical data access patterns, see [Full syntax](exp
 ### Bit-level functions
 
 The `util:` namespace provides functions for binary data processing, bit manipulation, format conversion, and string operations. These handle device protocols and binary data formats common in telematics applications.
+
+{% hint style="danger" %}
+When using `'valid'` validation mode, the function returns the last non-null value, which can belong to another (earlier) reading. Consider it carefully when building expressions.
+{% endhint %}
 
 For complete utility function catalog, see [Bit-level operations](expression-syntax-reference.md#bit-level-operations) in the Expression syntax reference.
 
