@@ -237,7 +237,7 @@ curl -X POST 'https://api.eu.navixy.com/v2/tracker/sensor/list' \
 {% endcode %}
 
 {% hint style="success" %}
-#### Congratulations!
+**Congratulations!**
 
 You have successfully created an IoT Logic flow with calculated attributes and made them visible in the Navixy UI. This setup demonstrates how developers can build sophisticated data processing pipelines entirely through APIs while providing end users with meaningful, processed data visualization.
 
@@ -282,7 +282,7 @@ Once configured, users will see the calculated attributes in several Navixy UI l
 * **Reports Section**: Historical data analysis using calculated attributes
 * **Measurement Sensors Reports**: Dedicated reports for sensor data over time
 
-For detailed information about how these calculated attributes appear in the Navixy UI, refer to the [Displaying new calculated attributes on the Navixy platform guide](https://docs.navixy.com/user-guide/displaying-new-calculated-attributes-on-the-navixy#DisplayingnewcalculatedattributesontheNavixyplatform-AddingcustomattributestoobjectsontheNavixyplatform).
+For detailed information about how these calculated attributes appear in the Navixy UI, refer to the [Displaying new calculated attributes on the Navixy platform guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/displaying-new-calculated-attributes-on-the-navixy-platform).
 
 ## Troubleshooting
 

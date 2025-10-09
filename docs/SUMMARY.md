@@ -26,16 +26,6 @@
           kind: openapi
           spec: iot-logic
     ```
-  * ```yaml
-    props:
-      models: true
-    type: builtin:openapi
-    dependencies:
-      spec:
-        ref:
-          kind: openapi
-          spec: iot-logic
-    ```
 
 ## TECHNOLOGIES
 

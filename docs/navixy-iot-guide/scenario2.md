@@ -46,7 +46,7 @@ You will receive `id` and `title` parameters in the response:
 
 The flow read endpoint retrieves complete configuration details for a specific flow, including all nodes, their properties, and the connections between them. This detailed view shows you the entire data processing pipeline - from data sources through transformation nodes to output endpoints. Use this when you need to understand the current flow structure before making modifications or troubleshooting data processing issues.
 
-{% openapi-operation spec="iot-logic" path="/iot/logic/flow/read" method="post" %}
+{% openapi-operation spec="iot-logic" path="/iot/logic/flow/read" method="get" %}
 [OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-operation %}
 
@@ -240,7 +240,7 @@ You will receive this request status in response:
 ```
 
 {% hint style="success" %}
-#### **Congratulations!**
+**Congratulations!**
 
 You've now successfully enhanced your data flow by:
 
