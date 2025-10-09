@@ -55,7 +55,7 @@ The flow update operation allows you to modify the entire flow structure, includ
 [OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-operation %}
 
-> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tEf7EQbPINBBRxlTcloz/)
+> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](broken-reference)
 
 To update an existing flow with additional output destinations, send the following request:
 
