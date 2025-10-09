@@ -46,8 +46,8 @@ For comprehensive details on node configuration and flow architecture, see the [
 
 Within IoT Logic, Navixy Epression Language allows calculations on actual data attributes that com from data sources. There are two options to access the readings:&#x20;
 
-* **Current values:** Reference attributes by name directly in expressions. This provides clean, readable syntax for accessing real-time device data. [Short syntax](expression-syntax-reference.md#short-syntax) is supported in this case.
-* **Historical values:** Access previous readings using the `value()` function with parameters for historical depth and validation mode. The system maintains the last 12 values per attribute for trend analysis and change detection. [Full syntax](expression-syntax-reference.md#full-syntax) is needed.
+* **Current values:** Reference attributes by name directly in expressions. This provides clean, readable syntax for accessing real-time device data. [Short syntax](expression-syntax-reference.md#short-syntax-current-values) is supported in this case.
+* **Historical values:** Access previous readings using the `value()` function with parameters for historical depth and validation mode. The system maintains the last 12 values per attribute for trend analysis and change detection. [Full syntax](expression-syntax-reference.md#full-syntax-historical-and-advanced) is needed.
 
 {% hint style="warning" %}
 Attribute names in expressions must exactly match device-transmitted names (case-sensitive). Mismatched names prevent calculation execution.
