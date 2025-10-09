@@ -17,14 +17,14 @@
 
 * [API reference](resources/api-reference/README.md)
   * ```yaml
+    type: builtin:openapi
     props:
       models: true
-    type: builtin:openapi
     dependencies:
       spec:
         ref:
           kind: openapi
-          spec: iot-logic-test
+          spec: iot-logic
     ```
 
 ## TECHNOLOGIES
@@ -36,4 +36,5 @@
     * [Message structure and attributes](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md)
     * [Predefined event identifiers](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md)
   * [Navixy Generic Protocol 1.1a (on demand)](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md)
-* [Navixy IoT Logic Expression Language](Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md)
+* [Navixy IoT Logic Expression Language](technologies/navixy-iot-logic-expression-language/README.md)
+  * [Expression syntax reference](technologies/navixy-iot-logic-expression-language/expression-syntax-reference.md)

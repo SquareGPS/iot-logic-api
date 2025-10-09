@@ -133,7 +133,7 @@ Response example:
 Now create sensors that correspond to your calculated attributes. These sensors will make the calculated data visible in the Navixy platform UI.
 
 {% hint style="info" %}
-#### Important naming note
+**Important naming note**
 
 In the API, these are called "**Metering sensors**", but in the Navixy UI, they appear as "**Measurement/IoT Logic sensors**". This is the same functionality with different terminology.
 {% endhint %}
@@ -237,7 +237,7 @@ curl -X POST 'https://api.eu.navixy.com/v2/tracker/sensor/list' \
 {% endcode %}
 
 {% hint style="success" %}
-### Congratulations!
+#### Congratulations!
 
 You have successfully created an IoT Logic flow with calculated attributes and made them visible in the Navixy UI. This setup demonstrates how developers can build sophisticated data processing pipelines entirely through APIs while providing end users with meaningful, processed data visualization.
 

@@ -52,10 +52,10 @@ For this example, let's presume that we have already:
 The flow update operation allows you to modify the entire flow structure, including adding new output endpoints and creating the necessary connections. In this example, we're adding two output endpoint nodes that will receive the same processed data from the transformation chain. This creates a branching pattern where data goes through the processing nodes and then splits to multiple destinations simultaneously.
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/update" method="post" %}
-[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-operation %}
 
-> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/s/tEf7EQbPINBBRxlTcloz/)
+> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tEf7EQbPINBBRxlTcloz/)
 
 To update an existing flow with additional output destinations, send the following request:
 
@@ -165,7 +165,7 @@ You will receive thes request status in response:
 You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-read)
 
 {% hint style="success" %}
-#### Congratulations!
+**Congratulations!**
 
 You have successfully configured a flow to send processed data to multiple destinations simultaneously. This setup allows your IoT data to be processed once and then distributed to both Navixy platform and an external system.
 {% endhint %}
@@ -307,7 +307,7 @@ You will receive this request status in response:
 You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-read)
 
 {% hint style="success" %}
-#### Congratulations!
+**Congratulations!**
 
 You have successfully built a complex data transformation chain that processes multiple sensor inputs through a series of calculations. This flow demonstrates advanced patterns including:
 

@@ -50,7 +50,7 @@ Key characteristics of flows:
 **Nodes** are the functional elements of a **flow**, with each node handling a specific stage of the data lifecycle. There are three primary types of nodes:
 
 * **Data Source node**: Receives data from M2M devices and serves as the entry point for all device data
-* **Initiate Attribute node**: Processes and enriches incoming data, including creating new calculated attributes trough mathematical operations in [Navixy IoT Logic Expression Language](Technologies/navixy-iot-logic-expression-language/navixy-iot-logic-expression-language.md)
+* **Initiate Attribute node**: Processes and enriches incoming data, including creating new calculated attributes trough mathematical operations in [Navixy IoT Logic Expression Language](technologies/navixy-iot-logic-expression-language/)
 * **Output Endpoint node**: Transmits data to target systems using the [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md). This node can be configured to use different endpoint types:
   * **Default endpoint**: Pre-configured destination for sending data to the Navixy platform
   * **MQTT endpoint**: Configurable connection for sending data to third-party systems and services
