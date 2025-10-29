@@ -73,29 +73,69 @@ Many IoT devices transmit data in compact binary formats to minimize bandwidth a
 
 <summary><strong>Common use cases</strong></summary>
 
-Extract sensor values from HEX-encoded data:
+#### Extract sensor values from HEX-encoded data
 
 ```javascript
 util:hexToLong(ble_additional_data_1, 1, 0) / 1000.0
 ```
 
-Check device status flags at bit level:
+**What this expression does:** Extracts a 2-byte sensor value from BLE additional data in HEX format, reverses byte order for little-endian reading, and converts from millivolts to volts.
+
+**Formula breakdown:**
+
+* `util:hexToLong` - Converts HEX string bytes to a Long integer
+* `ble_additional_data` - Attribute containing HEX string from the device
+* `1` - First byte position (starting from left, 0-indexed)
+* `0` - Last byte position (reading right-to-left for little-endian byte swap)
+* `/ 1000.0` - Division operation to convert millivolts to volts
+
+#### Check device status flags at bit level
 
 ```javascript
 util:checkBit(status_flags, 2)
 ```
 
-Decode BCD-encoded identifiers:
+**What this expression does:** Checks if a specific bit is set in a status byte, useful for reading boolean device states like door open/closed, engine on/off, or sensor active/inactive.
+
+**Formula breakdown:**
+
+* `util:checkBit` - Returns `true` if the specified bit is set (equals 1), `false` otherwise
+* `status_flags` - Attribute containing the device status byte
+* `2` - Bit position to check (0 = rightmost/LSB, counting from right to left)
+
+#### Decode BCD-encoded identifiers
 
 ```javascript
 util:fromBcd(raw_device_id)
 ```
 
-Handle signed values from binary protocols:
+**What this expression does:** Converts a Binary Coded Decimal (BCD) number to standard decimal format, commonly used for device IDs and timestamps in industrial protocols.
+
+**Formula breakdown:**
+
+* `util:fromBcd` - Converts BCD-encoded number to decimal Long integer
+* `raw_device_id` - Attribute containing the BCD-encoded identifier from the device
+
+{% hint style="info" %}
+In BCD format, each decimal digit (0-9) is represented by 4 bits. For example, BCD `0x1234` represents decimal `1234`.
+{% endhint %}
+
+#### Handle signed values from binary protocols
 
 ```javascript
 util:signed(util:hexToLong(sensor_data, 0, 1), 2)
 ```
+
+**What this expression does:** Extracts a 2-byte value from HEX data and interprets it as a signed integer, necessary when devices transmit negative values (like temperatures below zero) as unsigned integers.
+
+**Formula breakdown:**
+
+* `util:signed` - Converts unsigned number to signed by interpreting the most significant bit as a sign bit
+* `util:hexToLong(sensor_data, 0, 1)` - Inner function that extracts bytes 0-1 from HEX string
+  * `sensor_data` - Attribute containing HEX string from the device
+  * `0` - First byte position
+  * `1` - Last byte position (big-endian byte order)
+* `2` - Number of bytes to interpret as signed (2 bytes = 16-bit signed integer, range: -32768 to 32767)
 
 </details>
 
