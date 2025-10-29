@@ -81,6 +81,8 @@ util:hexToLong(ble_additional_data_1, 1, 0) / 1000.0
 
 **What this expression does:** Extracts a 2-byte sensor value from BLE additional data in HEX format, reverses byte order for little-endian reading, and converts from millivolts to volts.
 
+**Calculation example:** Device sends `ble_additional_data = "FF7A2B"` → Result: `2.991` (volts)
+
 **Formula breakdown:**
 
 * `util:hexToLong` - Converts HEX string bytes to a Long integer
@@ -97,6 +99,8 @@ util:checkBit(status_flags, 2)
 
 **What this expression does:** Checks if a specific bit is set in a status byte, useful for reading boolean device states like door open/closed, engine on/off, or sensor active/inactive.
 
+**Calculation example:** Device sends `status_flags = 4` (binary `0100`) → Result: `true` (bit 2 is set)
+
 **Formula breakdown:**
 
 * `util:checkBit` - Returns `true` if the specified bit is set (equals 1), `false` otherwise
@@ -110,6 +114,8 @@ util:fromBcd(raw_device_id)
 ```
 
 **What this expression does:** Converts a Binary Coded Decimal (BCD) number to standard decimal format, commonly used for device IDs and timestamps in industrial protocols.
+
+**Calculation example:** Device sends `raw_device_id = 0x1234` → Result: `1234`
 
 **Formula breakdown:**
 
@@ -127,6 +133,8 @@ util:signed(util:hexToLong(sensor_data, 0, 1), 2)
 ```
 
 **What this expression does:** Extracts a 2-byte value from HEX data and interprets it as a signed integer, necessary when devices transmit negative values (like temperatures below zero) as unsigned integers.
+
+**Calculation example:** Device sends `sensor_data = "FFFF"` → Result: `-1`
 
 **Formula breakdown:**
 
