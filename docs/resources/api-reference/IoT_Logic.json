@@ -883,7 +883,7 @@
         ]
       },
       "NodeAction": {
-        "description": "Node: Action. Actions are configured through the UI, not the API. When creating via API, set actions to null.",
+        "description": "Node: Action",
         "type": "object",
         "required": [
           "type",
@@ -906,18 +906,70 @@
                 "example": "Actions"
               },
               "actions": {
-                "type": "null",
-                "description": "Action configuration. Must be null when creating via API. Actions are configured through the UI.",
-                "example": null
+                "type": ["array", "null"],
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SetOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/SendCommand"
+                    }
+                  ]
+                },
+                "maxItems": 10,
+                "uniqueItems": true
               }
-            },
-            "required": ["title", "actions"]
+            }
           },
           "view": {
             "$ref": "#/components/schemas/NodeView"
           }
         }
       },
+      "SetOutput": {
+        "type": "object",
+        "required": ["type", "number", "value"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["set_output"],
+            "description": "Action type. Must be 'set_output'."
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8,
+            "description": "Output number as seen in UI."
+          },
+          "value": {
+            "type": "boolean",
+            "description": "The state to set to."
+          }
+        }
+      },
+      "SendCommand": {
+        "type": "object",
+        "required": ["type", "command"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["send_gprs_command"],
+            "description": "Action type. Must be 'send_gprs_command'."
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "A custom command to send to the device. Consult its documentation for details."
+          },
+          "reliable": {
+            "type": ["boolean", "null"],
+            "default": true,
+            "description": "Reliable commands will be retried in case if a tracker is not online at the moment."
+          }
+        }
+      }
       "NodeOutputEndpoint": {
         "type": "object",
         "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent.",
