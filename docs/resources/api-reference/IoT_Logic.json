@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "title": "Navixy IoT Logic API",
     "summary": "API calls for Flow and Node management",
-    "description": "This is an API reference for calls for Flow and Node management. For more information, see the [complete documentation](https://www.navixy.com/docs/iot-logic-api).",
+    "description": "This is an API reference for calls for Flow and Node management\n\n> **BETA Version!**  \n> Now the early access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned!",
     "contact": {
       "name": "Navixy support",
       "email": "support@navixy.com",
@@ -59,9 +59,6 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/EntityCreatedResponse"
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -151,9 +148,6 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -299,9 +293,6 @@
           "200": {
             "$ref": "#/components/responses/EntityCreatedResponse"
           },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
           "default": {
             "$ref": "#/components/responses/ResponseError"
           }
@@ -397,9 +388,6 @@
         "responses": {
           "200": {
             "$ref": "#/components/responses/OK"
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -562,72 +550,6 @@
           }
         }
       },
-      "ValidationError": {
-        "description": "Validation error response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "description": "Always `false` for error responses.",
-                  "example": false
-                },
-                "status": {
-                  "type": "object",
-                  "description": "Error status information",
-                  "properties": {
-                    "code": {
-                      "type": "integer",
-                      "description": "Internal error code",
-                      "example": 6
-                    },
-                    "description": {
-                      "type": "string",
-                      "description": "Error description",
-                      "example": "Validation error"
-                    }
-                  },
-                  "required": ["code", "description"]
-                },
-                "errors": {
-                  "type": "array",
-                  "description": "Detailed field-level validation errors",
-                  "minItems": 1,
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "parameter": {
-                        "type": "string",
-                        "description": "Name of the invalid parameter",
-                        "example": "flow.title"
-                      },
-                      "error": {
-                        "type": "string", 
-                        "description": "Specific validation error message",
-                        "example": "Flow title is required"
-                      }
-                    },
-                    "required": ["parameter", "error"]
-                  },
-                  "example": [
-                    {
-                      "parameter": "flow.title",
-                      "error": "Flow title is required"
-                    },
-                    {
-                      "parameter": "flow.nodes[0].data.sources", 
-                      "error": "At least one data source must be specified"
-                    }
-                  ]
-                }
-              },
-              "required": ["success", "status", "errors"]
-            }
-          }
-        }
-      },
       "ResponseError": {
         "description": "Error response object",
         "content": {
@@ -642,16 +564,16 @@
                 },
                 "status": {
                   "type": "object",
-                  "description": "Error status information",
+                  "description": "Error status. It only presence when an error occurred.",
                   "properties": {
                     "code": {
                       "type": "integer",
-                      "description": "Internal error code",
+                      "description": "An error code in this API (not a HTTP code)",
                       "example": 1
                     },
                     "description": {
                       "type": "string",
-                      "description": "Error description",
+                      "description": "An error description",
                       "example": "Database error"
                     }
                   }
@@ -697,10 +619,22 @@
             "description": "Flow name",
             "example": "Super flow"
           },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Flow description (optional)",
+            "readOnly": true,
+            "example": null
+          },
           "enabled": {
             "type": "boolean",
             "description": "Enable/disable flag",
             "example": true
+          },
+          "default_flow": {
+            "type": "boolean",
+            "description": "Whether this is the default flow",
+            "readOnly": true,
+            "example": false
           },
           "nodes": {
             "type": "array",
@@ -823,13 +757,15 @@
                 "type": "string",
                 "example": "Standard Data Source"
               },
-              "sources": {
-                "type": "array",
+              "source_ids": {
+                "type": ["array", "null"],
                 "items": {
                   "type": "integer",
                   "description": "Source ID",
                   "example": 123458
-                }
+                },
+                "description": "Array of device/source IDs. Use null or empty array [] for all sources. Note: API normalizes null to empty array [] in responses.",
+                "example": [123458, 123459]
               }
             }
           },
@@ -868,21 +804,26 @@
                   "properties": {
                     "name": {
                       "type": "string",
+                      "description": "Attribute name",
                       "example": "fuel_tank_2"
                     },
                     "value": {
                       "type": "string",
+                      "description": "Expression to calculate the attribute value",
                       "example": "(analog_1 + 100)/2"
                     },
                     "generation_time": {
-                      "type": "string",
-                      "example": "now()"
+                      "type": ["string", "null"],
+                      "description": "Expression for generation timestamp, or null for default (now())",
+                      "example": "genTime(\"temperature\", 0, \"valid\")"
                     },
                     "server_time": {
-                      "type": "string",
+                      "type": ["string", "null"],
+                      "description": "Expression for server timestamp, or null for default (now())",
                       "example": "now()"
                     }
-                  }
+                  },
+                  "required": ["name", "value"]
                 }
               }
             }
@@ -917,10 +858,12 @@
               },
               "name": {
                 "type": "string",
+                "description": "Internal identifier for the logic node",
                 "example": "logic_1"
               },
               "condition": {
                 "type": "string",
+                "description": "Boolean expression to evaluate",
                 "example": "!driver_identified && (vibration_active || speed > 3)"
               }
             },
@@ -940,7 +883,7 @@
         ]
       },
       "NodeAction": {
-        "description": "Node: Action",
+        "description": "Node: Action. Actions are configured through the UI, not the API. When creating via API, set actions to null.",
         "type": "object",
         "required": [
           "type",
@@ -963,63 +906,21 @@
                 "example": "Actions"
               },
               "actions": {
-                "type": "array",
-                "items": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/SetOutput"
-                    },
-                    {
-                      "$ref": "#/components/schemas/SendCommand"
-                    }
-                  ]
-                },
-                "maxItems": 10,
-                "uniqueItems": true
+                "type": "null",
+                "description": "Action configuration. Must be null when creating via API. Actions are configured through the UI.",
+                "example": null
               }
-            }
+            },
+            "required": ["title", "actions"]
           },
           "view": {
             "$ref": "#/components/schemas/NodeView"
           }
         }
       },
-      "SetOutput": {
-        "type": "object",
-        "required": ["number", "value"],
-        "properties": {
-          "number": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 8,
-            "description": "Output number as seen in UI."
-          },
-          "value": {
-            "type": "boolean",
-            "description": "The state to set to."
-          }
-        }
-      },
-      "SendCommand": {
-        "type": "object",
-        "required": ["command"],
-        "properties": {
-          "command": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 512,
-            "description": "A custom command to send to the device. Consult its documentation for details."
-          },
-          "reliable": {
-            "type": "boolean",
-            "default": true,
-            "description": "Reliable commands will be retried in case if a tracker is not online at the moment."
-          }
-        }
-      },
       "NodeOutputEndpoint": {
         "type": "object",
-        "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent. By default, it is Navixy.",
+        "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent.",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -1033,7 +934,7 @@
             "type": "object",
             "oneOf": [
               {
-                "$ref": "#/components/schemas/NodeOutputEndpointDataNavixy"
+                "$ref": "#/components/schemas/NodeOutputEndpointDataDefault"
               },
               {
                 "$ref": "#/components/schemas/NodeOutputEndpointDataStoredEndpoint"
@@ -1049,9 +950,9 @@
           "data"
         ]
       },
-      "NodeOutputEndpointDataNavixy": {
+      "NodeOutputEndpointDataDefault": {
         "type": "object",
-        "description": "Data of Navixy output endpoint",
+        "description": "Data of default output endpoint (Navixy platform)",
         "properties": {
           "title": {
             "type": "string",
@@ -1059,8 +960,8 @@
           },
           "output_endpoint_type": {
             "type": "string",
-            "description": "Type of endpoint. Always 'output_navixy'.",
-            "example": "output_navixy"
+            "description": "Type of endpoint. Always 'output_default' for Navixy platform.",
+            "example": "output_default"
           }
         },
         "required": [
