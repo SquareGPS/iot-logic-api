@@ -55,7 +55,7 @@ The flow update operation allows you to modify the entire flow structure, includ
 [OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-operation %}
 
-> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tEf7EQbPINBBRxlTcloz/)
+> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](broken-reference)
 
 To update an existing flow with additional output destinations, send the following request:
 
@@ -162,7 +162,7 @@ You will receive thes request status in response:
 
 #### Verifying the flow configuration
 
-You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-read)
+You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](broken-reference)
 
 {% hint style="success" %}
 **Congratulations!**
@@ -185,7 +185,7 @@ For this example, let's presume that we have already:
 
 This example updates a flow with sequential branches that process temperature and humidity data in series before combining them into advanced analytics. The flow demonstrates several important patterns: sequential processing of different sensor attributes, chained transformation steps, and the accumulation of multiple data transformations into unified analysis nodes. This approach is particularly useful for environmental monitoring, industrial sensors, or any scenario where multiple related measurements need to be processed through different algorithms in a specific order before being combined.
 
-> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-create)
+> You can also create a completely new flow with this configuration by using [`POST /iot/logic/flow/create`](broken-reference)
 
 To update an existing flow with additional output destinations, send the following request:
 
@@ -304,7 +304,7 @@ You will receive this request status in response:
 
 #### Verifying the flow configuration
 
-You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](https://app.gitbook.com/o/YVLWhgAwCZPoU5vlRsCs/s/tx3J5BxnWyPV0nP2xr0z/resources/api-reference/flow#post-iot-logic-flow-read)
+You can then validate the configuration of the updated flow using the `read` endpoint: [`POST /iot/logic/flow/read`](broken-reference)
 
 {% hint style="success" %}
 **Congratulations!**
