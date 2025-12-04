@@ -969,7 +969,7 @@
             "description": "Reliable commands will be retried in case if a tracker is not online at the moment."
           }
         }
-      }
+      },
       "NodeOutputEndpoint": {
         "type": "object",
         "description": "Node: output endpoint. This is the terminating node for any flow. It determines where the messages will be sent.",
