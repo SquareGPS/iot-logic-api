@@ -266,6 +266,69 @@
         ]
       }
     },
+    "/iot/logic/flow/sources/mapping/list": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "sourceMappingList",
+        "description": "List all device-to-flow assignments in the user account. Shows which devices are currently assigned to which flows and their corresponding Data Source nodes. Returns device information including title, model, and the flow configuration processing its data. Use this endpoint to audit device assignments, identify unassigned devices, or verify flow coverage across your device fleet. Supports pagination for accounts with large device inventories.",
+        "operationId": "sourceMappingList",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000,
+              "default": 10000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "list": [
+                      {
+                        "device_title": "Emulator",
+                        "model_code": "navixy_ngp",
+                        "device_id": "123456789",
+                        "flow_id": 1,
+                        "flow_title": "Default flow",
+                        "node_id": 1,
+                        "node_title": "Source node"
+                      }
+                    ],
+                    "count": 1,
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/iot/logic/flow/endpoint/create": {
       "post": {
         "tags": ["Node"],
