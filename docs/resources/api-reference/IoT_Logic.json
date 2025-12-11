@@ -783,7 +783,7 @@
       },
       "NodeInitiateAttributes": {
         "type": "object",
-        "description": "Node: initiate attributes",
+        "description": "Node: Initiate Attributes. Transforms device data by creating new calculated attributes based on incoming telemetry. Enables data enrichment through mathematical operations, unit conversions, bit-level manipulations, and time-based calculations using Navixy IoT Logic Expression Language (based on JEXL). Developers can consult the official JEXL specification for expression syntax and operators. Calculated attributes become available to all downstream nodes and can be displayed in Data Stream Analyzer or configured as custom sensors in Navixy tracking interface when connected to default output endpoint.",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -798,31 +798,33 @@
             "properties": {
               "title": {
                 "type": "string",
-                "example": "Add/modify attributes"
+                "description": "Node title identifying the transformation purpose.",
+                "example": "Temperature and Speed Conversion"
               },
               "items": {
                 "type": "array",
+                "description": "List of attributes to calculate. Attributes are processed sequentially in the order defined. Each attribute can reference original device parameters and previously calculated attributes within the same node.",
                 "items": {
                   "type": "object",
                   "properties": {
                     "name": {
                       "type": "string",
-                      "description": "Attribute name",
-                      "example": "fuel_tank_2"
+                      "description": "Unique attribute identifier. This name appears in Data Stream Analyzer and can be used to create custom sensors in Navixy tracking interface. If attribute name matches existing device parameter, the calculated value replaces the original in output data packets.",
+                      "example": "temperature_fahrenheit"
                     },
                     "value": {
                       "type": "string",
-                      "description": "Expression to calculate the attribute value",
-                      "example": "(analog_1 + 100)/2"
+                      "description": "JEXL-based expression to calculate attribute value. Can reference device parameters using direct syntax (e.g., 'temperature') or value() function (e.g., value('temperature', 0, 'valid')). Supports standard JEXL operators and mathematical operations, historical value access (via index parameter), and Navixy-specific bit-level operations through util: namespace functions. Consult JEXL specification for expression syntax details. Expression errors result in null values.",
+                      "example": "temperature * 1.8 + 32"
                     },
                     "generation_time": {
                       "type": ["string", "null"],
-                      "description": "Expression for generation timestamp, or null for default (now())",
+                      "description": "JEXL-based expression for device-side generation timestamp (when data was created on device). Defaults to now() if null or not specified. Use genTime() function to reference original parameter timestamps.",
                       "example": "genTime(\"temperature\", 0, \"valid\")"
                     },
                     "server_time": {
                       "type": ["string", "null"],
-                      "description": "Expression for server timestamp, or null for default (now())",
+                      "description": "JEXL-based expression for server-side reception timestamp (when data was received by IoT Logic). Defaults to now() if null or not specified. Use srvTime() function to reference original parameter timestamps.",
                       "example": "now()"
                     }
                   },
@@ -842,7 +844,7 @@
       },
       "NodeLogic": {
         "type": "object",
-        "description": "Node: logic",
+        "description": "Node: Logic. Creates conditional branching points that route data based on boolean expressions. Logic nodes evaluate incoming data against user-defined conditions and direct data flow through THEN (true) or ELSE (false) output paths. The node creates a boolean attribute that stores evaluation results and can be used in subsequent nodes or Navixy monitoring systems. Logic nodes support multiple outgoing connections on both THEN and ELSE branches, enabling parallel processing and complex decision trees.",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -866,7 +868,7 @@
               },
               "condition": {
                 "type": "string",
-                "description": "Boolean expression to evaluate",
+                "description": "Boolean expression evaluated for each incoming message. Must return true or false. Expression can reference attributes from connected upstream nodes using direct attribute syntax or value() function. Supports logical operators (&&, ||, !), comparison operators (<, >, <=, >=, ==, !=), and complex conditions. If expression cannot be evaluated (null values, syntax errors, missing attributes), result is treated as false and data flows through ELSE path.",
                 "example": "!driver_identified && (vibration_active || speed > 3)"
               }
             },
@@ -886,7 +888,7 @@
         ]
       },
       "NodeAction": {
-        "description": "Node: Action",
+        "description": "Node: Action. Executes automated device commands when triggered by incoming data. Action nodes enable direct device control through output switching and GPRS command transmission. Functions as a terminal node that cannot have outgoing connections.",
         "type": "object",
         "required": [
           "type",
@@ -910,6 +912,7 @@
               },
               "actions": {
                 "type": ["array", "null"],
+                "description": "List of actions to execute sequentially when node is triggered. Actions execute in order from first to last. Maximum 10 actions per node. Commands are sent only to devices that provided data in the current trigger event.",
                 "items": {
                   "oneOf": [
                     {
