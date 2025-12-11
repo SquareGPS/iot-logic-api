@@ -40,7 +40,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowCreate",
-        "description": "Create a new data flow.",
+        "description": "Create a new data processing flow with nodes and connections. Flows define how data moves from devices through transformation stages to output destinations. Each flow requires at least one Data Source node and one Output Endpoint node. You can create flows with nodes and edges in a single request or add nodes later using the endpoint management API.",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
@@ -75,7 +75,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowRead",
-        "description": "Read an existing flow details.",
+        "description": "Retrieve complete flow configuration including all nodes, edges, and metadata. Returns the flow structure with node positions, connections, and enabled status. Use this endpoint to inspect flow architecture or retrieve configuration for duplication.",
         "operationId": "flowRead",
         "parameters": [
           {
@@ -126,7 +126,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowUpdate",
-        "description": "Update details of an existing flow.",
+        "description": "Update an existing flow's configuration. Requires the complete flow object including all nodes and edges. To modify individual nodes without affecting the entire flow, use the endpoint management API. Changes take effect immediately for enabled flows.",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
@@ -164,7 +164,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowDelete",
-        "description": "Delete a flow.",
+        "description": "Permanently delete a flow and stop its data processing pipeline. Devices assigned to this flow will automatically revert to the default flow in your account. This action cannot be undone. To temporarily stop processing without reassigning devices, disable the flow using the update endpoint instead.",
         "operationId": "flowDelete",
         "requestBody": {
           "content": {
@@ -211,7 +211,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowList",
-        "description": "Get list of flows existing in a user account.",
+        "description": "List all flows in the user account. Returns flow IDs and titles only. Use the read endpoint to retrieve complete flow details including nodes and configuration.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -270,7 +270,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointCreate",
-        "description": "Create a new node.\n\nAll node types are created through this endpoint, the type is defined in the request body.",
+        "description": "Create a new node within a flow. Supports all node types existing in IoT Logic. The node type is specified in the request body's type field. ",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
@@ -308,7 +308,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointRead",
-        "description": "Read an existing node details.",
+        "description": "Retrieve detailed configuration for a specific node. Returns complete node data including type-specific configuration, position, and enabled status. Use this endpoint to inspect individual node configuration without retrieving the entire flow.",
         "operationId": "endpointRead",
         "requestBody": {
           "content": {
@@ -366,7 +366,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointUpdate",
-        "description": "Update an existing node details.",
+        "description": "Update an existing node configuration. Requires the complete node object including all required fields for the node type. Changes to nodes in enabled flows take effect immediately and may impact active data processing. ",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
@@ -404,7 +404,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointDelete",
-        "description": "Delete a node.",
+        "description": "Permanently delete a node from accoun. Automatically removes all edges connected to this node. Deleting critical nodes (Data Source or Output Endpoint) from enabled flows will interrupt data processing. Verify flow integrity after deletion.",
         "operationId": "endpointDelete",
         "requestBody": {
           "content": {
@@ -444,7 +444,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointList",
-        "description": "Get list of nodes existing in a user account.",
+        "description": "List all nodes across all flows in the user account. Returns complete node configurations including type, data, and position for each node. To retrieve nodes for a specific flow, use the flow read endpoint instead.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
@@ -495,7 +495,7 @@
     }
   },
   "externalDocs": {
-    "url": "https://developers.navixy.com/",
+    "url": "https://www.navixy.com/docs/iot-logic-api",
     "description": "Find more info here"
   },
   "components": {
@@ -783,7 +783,7 @@
       },
       "NodeInitiateAttributes": {
         "type": "object",
-        "description": "Node: initiate attributes",
+        "description": "Node: Initiate Attributes. Transforms device data by creating new calculated attributes based on incoming telemetry. Enables data enrichment through mathematical operations, unit conversions, bit-level manipulations, and time-based calculations using Navixy IoT Logic Expression Language (based on JEXL). Developers can consult the official JEXL specification for expression syntax and operators. Calculated attributes become available to all downstream nodes and can be displayed in Data Stream Analyzer or configured as custom sensors in Navixy tracking interface when connected to default output endpoint.",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -798,31 +798,33 @@
             "properties": {
               "title": {
                 "type": "string",
-                "example": "Add/modify attributes"
+                "description": "Node title identifying the transformation purpose.",
+                "example": "Temperature and Speed Conversion"
               },
               "items": {
                 "type": "array",
+                "description": "List of attributes to calculate. Attributes are processed sequentially in the order defined. Each attribute can reference original device parameters and previously calculated attributes within the same node.",
                 "items": {
                   "type": "object",
                   "properties": {
                     "name": {
                       "type": "string",
-                      "description": "Attribute name",
-                      "example": "fuel_tank_2"
+                      "description": "Unique attribute identifier. This name appears in Data Stream Analyzer and can be used to create custom sensors in Navixy tracking interface. If attribute name matches existing device parameter, the calculated value replaces the original in output data packets.",
+                      "example": "temperature_fahrenheit"
                     },
                     "value": {
                       "type": "string",
-                      "description": "Expression to calculate the attribute value",
-                      "example": "(analog_1 + 100)/2"
+                      "description": "JEXL-based expression to calculate attribute value. Can reference device parameters using direct syntax (e.g., 'temperature') or value() function (e.g., value('temperature', 0, 'valid')). Supports standard JEXL operators and mathematical operations, historical value access (via index parameter), and Navixy-specific bit-level operations through util: namespace functions. Consult JEXL specification for expression syntax details. Expression errors result in null values.",
+                      "example": "temperature * 1.8 + 32"
                     },
                     "generation_time": {
                       "type": ["string", "null"],
-                      "description": "Expression for generation timestamp, or null for default (now())",
+                      "description": "JEXL-based expression for device-side generation timestamp (when data was created on device). Defaults to now() if null or not specified. Use genTime() function to reference original parameter timestamps.",
                       "example": "genTime(\"temperature\", 0, \"valid\")"
                     },
                     "server_time": {
                       "type": ["string", "null"],
-                      "description": "Expression for server timestamp, or null for default (now())",
+                      "description": "JEXL-based expression for server-side reception timestamp (when data was received by IoT Logic). Defaults to now() if null or not specified. Use srvTime() function to reference original parameter timestamps.",
                       "example": "now()"
                     }
                   },
@@ -842,7 +844,7 @@
       },
       "NodeLogic": {
         "type": "object",
-        "description": "Node: logic",
+        "description": "Node: Logic. Creates conditional branching points that route data based on boolean expressions. Logic nodes evaluate incoming data against user-defined conditions and direct data flow through THEN (true) or ELSE (false) output paths. The node creates a boolean attribute that stores evaluation results and can be used in subsequent nodes or Navixy monitoring systems. Logic nodes support multiple outgoing connections on both THEN and ELSE branches, enabling parallel processing and complex decision trees.",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
@@ -866,7 +868,7 @@
               },
               "condition": {
                 "type": "string",
-                "description": "Boolean expression to evaluate",
+                "description": "Boolean expression evaluated for each incoming message. Must return true or false. Expression can reference attributes from connected upstream nodes using direct attribute syntax or value() function. Supports logical operators (&&, ||, !), comparison operators (<, >, <=, >=, ==, !=), and complex conditions. If expression cannot be evaluated (null values, syntax errors, missing attributes), result is treated as false and data flows through ELSE path.",
                 "example": "!driver_identified && (vibration_active || speed > 3)"
               }
             },
@@ -886,7 +888,7 @@
         ]
       },
       "NodeAction": {
-        "description": "Node: Action",
+        "description": "Node: Action. Executes automated device commands when triggered by incoming data. Action nodes enable direct device control through output switching and GPRS command transmission. Functions as a terminal node that cannot have outgoing connections.",
         "type": "object",
         "required": [
           "type",
@@ -910,6 +912,7 @@
               },
               "actions": {
                 "type": ["array", "null"],
+                "description": "List of actions to execute sequentially when node is triggered. Actions execute in order from first to last. Maximum 10 actions per node. Commands are sent only to devices that provided data in the current trigger event.",
                 "items": {
                   "oneOf": [
                     {
@@ -1162,7 +1165,7 @@
           },
           "type": {
             "type": "string",
-            "description": "Endpoint type. One of: 'input_navixy', 'output_navixy', 'output_mqtt_client'.",
+            "description": "Endpoint type. One of: 'input_default', 'output_default', 'output_mqtt_client'.",
             "example": "output_mqtt_client"
           },
           "title": {
