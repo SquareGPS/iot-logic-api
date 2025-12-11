@@ -40,7 +40,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowCreate",
-        "description": "Create a new data flow.",
+        "description": "Create a new data processing flow with nodes and connections. Flows define how data moves from devices through transformation stages to output destinations. Each flow requires at least one Data Source node and one Output Endpoint node. You can create flows with nodes and edges in a single request or add nodes later using the endpoint management API.",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
@@ -75,7 +75,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowRead",
-        "description": "Read an existing flow details.",
+        "description": "Retrieve complete flow configuration including all nodes, edges, and metadata. Returns the flow structure with node positions, connections, and enabled status. Use this endpoint to inspect flow architecture or retrieve configuration for duplication.",
         "operationId": "flowRead",
         "parameters": [
           {
@@ -126,7 +126,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowUpdate",
-        "description": "Update details of an existing flow.",
+        "description": "Update an existing flow's configuration. Requires the complete flow object including all nodes and edges. To modify individual nodes without affecting the entire flow, use the endpoint management API. Changes take effect immediately for enabled flows.",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
@@ -164,7 +164,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowDelete",
-        "description": "Delete a flow.",
+        "description": "Permanently delete a flow and stop its data processing pipeline. Devices assigned to this flow will automatically revert to the default flow in your account. This action cannot be undone. To temporarily stop processing without reassigning devices, disable the flow using the update endpoint instead.",
         "operationId": "flowDelete",
         "requestBody": {
           "content": {
@@ -211,7 +211,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowList",
-        "description": "Get list of flows existing in a user account.",
+        "description": "List all flows in the user account. Returns flow IDs and titles only. Use the read endpoint to retrieve complete flow details including nodes and configuration.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -270,7 +270,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointCreate",
-        "description": "Create a new node.\n\nAll node types are created through this endpoint, the type is defined in the request body.",
+        "description": "Create a new node within a flow. Supports all node types existing in IoT Logic. The node type is specified in the request body's type field. ",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
@@ -308,7 +308,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointRead",
-        "description": "Read an existing node details.",
+        "description": "Retrieve detailed configuration for a specific node. Returns complete node data including type-specific configuration, position, and enabled status. Use this endpoint to inspect individual node configuration without retrieving the entire flow.",
         "operationId": "endpointRead",
         "requestBody": {
           "content": {
@@ -366,7 +366,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointUpdate",
-        "description": "Update an existing node details.",
+        "description": "Update an existing node configuration. Requires the complete node object including all required fields for the node type. Changes to nodes in enabled flows take effect immediately and may impact active data processing. ",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
@@ -404,7 +404,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointDelete",
-        "description": "Delete a node.",
+        "description": "Permanently delete a node from accoun. Automatically removes all edges connected to this node. Deleting critical nodes (Data Source or Output Endpoint) from enabled flows will interrupt data processing. Verify flow integrity after deletion.",
         "operationId": "endpointDelete",
         "requestBody": {
           "content": {
@@ -444,7 +444,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointList",
-        "description": "Get list of nodes existing in a user account.",
+        "description": "List all nodes across all flows in the user account. Returns complete node configurations including type, data, and position for each node. To retrieve nodes for a specific flow, use the flow read endpoint instead.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
@@ -495,7 +495,7 @@
     }
   },
   "externalDocs": {
-    "url": "https://developers.navixy.com/",
+    "url": "https://www.navixy.com/docs/iot-logic-api",
     "description": "Find more info here"
   },
   "components": {
@@ -1165,7 +1165,7 @@
           },
           "type": {
             "type": "string",
-            "description": "Endpoint type. One of: 'input_navixy', 'output_navixy', 'output_mqtt_client'.",
+            "description": "Endpoint type. One of: 'input_default', 'output_default', 'output_mqtt_client'.",
             "example": "output_mqtt_client"
           },
           "title": {
