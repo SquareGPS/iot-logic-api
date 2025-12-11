@@ -709,6 +709,9 @@
             "$ref": "#/components/schemas/NodeAction"
           },
           {
+            "$ref": "#/components/schemas/NodeWebhook"
+          },
+          {
             "$ref": "#/components/schemas/NodeOutputEndpoint"
           }
         ]
@@ -969,6 +972,85 @@
             "description": "Reliable commands will be retried in case if a tracker is not online at the moment."
           }
         }
+      },
+      "NodeWebhook": {
+        "type": "object",
+        "description": "Node: Webhook. Sends HTTP POST requests with IoT data to external endpoints, enabling real-time integration with third-party systems and APIs. Webhook nodes function as terminal nodes that cannot have outgoing connections to other nodes in the flow.",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/NodeID"
+          },
+          "type": {
+            "type": "string",
+            "description": "Node type. Always \"webhook\".",
+            "example": "webhook"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Webhook node title.",
+                "maxLength": 255,
+                "example": "External API Integration"
+              },
+              "url": {
+                "type": "string",
+                "description": "Target URL for HTTP POST requests. Must use http:// or https:// protocol (HTTPS recommended). Executes fire-and-forget POST request on each incoming message without waiting for response or retrying on failure.",
+                "maxLength": 255,
+                "pattern": "^https?:\\/\\/\\S+$",
+                "example": "https://api.example.com/iot/data"
+              },
+              "headers": {
+                "type": ["array", "null"],
+                "description": "Optional HTTP headers for POST requests. All headers including Content-Type must be explicitly specified. Maximum 10 headers.",
+                "maxItems": 10,
+                "items": {
+                  "type": "object",
+                  "required": ["key", "value"],
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "Header name.",
+                      "maxLength": 255,
+                      "example": "Authorization"
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "Header value (static only).",
+                      "maxLength": 255,
+                      "example": "Bearer token123"
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer token123"
+                  }
+                ]
+              },
+              "body": {
+                "type": ["string", "null"],
+                "description": "Optional request body template. Use $\"attribute_name\" syntax to reference attributes from upstream nodes. Supports nested paths (e.g., $\"location.latitude\"). Direct attribute references only; expressions not supported. Null attributes send null values.",
+                "maxLength": 4000,
+                "example": "{\"device_id\": $\"device_id\", \"temperature\": $\"temperature\", \"location\": {\"lat\": $\"latitude\", \"lng\": $\"longitude\"}, \"timestamp\": $\"message_time\"}"
+              }
+            },
+            "required": ["title", "url"]
+          },
+          "view": {
+            "$ref": "#/components/schemas/NodeView"
+          }
+        },
+        "required": [
+          "type",
+          "data"
+        ]
       },
       "NodeOutputEndpoint": {
         "type": "object",
