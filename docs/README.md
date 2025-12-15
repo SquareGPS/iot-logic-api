@@ -61,7 +61,7 @@ Nodes are connected through transitions (`edges`) that define the path data foll
 
 The following screenshot from IoT Logic UI illustrates the basic architecture of a flow in IoT Logic:
 
-![Flow-example.png](../assets/images/Flow-example.png)
+![Flow-example.png](.gitbook/assets/Flow-example.png)
 
 This represents a simple linear flow where:
 
