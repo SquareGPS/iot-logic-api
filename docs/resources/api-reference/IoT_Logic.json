@@ -266,6 +266,57 @@
         ]
       }
     },
+    "/iot/logic/flow/export": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "flowExport",
+        "description": "Export a flow as a reusable template without instance-specific metadata. Unlike the read endpoint which retrieves the complete operational state of a flow, export returns only the flow structure (nodes, edges, title, description) suitable for creating duplicate flows or transferring configurations between accounts. The exported template excludes flow ID, enabled status, and default flow designation, making it ready for use with the create endpoint.",
+        "operationId": "flowExport",
+        "parameters": [
+          {
+            "name": "flow_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "Flow ID to export",
+              "example": 678
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with flow template",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "value": {
+                      "$ref": "#/components/schemas/FlowDraft"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/iot/logic/flow/sources/mapping/list": {
       "get": {
         "tags": ["Flow"],
