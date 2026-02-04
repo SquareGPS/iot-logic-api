@@ -30,7 +30,8 @@ curl --location 'tracker.navixy.com:47642' \
     "device_id": "1112312212",
     "location": {
         "latitude": 34.15929687705282,
-        "longitude": -118.4614133834839
+        "longitude": -118.4614133834839,
+        "satellites": 3
     },
     "battery_level": 68
 }'
