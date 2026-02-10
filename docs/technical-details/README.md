@@ -211,7 +211,8 @@ Nodes are actual building bricks for your IoT Logic data flows. Each node has it
 
 * [Data Source node](nodes.md#data-source-node-data_source) - defines where data comes from.
 * [Initiate Attribute node](nodes.md#initiate-attribute-node-initiate_attribute) - allows custom calculations to enrich ar standardize data.
-* [Logic node](nodes.md#logic-node-logic) - allows validating logical conditins and routing data based on the outcome.&#x20;
+* [Logic node](nodes.md#logic-node-logic) - allows validating logical conditins and routing data based on the outcome.
+* [Webhook node](nodes.md#webhook-node-webhook) - sends data to external systems via HTTP POST requests.
 * [Action node](nodes.md#action-node-action) - enables the automation of sending commands to devices based on the context.
 * [Output endpoint node](nodes.md#output-endpoint-node-output_endpoint) - Defines the destination of data running trough the flow.
 

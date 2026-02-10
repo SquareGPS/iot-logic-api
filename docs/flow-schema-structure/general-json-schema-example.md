@@ -9,7 +9,7 @@ Here's an example of a JSON structure describing a complete flow.
 ### Flow object model
 
 {% openapi-schemas spec="iot-logic" schemas="Flow" grouped="true" %}
-[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/IoT_Logic.json)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-schemas %}
 
 ## Example schema
@@ -17,7 +17,7 @@ Here's an example of a JSON structure describing a complete flow.
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Navixy IoT Gateway Flow",
+  "title": "Navixy IoT Logic Flow",
   "description": "A schema for defining IoT data flows in the Navixy platform",
   "type": "object",
   "required": [
@@ -446,4 +446,3 @@ The example template shows a flow that:
   ]
 }
 ```
-

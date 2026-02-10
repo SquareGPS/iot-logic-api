@@ -209,6 +209,162 @@ Here's a quick reference:
 * When expressions cannot be evaluated, the result is treated as `false` and data flows through the ELSE path
 * Multiple Logic nodes can be chained together for complex decision trees
 
+## Webhook node (`webhook`)
+
+This node sends HTTP POST requests with IoT data to external endpoints, enabling real-time integration with any third-party system or API that accepts HTTP requests.
+
+{% openapi-schemas spec="iot-logic" schemas="NodeWebhook" grouped="true" %}
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
+{% endopenapi-schemas %}
+
+**Webhook node structure:**
+
+```json
+{
+  "id": 5,
+  "type": "webhook",
+  "data": {
+    "title": "External API Integration",
+    "url": "https://api.example.com/iot/data",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Authorization",
+        "value": "Bearer token123"
+      }
+    ],
+    "body": "{\"device_id\": $\"device_id\", \"temperature\": $\"temperature\", \"location\": {\"lat\": $\"latitude\", \"lng\": $\"longitude\"}, \"timestamp\": $\"message_time\"}"
+  },
+  "view": {
+    "position": { "x": 550, "y": 100 }
+  }
+}
+```
+
+#### Key properties
+
+| Property       | Type    | Required | Description                                                                |
+| -------------- | ------- | -------- | -------------------------------------------------------------------------- |
+| `id`           | integer | Yes      | Unique identifier within the flow                                          |
+| `type`         | string  | Yes      | Must be "webhook"                                                          |
+| `data.title`   | string  | Yes      | Human-readable name for the node (max 255 characters)                      |
+| `data.url`     | string  | Yes      | Target endpoint URL with http:// or https:// protocol (max 255 characters) |
+| `data.headers` | array   | No       | HTTP headers for POST requests (max 10 items)                              |
+| `data.body`    | string  | No       | Request body template with attribute references (max 4000 characters)      |
+
+### Body template syntax
+
+The webhook body supports attribute references using `"attribute_name"` syntax:
+
+**Syntax rules:**
+
+* Reference attributes from upstream nodes: `"device_id"`, `"temperature"`
+* Create nested JSON structures: `"location.latitude"`
+* Null attributes output as JSON null: `"attribute": null`
+
+{% tabs %}
+{% tab title="Example body template" %}
+```
+{
+  "device_id": "device_id",
+  "temperature": "temperature",
+  "location": {
+    "lat": "latitude",
+    "lng": "longitude"
+  },
+  "timestamp": "message_time"
+}
+```
+{% endtab %}
+
+{% tab title="Real-world example (ticket creation system)" %}
+```
+{
+  "properties": {
+    "subject": "Device maintenance \"device_id\"",
+    "content": "Device communication failure. Diagnostic required.",
+    "priority": "HIGH",
+    "category": "Maintenance",
+    "device_id": "\"device_id\""
+  }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+### Headers configuration
+
+Headers must be explicitly specified, including `Content-Type`. Common authentication patterns:
+
+{% tabs %}
+{% tab title="Bearer token authentication" %}
+```
+{
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Authorization",
+      "value": "Bearer your_token_here"
+    }
+  ]
+}
+```
+{% endtab %}
+
+{% tab title="API key authentication" %}
+```
+{
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "X-API-Key",
+      "value": "your_api_key_here"
+    }
+  ]
+}
+```
+{% endtab %}
+{% endtabs %}
+
+### Usage notes
+
+#### Execution behavior
+
+**Request processing:**
+
+* Each incoming message triggers one HTTP POST request immediately
+* Requests execute asynchronously without waiting for response
+* Failed requests are not retried automatically
+
+**Data availability:**
+
+* Access to all attributes from connected upstream nodes
+* Direct attribute references only (expressions not supported in body template)
+
+#### Tips
+
+* Webhook nodes function as **terminal nodes** - they do not pass data to downstream nodes
+* Requests use **fire-and-forget** model without response validation or retry logic
+* Use HTTPS protocol for production endpoints to ensure data security
+* All headers including `Content-Type` must be explicitly specified
+* Common configuration errors to avoid:
+  * Missing `Content-Type` header when sending JSON
+  * Incorrect authentication method (verify against receiving endpoint requirements)
+  * Body format mismatch (validate template against target API specification)
+  * URL protocol omission (always include `https://` or `http://`)
+  * Attribute name mismatches (ensure referenced attributes exist in upstream nodes)
+* The Webhook node enables integration with RESTful APIs, webhook platforms (Zapier, Make, n8n), ticketing systems, CRM platforms, and custom internal systems
+* For more information on webhook configuration, see [Webhook node user guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/webhook-node)
+
 ## Action node (`action`)
 
 This node executes automated commands when triggered by incoming data. It transforms data flows into device control actions, enabling automated responses to conditions detected in earlier nodes.
