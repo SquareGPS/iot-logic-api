@@ -132,9 +132,9 @@ Here's an example of a JSON structure describing a complete flow.
         "data": {
           "type": "object",
           "description": "Configuration data specific to this node type",
-          "required": ["sources"],
+          "required": ["source_ids"],
           "properties": {
-            "sources": {
+            "source_ids": {
               "type": "array",
               "description": "Collection of source device IDs to receive data from",
               "items": {
@@ -311,7 +311,7 @@ The example template shows a flow that:
       "title": "Vehicle Tracker Input",
       "enabled": true,
       "data": {
-        "sources": [
+        "source_ids": [
           123458,
           123459,
           123460

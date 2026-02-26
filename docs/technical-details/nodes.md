@@ -14,10 +14,9 @@ This node specifies which devices will send data to your flow. It's the entry po
 {
   "id": 1,
   "type": "data_source",
-  "title": "Your Title Here",
-  "enabled": true,
   "data": {
-    "sources": [12345, 67890]  // Device IDs
+    "title": "Your Title Here",
+    "source_ids": [12345, 67890]
   },
   "view": {
     "position": { "x": 50, "y": 50 }
@@ -27,22 +26,21 @@ This node specifies which devices will send data to your flow. It's the entry po
 
 #### Key properties
 
-| Property       | Type    | Required | Description                              |
-| -------------- | ------- | -------- | ---------------------------------------- |
-| `id`           | integer | Yes      | Unique identifier within the flow        |
-| `type`         | string  | Yes      | Must be `"data_source"`                  |
-| `title`        | string  | Yes      | Human-readable name for the node         |
-| `enabled`      | boolean | Yes      | Whether this node processes data         |
-| `data.sources` | array   | Yes      | Array of device IDs to collect data from |
+| Property          | Type    | Required | Description                              |
+| ----------------- | ------- | -------- | ---------------------------------------- |
+| `id`              | integer | Yes      | Unique identifier within the flow        |
+| `type`            | string  | Yes      | Must be `"data_source"`                  |
+| `data.title`      | string  | Yes      | Human-readable name for the node         |
+| `data.source_ids` | array   | Yes      | Array of device IDs to collect data from |
 
 ### Usage notes
 
 * The `data_source` node type is required in every flow
-* Multiple devices can be specified in the `sources` array
+* Multiple devices can be specified in the `source_ids` array
 * Each device is identified by its numeric ID in the Navixy system
 * A flow can have multiple data source nodes for different device groups
 
-## Initiate Attribute node (`initiate_attribute`)
+## Initiate Attribute node (`initiate_attributes`)
 
 This node transforms raw data into meaningful information. It allows for creating new attributes or modifying existing ones through expressions.
 
@@ -56,14 +54,12 @@ This node transforms raw data into meaningful information. It allows for creatin
 {
   "id": 2,
   "type": "initiate_attributes",
-  "title": "Your Title Here",
   "data": {
+    "title": "Your Title Here",
     "items": [
       {
         "name": "attribute_name",
-        "value": "expression",
-        "generation_time": "now()",
-        "server_time": "now()"
+        "value": "expression"
       }
     ]
   },
@@ -75,21 +71,19 @@ This node transforms raw data into meaningful information. It allows for creatin
 
 #### Key properties
 
-| Property                       | Type    | Required | Description                        |
-| ------------------------------ | ------- | -------- | ---------------------------------- |
-| `id`                           | integer | Yes      | Unique identifier within the flow  |
-| `type`                         | string  | Yes      | Must be `"initiate_attributes"`    |
-| `title`                        | string  | Yes      | Human-readable name for the node   |
-| `data.items`                   | array   | Yes      | Array of attribute definitions     |
-| `data.items[].name`            | string  | Yes      | The attribute identifier           |
-| `data.items[].value`           | string  | Yes      | Mathematical or logical expression |
-| `data.items[].generation_time` | string  | Yes      | When the data was generated        |
-| `data.items[].server_time`     | string  | Yes      | When the server received the data  |
+| Property             | Type    | Required | Description                         |
+| -------------------- | ------- | -------- | ----------------------------------- |
+| `id`                 | integer | Yes      | Unique identifier within the flow   |
+| `type`               | string  | Yes      | Must be `"initiate_attributes"data` |
+| `data.title`         | string  | Yes      | Human-readable name for the node    |
+| `data.items`         | array   | Yes      | Array of attribute definitions      |
+| `data.items[].name`  | string  | Yes      | The attribute identifier            |
+| `data.items[].value` | string  | Yes      | Mathematical or logical expression  |
 
 ### Expression language
 
 For calculations IoT Logic API uses [Navixy IoT Logic Expression Language](../technologies/navixy-iot-logic-expression-language/).\
-Here's a guick reference:
+Here's a quick reference:
 
 | Feature                | Operators/Examples                  | Description                    |
 | ---------------------- | ----------------------------------- | ------------------------------ |
@@ -115,7 +109,7 @@ To find more examples of formulas, see [Calculation examples](https://app.gitboo
 
 * `parameter` (string): Device parameter or calculated attribute name
 * `index` (integer, 0-12, optional): Historical depth (0 = newest). Default: 0
-* `validation_flag` (string, optional): "valid" excludes nulls, "all" includes nulls. Default: "valid"
+* `validation_flag` (string, optional): `"valid"` excludes nulls, "all" includes nulls. Default: `"all"`
 
 #### Historical data access (`index` )
 
@@ -126,7 +120,7 @@ IoT Logic maintains up to 12 historical values per parameter:
 * Index 12: Oldest available value
 
 {% hint style="info" %}
-Short syntax is also supported for attribute names in formulas. When referencing only the latest valid value of an attribute, you can omit the full `value()` function syntax and quotation marks. For example, the temperature conversion formula can be written as `temperature*1.8 + 32` instead of `value('temperature', 0, 'valid')*1.8 + 32`.
+Short syntax is also supported for attribute names in formulas. When referencing only the latest value of an attribute, you can omit the full `value()` function syntax and quotation marks. For example, the temperature conversion formula can be written as `temperature*1.8 + 32` instead of `value('temperature', 0, 'all')*1.8 + 32`.
 {% endhint %}
 
 ### Usage notes
@@ -403,14 +397,6 @@ Headers must be explicitly specified, including `Content-Type`. Common authentic
 
 This node executes automated commands when triggered by incoming data. It transforms data flows into device control actions, enabling automated responses to conditions detected in earlier nodes.
 
-In API payloads, the node type stays `action`.
-
-### Action node (`action`)
-
-This node used to be called **Action node** in our docs.
-
-Old deep links to `#action-node-action` should continue to work and land here.
-
 {% openapi-schemas spec="iot-logic" schemas="NodeAction" grouped="true" %}
 [OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-schemas %}
@@ -421,21 +407,23 @@ Old deep links to `#action-node-action` should continue to work and land here.
 {
   "id": 4,
   "type": "action",
-  "title": "Your Title Here",
   "data": {
+    "title": "Engine Control on Overspeed",
     "actions": [
       {
+        "type": "set_output",
         "number": 1,
-        "value": true
+        "value": false
       },
       {
-        "command": "custom_command_here",
+        "type": "send_gprs_command",
+        "command": "engineoff",
         "reliable": true
       }
     ]
   },
   "view": {
-    "position": { "x": 400, "y": 100 }
+    "position": { "x": 600, "y": 300 }
   }
 }
 ```
@@ -446,7 +434,7 @@ Old deep links to `#action-node-action` should continue to work and land here.
 | -------------- | ------- | -------- | ------------------------------------------ |
 | `id`           | integer | Yes      | Unique identifier within the flow          |
 | `type`         | string  | Yes      | Must be "action"                           |
-| `title`        | string  | Yes      | Human-readable name for the node           |
+| `data.title`   | string  | Yes      | Human-readable name for the node           |
 | `data.actions` | array   | Yes      | Array of action definitions (max 10 items) |
 
 ### Action types
@@ -552,9 +540,8 @@ The output endpoint node supports different destination types:
 {
   "id": 3,
   "type": "output_endpoint",
-  "title": "Your Title Here",
-  "enabled": true,
   "data": {
+    "title": "Your Title Here",
     "output_endpoint_type": "output_default"
   },
   "view": {
@@ -569,9 +556,8 @@ The output endpoint node supports different destination types:
 {
   "id": 4,
   "type": "output_endpoint",
-  "title": "Your Title Here",
-  "enabled": true,
   "data": {
+    "title": "Your Title Here",
     "output_endpoint_type": "output_mqtt_client",
     "output_endpoint_id": 45678
   },
@@ -587,8 +573,7 @@ The output endpoint node supports different destination types:
 | --------------------------- | ------- | ------------- | ------------------------------------------------------------------------- |
 | `id`                        | integer | Yes           | Unique identifier within the flow                                         |
 | `type`                      | string  | Yes           | Must be `"output_endpoint"`                                               |
-| `title`                     | string  | Yes           | Human-readable name for the node                                          |
-| `enabled`                   | boolean | Yes           | Whether this node processes data                                          |
+| `data.title`                | string  | Yes           | Human-readable name for the node                                          |
 | `data.output_endpoint_type` | string  | Yes           | Type of output destination (`"output_default"` or `"output_mqtt_client"`) |
 | `data.output_endpoint_id`   | integer | For MQTT only | Reference to a previously created endpoint                                |
 

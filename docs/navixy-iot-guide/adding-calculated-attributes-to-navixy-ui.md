@@ -52,7 +52,7 @@ curl -X POST "https://api.eu.navixy.com/v2/iot/logic/flow/create" \
           "enabled": true,
           "data": {
             "title": "Vehicle Fleet",
-            "sources": [394892, 394893, 394894]
+            "source_ids": [394892, 394893, 394894]
           },
           "view": {
             "position": {
