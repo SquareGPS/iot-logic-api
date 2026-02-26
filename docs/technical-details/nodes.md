@@ -98,7 +98,7 @@ Here's a guick reference:
 | Attribute references   | `speed`, `fuel_level`, `analog_1`   | Reference to device attributes |
 
 {% hint style="info" %}
-To find more examples of formulas, see [Calculation examples](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/calculation-examples) in our User docs.
+To find more examples of formulas, see [Calculation examples](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/readme/account/iot-logic/flow-management/initiate-attribute-node/calculation-examples) in our User docs.
 {% endhint %}
 
 **Expression examples**
@@ -363,7 +363,7 @@ Headers must be explicitly specified, including `Content-Type`. Common authentic
   * URL protocol omission (always include `https://` or `http://`)
   * Attribute name mismatches (ensure referenced attributes exist in upstream nodes)
 * The Webhook node enables integration with RESTful APIs, webhook platforms (Zapier, Make, n8n), ticketing systems, CRM platforms, and custom internal systems
-* For more information on webhook configuration, see [Webhook node user guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/webhook-node)
+* For more information on webhook configuration, see [Webhook node user guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/readme/account/iot-logic/flow-management/webhook-node)
 
 ## Action node (`action`)
 
@@ -513,7 +513,7 @@ The output endpoint node supports different destination types:
   "title": "Your Title Here",
   "enabled": true,
   "data": {
-    "output_endpoint_type": "output_navixy"
+    "output_endpoint_type": "output_default"
   },
   "view": {
     "position": { "x": 250, "y": 50 }
@@ -541,20 +541,20 @@ The output endpoint node supports different destination types:
 
 #### Key properties
 
-| Property                    | Type    | Required      | Description                                                              |
-| --------------------------- | ------- | ------------- | ------------------------------------------------------------------------ |
-| `id`                        | integer | Yes           | Unique identifier within the flow                                        |
-| `type`                      | string  | Yes           | Must be `"output_endpoint"`                                              |
-| `title`                     | string  | Yes           | Human-readable name for the node                                         |
-| `enabled`                   | boolean | Yes           | Whether this node processes data                                         |
-| `data.output_endpoint_type` | string  | Yes           | Type of output destination (`"output_navixy"` or `"output_mqtt_client"`) |
-| `data.output_endpoint_id`   | integer | For MQTT only | Reference to a previously created endpoint                               |
+| Property                    | Type    | Required      | Description                                                               |
+| --------------------------- | ------- | ------------- | ------------------------------------------------------------------------- |
+| `id`                        | integer | Yes           | Unique identifier within the flow                                         |
+| `type`                      | string  | Yes           | Must be `"output_endpoint"`                                               |
+| `title`                     | string  | Yes           | Human-readable name for the node                                          |
+| `enabled`                   | boolean | Yes           | Whether this node processes data                                          |
+| `data.output_endpoint_type` | string  | Yes           | Type of output destination (`"output_default"` or `"output_mqtt_client"`) |
+| `data.output_endpoint_id`   | integer | For MQTT only | Reference to a previously created endpoint                                |
 
 ### Output endpoint types
 
 | Type                 | Description                       | Use Case                              |
 | -------------------- | --------------------------------- | ------------------------------------- |
-| `output_navixy`      | Default output to Navixy platform | Sending processed data back to Navixy |
+| `output_default`     | Default output to Navixy platform | Sending processed data back to Navixy |
 | `output_mqtt_client` | External MQTT broker connection   | Integrating with third-party systems  |
 
 <details>
@@ -595,7 +595,7 @@ The output endpoint node supports different destination types:
 ### Usage notes
 
 * Every flow must have at least one output endpoint node to be functional
-* The `output_navixy` type doesn't require a referenced endpoint (built-in)
+* The `output_default` type doesn't require a referenced endpoint (built-in)
 * The `output_mqtt_client` type requires an `output_endpoint_id` referencing a previously created endpoint
 * Multiple output nodes can be used to send the same data to different destinations
 * Output nodes are "terminal" - they don't connect to any downstream nodes

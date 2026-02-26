@@ -171,7 +171,7 @@ curl -X POST "https://your.server.com/iot/logic/flow/create" \
           "enabled": true,
           "data": {
             "title": "Navixy Platform",
-            "output_endpoint_type": "output_navixy"
+            "output_endpoint_type": "output_default"
           },
           "view": {                           
             "position": {
@@ -220,7 +220,7 @@ Response (example):
     * Uses timestamps for data validity tracking
   * **Node 3 (output\_endpoint)**:
     * Destination for processed data
-    * Type `output_navixy` sends to Navixy platform
+    * Type `output_default` sends to Navixy platform
     * Final step in the processing pipeline
 * **Edges**: Define connections between nodes
   * Reference nodes by their IDs to create the processing sequence

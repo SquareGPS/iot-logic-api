@@ -261,8 +261,8 @@ Here's an example of a JSON structure describing a complete flow.
       "properties": {
         "output_endpoint_type": {
           "type": "string",
-          "description": "Type of output endpoint, must be 'output_navixy' for Navixy platform",
-          "enum": ["output_navixy"]
+          "description": "Type of output endpoint, must be 'output_default' for Navixy platform",
+          "enum": ["output_default"]
         }
       }
     },
@@ -396,7 +396,7 @@ The example template shows a flow that:
       "title": "Navixy Platform Output",
       "enabled": true,
       "data": {
-        "output_endpoint_type": "output_navixy"
+        "output_endpoint_type": "output_default"
       },
       "view": {
         "position": {

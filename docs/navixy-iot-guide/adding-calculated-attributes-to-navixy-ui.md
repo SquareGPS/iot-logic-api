@@ -94,7 +94,7 @@ curl -X POST "https://api.eu.navixy.com/v2/iot/logic/flow/create" \
           "enabled": true,
           "data": {
             "title": "Navixy Platform",
-            "output_endpoint_type": "output_navixy"
+            "output_endpoint_type": "output_default"
           },
           "view": {
             "position": {
@@ -282,7 +282,7 @@ Once configured, users will see the calculated attributes in several Navixy UI l
 * **Reports Section**: Historical data analysis using calculated attributes
 * **Measurement Sensors Reports**: Dedicated reports for sensor data over time
 
-For detailed information about how these calculated attributes appear in the Navixy UI, refer to the [Displaying new calculated attributes on the Navixy platform guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/displaying-new-calculated-attributes-on-the-navixy-platform).
+For detailed information about how these calculated attributes appear in the Navixy UI, refer to the [Displaying new calculated attributes on the Navixy platform guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/readme/account/iot-logic/flow-management/initiate-attribute-node/displaying-new-calculated-attributes-on-the-navixy-platform).
 
 ## Troubleshooting
 
