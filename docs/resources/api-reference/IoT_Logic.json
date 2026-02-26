@@ -49,6 +49,7 @@
                 "type": "object",
                 "properties": {
                   "flow": {
+                    "description": "The flow definition, wrapped in this \"flow\" key as required by the create/update endpoints. Export/import operations do not use this envelope — they accept the flow object directly.",
                     "$ref": "#/components/schemas/FlowDraft"
                   }
                 }
@@ -135,6 +136,7 @@
                 "type": "object",
                 "properties": {
                   "flow": {
+                    "description": "The flow definition, wrapped in this \"flow\" key as required by the create/update endpoints. Export/import operations do not use this envelope — they accept the flow object directly.",
                     "$ref": "#/components/schemas/Flow"
                   }
                 },
@@ -725,7 +727,7 @@
       },
       "FlowDraft": {
         "type": "object",
-        "description": "Flowchart object without ID",
+        "description": "Flow object used with the create and update API endpoints. When calling these endpoints, this object must be nested inside a \"flow\" envelope key: {\"flow\": <FlowDraft>}. Includes runtime settings (enabled, default_flow). For a portable export/import format that omits runtime fields and is passed directly without an envelope, see FlowExport.",
         "properties": {
           "title": {
             "type": "string",
@@ -780,7 +782,7 @@
       },
       "FlowExport": {
         "type": "object",
-        "description": "Exported flow structure without runtime or identity fields. Used as the request body for flow import. Contains only the fields required to reconstruct a flow: title, description, nodes, and edges. The enabled state and flow ID are excluded and must be configured after import.",
+        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, default_flow, id) are excluded; they must be set separately after import.",
         "required": ["title", "nodes", "edges"],
         "properties": {
           "title": {
@@ -1085,6 +1087,7 @@
       },
       "SetOutput": {
         "type": "object",
+        "description": "Switches a device output port to the specified on/off state.",
         "required": ["type", "number", "value"],
         "properties": {
           "type": {
@@ -1106,6 +1109,7 @@
       },
       "SendCommand": {
         "type": "object",
+        "description": "Sends a custom GPRS command string to the device. Use for device-specific commands as documented by the device manufacturer.",
         "required": ["type", "command"],
         "properties": {
           "type": {
