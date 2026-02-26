@@ -2,12 +2,16 @@
 
 Let's create a flow that sends your device data to an external system through MQTT. Rather than creating multiple endpoints separately, we can accomplish this in one single request.
 
+{% hint style="info" %}
+Need HTTP POST instead of MQTT? Use the [Webhook node](../technical-details/nodes.md#webhook-node-webhook).
+{% endhint %}
+
 ## Creating a complete flow with integrated MQTT node
 
 The simplest approach is to define both your data sources and MQTT output endpoint directly in your flow creation request. To do it, send a request to the following endpoint:
 
 {% openapi-operation spec="iot-logic" path="/iot/logic/flow/create" method="post" %}
-[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/api-docs-testing/docs/resources/api-reference/IoT_Logic.json)
+[OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-operation %}
 
 ### Request example
@@ -80,7 +84,7 @@ The response will include the flow ID:
 ```
 
 {% hint style="success" %}
-#### Congratulations!
+**Congratulations!**
 
 You've now set up a flow that creates a complete end-to-end data pipeline in a single API call. This flow:
 

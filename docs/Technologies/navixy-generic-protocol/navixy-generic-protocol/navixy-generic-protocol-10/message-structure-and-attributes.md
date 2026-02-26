@@ -2,12 +2,26 @@
 
 Messages are processed sequentially and follow a straightforward **JSON** structure. Each message includes two **mandatory** attributes: `device_id` and `message_time`.
 
-Minimum possible message:
+Minimum possible message to transmit:
 
 ```
 {
    "message_time": "...",
    "device_id": "..."
+}
+```
+
+Minimum possible message to be saved on the platform:
+
+```
+{
+    "message_time": "2026-02-05T06:00:11Z", // current message time shouldn't be after an already sent
+    "device_id": "1112312212", // device_id should be already registered on the platform
+    "location": {
+        "latitude": 34.15929687705282,
+        "longitude": -118.4614133834839,
+        "satellites": 3 // amount of satellites is better to set more than 2 to save data properly
+    }
 }
 ```
 

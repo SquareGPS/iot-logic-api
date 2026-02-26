@@ -47,11 +47,14 @@ Key characteristics of flows:
 
 #### Nodes
 
-**Nodes** are the functional elements of a **flow**, with each node handling a specific stage of the data lifecycle. There are three primary types of nodes:
+**Nodes** are the functional elements of a **flow**, with each node handling a specific stage of the data lifecycle. Common node types include:
 
-* **Data Source node**: Receives data from M2M devices and serves as the entry point for all device data
-* **Initiate Attribute node**: Processes and enriches incoming data, including creating new calculated attributes trough mathematical operations in [Navixy IoT Logic Expression Language](technologies/navixy-iot-logic-expression-language/)
-* **Output Endpoint node**: Transmits data to target systems using the [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md). This node can be configured to use different endpoint types:
+* [Data Source node](technical-details/nodes.md#data-source-node-data_source): selects which devices send data into the flow
+* [Initiate Attribute node](technical-details/nodes.md#initiate-attribute-node-initiate_attribute): transforms and enriches data using [Navixy IoT Logic Expression Language](technologies/navixy-iot-logic-expression-language/)
+* [Logic node](technical-details/nodes.md#logic-node-logic): routes data based on conditions
+* [Webhook node](technical-details/nodes.md#webhook-node-webhook): sends HTTP POST requests to your external endpoint
+* [Device action node](technical-details/nodes.md#device-action-node-action): sends commands to devices
+* [Output Endpoint node](technical-details/nodes.md#output-endpoint-node-output_endpoint): transmits data using the [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md). This node can be configured to use different endpoint types:
   * **Default endpoint**: Pre-configured destination for sending data to the Navixy platform
   * **MQTT endpoint**: Configurable connection for sending data to third-party systems and services
 
@@ -168,7 +171,7 @@ curl -X POST "https://your.server.com/iot/logic/flow/create" \
           "enabled": true,
           "data": {
             "title": "Navixy Platform",
-            "output_endpoint_type": "output_navixy"
+            "output_endpoint_type": "output_default"
           },
           "view": {                           
             "position": {
@@ -217,7 +220,7 @@ Response (example):
     * Uses timestamps for data validity tracking
   * **Node 3 (output\_endpoint)**:
     * Destination for processed data
-    * Type `output_navixy` sends to Navixy platform
+    * Type `output_default` sends to Navixy platform
     * Final step in the processing pipeline
 * **Edges**: Define connections between nodes
   * Reference nodes by their IDs to create the processing sequence
