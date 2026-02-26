@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "title": "Navixy IoT Logic API",
     "summary": "API calls for Flow and Node management",
-    "description": "This is an API reference for calls for Flow and Node management\n\n> **BETA Version!**  \n> Now the early access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned!",
+    "description": "This is an API reference for Flow and Node management in Navixy IoT Logic. Use these endpoints to create and configure data processing flows, manage nodes and their connections, assign devices to flows, and export or import flow configurations.",
     "contact": {
       "name": "Navixy support",
       "email": "support@navixy.com",
@@ -1087,6 +1087,7 @@
       },
       "SetOutput": {
         "type": "object",
+        "title": "SetOutput",
         "description": "Switches a device output port to the specified on/off state.",
         "required": ["type", "number", "value"],
         "properties": {
@@ -1109,6 +1110,7 @@
       },
       "SendCommand": {
         "type": "object",
+        "title": "SendCommand",
         "description": "Sends a custom GPRS command string to the device. Use for device-specific commands as documented by the device manufacturer.",
         "required": ["type", "command"],
         "properties": {
