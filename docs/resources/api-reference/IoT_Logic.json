@@ -286,7 +286,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful response with flow template",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
@@ -295,11 +295,10 @@
                     "success": {
                       "type": "boolean",
                       "description": "`true` if request finished successfully.",
-                      "readOnly": true,
-                      "example": true
+                      "readOnly": true
                     },
                     "value": {
-                      "$ref": "#/components/schemas/FlowDraft"
+                      "$ref": "#/components/schemas/FlowExport"
                     }
                   }
                 }
@@ -779,6 +778,35 @@
           }
         ]
       },
+      "FlowExport": {
+        "type": "object",
+        "description": "Exported flow structure without runtime or identity fields. Used as the request body for flow import. Contains only the fields required to reconstruct a flow: title, description, nodes, and edges. The enabled state and flow ID are excluded and must be configured after import.",
+        "required": ["title", "nodes", "edges"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Flow name."
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Flow description (optional)."
+          },
+          "nodes": {
+            "type": "array",
+            "description": "Nodes that make up the flow.",
+            "items": {
+              "$ref": "#/components/schemas/Node"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "description": "Connections between nodes.",
+            "items": {
+              "$ref": "#/components/schemas/Edge"
+            }
+          }
+        }
+      },
       "Edge": {
         "type": "object",
         "description": "Edge between two Nodes",
@@ -1002,7 +1030,7 @@
         ]
       },
       "NodeAction": {
-        "description": "Node: Action. Executes automated device commands when triggered by incoming data. Action nodes enable direct device control through output switching and GPRS command transmission. Functions as a terminal node that cannot have outgoing connections.",
+        "description": "Node: Device action. Executes automated device commands when triggered by incoming data. Enables direct device control through output switching and GPRS command transmission. By default, commands are sent to the device that triggered the node. Use device_mapping to redirect commands to other target devices instead. Functions as a terminal node that cannot have outgoing connections.",
         "type": "object",
         "required": [
           "type",
@@ -1026,7 +1054,7 @@
               },
               "actions": {
                 "type": ["array", "null"],
-                "description": "List of actions to execute sequentially when node is triggered. Actions execute in order from first to last. Maximum 10 actions per node. Commands are sent only to devices that provided data in the current trigger event.",
+                "description": "List of actions to execute sequentially when node is triggered. Actions execute in order from first to last. Maximum 10 actions per node. Commands are sent to the trigger device by default, or to target devices specified in device_mapping.",
                 "items": {
                   "oneOf": [
                     {
@@ -1039,6 +1067,14 @@
                 },
                 "maxItems": 10,
                 "uniqueItems": true
+              },
+              "device_mapping": {
+                "type": ["array", "null"],
+                "description": "Optional cross-device command routing. Maps source devices to target devices that will receive the actions instead of the source device. If null or empty, actions are sent to the device that triggered the node.",
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/components/schemas/DeviceMapping"
+                }
               }
             }
           },
@@ -1087,6 +1123,25 @@
             "type": ["boolean", "null"],
             "default": true,
             "description": "Reliable commands will be retried in case if a tracker is not online at the moment."
+          }
+        }
+      },
+      "DeviceMapping": {
+        "type": "object",
+        "description": "Maps a source device to one or more target devices for cross-device command routing. When a source device triggers the node, actions are sent to the specified target devices instead.",
+        "required": ["source_id", "target_source_ids"],
+        "properties": {
+          "source_id": {
+            "type": "integer",
+            "description": "ID of the source device that triggers the routing rule."
+          },
+          "target_source_ids": {
+            "type": "array",
+            "description": "IDs of the target devices that will receive the actions when the source device triggers the node.",
+            "minItems": 1,
+            "items": {
+              "type": "integer"
+            }
           }
         }
       },
@@ -1153,7 +1208,7 @@
               },
               "body": {
                 "type": ["string", "null"],
-                "description": "Optional request body template. Use $\"attribute_name\" syntax to reference attributes from upstream nodes. Supports nested paths (e.g., $\"location.latitude\"). Direct attribute references only; expressions not supported. Null attributes send null values.",
+                "description": "Optional request body template. Use \"attribute_name\" syntax to reference attributes from upstream nodes. Supports nested paths (e.g., \"location.latitude\"). Direct attribute references only; expressions not supported. Null attributes send null values.",
                 "maxLength": 4000,
                 "example": "{\"device_id\": $\"device_id\", \"temperature\": $\"temperature\", \"location\": {\"lat\": $\"latitude\", \"lng\": $\"longitude\"}, \"timestamp\": $\"message_time\"}"
               }
