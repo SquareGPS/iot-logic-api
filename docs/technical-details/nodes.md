@@ -137,7 +137,7 @@ Short syntax is also supported for attribute names in formulas. When referencing
 * Use validation flags strategically: "valid" for accurate calculations, "all" when null values are meaningful
 * Calculated attributes become available in Data Stream Analyzer and can create custom sensors in Navixy Tracking module when connected to Default Output Endpoint
 
-## Logic node (`logic`)
+## IF/THEN Logic node (`logic`) <a href="#logic-node-logic" id="logic-node-logic"></a>
 
 This node creates conditional branching points that route incoming data down different paths based on logical expressions. It evaluates conditions against real-time data and creates boolean attributes for monitoring and decision-making.
 
@@ -179,6 +179,40 @@ The Logic node supports two output connection types:
 
 * Activates when the expression evaluates to `false`, `null`, or encounters errors
 * Optional connection
+
+#### Common topology patterns
+
+When you need to both trigger a side effect and forward data to Navixy on the same branch, connect the Logic node to both the terminal node and the Output Endpoint node using separate `then_edge` connections.
+
+This applies to any terminal node type (e.g. Action, Webhook) since neither can have outgoing connections downstream. Both `then` edges fire in parallel when the condition is true. A single Output Endpoint node can receive connections from multiple upstream nodes, including from both `then` and `else` branches simultaneously.
+
+{% tabs %}
+{% tab title="Action + Output" %}
+Use this pattern when you need to send a GPRS command to a device and still forward telemetry data to output on the same branch.
+
+```
+[Logic node]
+├─ then_edge → [Action node] ← sends command to device
+├─ then_edge → [Output Endpoint] ← forwards data
+└─ else_edge → [Output Endpoint] ← forwards data
+```
+{% endtab %}
+
+{% tab title="Webhook + Output" %}
+Use this pattern when you need to send an HTTP POST to an external system and still forward telemetry data to output on the same branch.
+
+```
+[Logic node]
+├─ then_edge → [Webhook node] ← sends HTTP POST to external system
+├─ then_edge → [Output Endpoint] ← forwards data
+└─ else_edge → [Output Endpoint] ← forwards data
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="danger" %}
+Do not attempt to chain Action → Output Endpoint or Webhook → Output Endpoint. Both Action and Webhook nodes are terminal and cannot have outgoing connections, this will produce a validation error on the Data Source node: "Flow path or one of its branches doesn't terminate with an output endpoint".
+{% endhint %}
 
 ### Expression language
 
