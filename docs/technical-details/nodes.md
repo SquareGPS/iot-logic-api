@@ -365,15 +365,23 @@ Headers must be explicitly specified, including `Content-Type`. Common authentic
 * The Webhook node enables integration with RESTful APIs, webhook platforms (Zapier, Make, n8n), ticketing systems, CRM platforms, and custom internal systems
 * For more information on webhook configuration, see [Webhook node user guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/readme/account/iot-logic/flow-management/webhook-node)
 
-## Action node (`action`)
+## Device action node (`action`)
 
 This node executes automated commands when triggered by incoming data. It transforms data flows into device control actions, enabling automated responses to conditions detected in earlier nodes.
+
+In API payloads, the node type stays `action`.
+
+### Action node (`action`)
+
+This node used to be called **Action node** in our docs.
+
+Old deep links to `#action-node-action` should continue to work and land here.
 
 {% openapi-schemas spec="iot-logic" schemas="NodeAction" grouped="true" %}
 [OpenAPI iot-logic](https://raw.githubusercontent.com/SquareGPS/iot-logic-api/refs/heads/main/docs/resources/api-reference/IoT_Logic.json)
 {% endopenapi-schemas %}
 
-#### Action node structure
+#### Device action node structure
 
 ```json
 {
@@ -409,7 +417,7 @@ This node executes automated commands when triggered by incoming data. It transf
 
 ### Action types
 
-The Action node supports two types of automated responses:
+The Device action node supports two types of automated responses:
 
 #### Set Output action
 
@@ -445,7 +453,7 @@ Transmits custom GPRS commands directly to devices.
 
 ### Usage notes
 
-* Action nodes function as **terminal nodes** - they do not pass data to downstream nodes
+* Device action nodes function as **terminal nodes** - they do not pass data to downstream nodes
 * Actions execute **sequentially** in the order they appear in the `actions` array
 * Commands are sent only to **devices that provided the triggering data**
 * Each node can contain **up to 10 actions** of mixed types
