@@ -1087,6 +1087,7 @@
       },
       "SetOutput": {
         "type": "object",
+        "description": "Switches a device output port to the specified on/off state.",
         "required": ["type", "number", "value"],
         "properties": {
           "type": {
@@ -1108,6 +1109,7 @@
       },
       "SendCommand": {
         "type": "object",
+        "description": "Sends a custom GPRS command string to the device. Use for device-specific commands as documented by the device manufacturer.",
         "required": ["type", "command"],
         "properties": {
           "type": {
