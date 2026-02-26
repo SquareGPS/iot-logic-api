@@ -782,7 +782,7 @@
       },
       "FlowExport": {
         "type": "object",
-        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, default_flow, id) are excluded; they must be set separately after import.",
+        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, id) are not defined here: Flow is imported in 'enabled' state by default and 'id' is assigned dinamically.",
         "required": ["title", "nodes", "edges"],
         "properties": {
           "title": {
