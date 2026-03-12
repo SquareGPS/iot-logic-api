@@ -6,7 +6,7 @@ description: Complete reference for NGP message attributes — location, events,
 
 NGP messages are JSON objects transmitted one per request. Each message must contain two **mandatory** attributes: `device_id` and `message_time`.
 
-**Minimum valid message:**
+### Minimum valid message
 
 ```json
 {
@@ -15,7 +15,7 @@ NGP messages are JSON objects transmitted one per request. Each message must con
 }
 ```
 
-**Minimum message that will be stored by the platform:**
+### Minimum message to be stored by the platform
 
 The platform requires a valid location with at least 3 satellites before saving a data point. The `device_id` must already be registered on the platform.
 
