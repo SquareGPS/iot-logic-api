@@ -4,11 +4,6 @@ stoplight-id: ie3rt9xv91kie
 
 # Navixy IoT Logic API
 
-{% hint style="info" %}
-_BETA Version!_\
-Now the early access of IoT Logic's API is implemented, which means possible changes in the near future. Feel free to try the functionality, however, you may need to introduce changes in your applications reflecting the API functionality updates. Stay tuned!
-{% endhint %}
-
 ## Introduction
 
 **Navixy IoT Logic** is a no-code/low-code tool that enables seamless IoT data processing and integration. Its API provides programmatic access to create, manage, and optimize data flows between IoT devices and destination systems without requiring extensive development resources.
@@ -64,7 +59,7 @@ Nodes are connected through transitions (`edges`) that define the path data foll
 
 The following screenshot from IoT Logic UI illustrates the basic architecture of a flow in IoT Logic:
 
-![Flow-example.png](.gitbook/assets/Flow-example.png)
+![Flow example](.gitbook/assets/Flow-example.png)
 
 This represents a simple linear flow where:
 
@@ -82,11 +77,12 @@ More complex architectures can be created by:
 
 To ensure a clear picture of the basic IoT Logic API capabilities, let's create your first flow.
 
-The following example demonstrates how to create a complete flow with three nodes that sends data to Navixy. This flow will:
+The following example demonstrates how to create a complete flow with **4 nodes** that sends data to Navixy. This flow will:
 
 1. Collect data from specified devices
-2. Calculate temperature in Fahrenheit from Celsius readings
-3. Send the enriched data to the Navixy platform
+2. Detect a speed violation with `speed > 90`
+3. Trigger a device action (`send_gprs_command`) on violation
+4. Send messages to Navixy via `output_default`
 
 ### Step 1: Authentication
 
@@ -120,80 +116,80 @@ For more details on how to authenticate your requests, see [Authentication](auth
 
 Create a flow with all nodes and connections in a single request:
 
+Use either the session `hash` from Step 1 or an API key in the `Authorization` header.
+
+{% code expandable="true" %}
 ```bash
-curl -X POST "https://your.server.com/iot/logic/flow/create" \
+curl -X POST "https://api.{server}.navixy.com/v2/iot/logic/flow/create" \
   -H "Content-Type: application/json" \
-  -H "Authorization: NVX hash_value" \
+  -H "Authorization: NVX your_hash_or_api_key" \
   -d '{
-    "flow": {                                   
-      "title": "Basic Temperature Monitoring",
-      "enabled": true,                          
-      "nodes": [                                
+    "flow": {
+      "title": "Speed Violation Alert",
+      "enabled": true,
+      "nodes": [
         {
-          "id": 1,                              
+          "id": 1,
           "type": "data_source",
-          "enabled": true,
-          "data": {                             
+          "data": {
             "title": "Fleet Vehicles",
-            "sources": [394892, 394893, 394894] 
+            "source_ids": [111111, 222222, 333333]
           },
-          "view": {                             
-            "position": {
-              "x": 50,
-              "y": 100
-            }
+          "view": {
+            "position": { "x": 50, "y": 250 }
           }
         },
-        {                                       
-          "id": 2,              
-          "type": "initiate_attributes",
+        {
+          "id": 2,
+          "type": "logic",
           "data": {
-            "title": "Temperature Conversion",
-            "items": [
+            "title": "Speed > 90 km/h?",
+            "name": "speed_violation",
+            "condition": "speed > 90"
+          },
+          "view": {
+            "position": { "x": 320, "y": 250 }
+          }
+        },
+        {
+          "id": 3,
+          "type": "action",
+          "data": {
+            "title": "Trigger In-Cab Buzzer",
+            "actions": [
               {
-                "name": "temperature_f",
-                "value": "value(\"temperature\")*1.8 + 32",
-                "generation_time": "genTime(\"temperature\", 0, \"valid\")",
-                "server_time": "now()"
+                "type": "send_gprs_command",
+                "command": "setdigout 1 1",
+                "reliable": true
               }
             ]
           },
-          "view": {                           
-            "position": {
-              "x": 300,
-              "y": 100
-            }
+          "view": {
+            "position": { "x": 590, "y": 100 }
           }
         },
         {
-          "id": 3,                            
+          "id": 4,
           "type": "output_endpoint",
-          "enabled": true,
           "data": {
-            "title": "Navixy Platform",
+            "title": "Send to Navixy",
             "output_endpoint_type": "output_default"
           },
-          "view": {                           
-            "position": {
-              "x": 550,
-              "y": 100
-            }
+          "view": {
+            "position": { "x": 590, "y": 400 }
           }
         }
       ],
-      "edges": [                              
-        {
-          "from": 1,                          
-          "to": 2
-        },
-        {
-          "from": 2,
-          "to": 3
-        }
+      "edges": [
+        { "from": 1, "to": 2, "type": "simple_edge" },
+        { "from": 2, "to": 3, "type": "then_edge" },
+        { "from": 2, "to": 4, "type": "then_edge" },
+        { "from": 2, "to": 4, "type": "else_edge" }
       ]
     }
   }'
 ```
+{% endcode %}
 
 Response (example):
 
@@ -209,29 +205,29 @@ Response (example):
 * **Flow entity**: The main container defining a complete data processing pipeline
   * `title`: Names your flow for easier identification
   * `enabled`: When true, flow begins processing data immediately after creation
-* **Nodes**: Functional components that each handle a specific step in data processing
-  * **Node 1 (data\_source)**:
-    * Entry point collecting data from devices (IDs: 394892, 394893, 394894)
-    * Unique ID within the flow for connection references
-    * Position coordinates control UI display location
-  * **Node 2 (initiate\_attributes)**:
-    * Transforms data with custom calculations
-    * Creates new `temperature_f` attribute using formula
-    * Uses timestamps for data validity tracking
-  * **Node 3 (output\_endpoint)**:
-    * Destination for processed data
-    * Type `output_default` sends to Navixy platform
-    * Final step in the processing pipeline
-* **Edges**: Define connections between nodes
-  * Reference nodes by their IDs to create the processing sequence
-  * Create a clear path for data to follow from source to destination
+* **Nodes**: Functional components that each handle a specific step in data processing. See [Nodes](technical-details/nodes.md) for full node schemas and options.
+  * **Node 1 (`data_source`)**: Entry point for device telemetry.
+    * `source_ids`: Which devices feed messages into this flow.
+  * **Node 2 (`logic`)**: Branching decision based on a boolean expression.
+    * `condition: "speed > 90"` routes each message to THEN or ELSE.
+  * **Node 3 (`action`)**: Executes device commands on the THEN branch.
+    * `actions[].type: "send_gprs_command"` sends the command to the triggering device (by default).
+  * **Node 4 (`output_endpoint`)**: Terminates the flow and defines the destination.
+    * `output_endpoint_type: "output_default"` sends messages to Navixy.
+* **Edges**: Define connections between nodes (the data path).
+  * `{ "from": 1, "to": 2 }`: data source → logic.
+  * `{ "from": 2, "to": 3, "type": "then_edge" }`: violation → action.
+  * `{ "from": 2, "to": 4, "type": "then_edge" }`: violation → output.
+  * `{ "from": 2, "to": 4, "type": "else_edge" }`: no violation (or condition can’t be evaluated) → output.
+  * Both Logic branches resolve to an output endpoint (required for a valid flow).
 
 {% hint style="success" %}
 This single request creates a complete flow that:
 
-* Collects data from three specific devices (IDs: 394892, 394893, 394894)
-* Converts temperature values from Celsius to Fahrenheit
-* Transmits all data, including the new calculated attribute, to the Navixy platform
+* Collects data from `source_ids: [111111, 222222, 333333]`
+* Routes messages by speed condition `speed > 90`
+* Triggers `send_gprs_command` on the THEN branch
+* Outputs messages via `output_default`
 
 The success response includes the ID of the newly created flow, which you can use for future operations like updating the flow or adding additional nodes.
 

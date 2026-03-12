@@ -782,7 +782,7 @@
       },
       "FlowExport": {
         "type": "object",
-        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, default_flow, id) are excluded; they must be set separately after import.",
+        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, id) are not defined here: Flow is imported in 'enabled' state by default and 'id' is assigned dinamically.",
         "required": ["title", "nodes", "edges"],
         "properties": {
           "title": {
@@ -988,7 +988,7 @@
       },
       "NodeLogic": {
         "type": "object",
-        "description": "Node: Logic. Creates conditional branching points that route data based on boolean expressions. Logic nodes evaluate incoming data against user-defined conditions and direct data flow through THEN (true) or ELSE (false) output paths. The node creates a boolean attribute that stores evaluation results and can be used in subsequent nodes or Navixy monitoring systems. Logic nodes support multiple outgoing connections on both THEN and ELSE branches, enabling parallel processing and complex decision trees.",
+        "description": "Node: Logic. Creates conditional branching points that route data based on boolean expressions. Logic nodes evaluate incoming data against user-defined conditions and direct data flow through THEN (true) or ELSE (false) output paths. The node creates a boolean attribute that stores evaluation results and can be used in subsequent nodes or Navixy monitoring systems. Logic nodes support multiple outgoing connections on both THEN and ELSE branches. When a THEN target is a terminal node (Action, Webhook), add a second then_edge from this Logic node directly to the Output Endpoint to ensure data is still forwarded to Navixy, both edges fire in parallel.",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/NodeID"
