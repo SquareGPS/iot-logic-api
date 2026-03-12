@@ -1,6 +1,7 @@
 ---
-description: Standard event_id values for NGP messages, covering power, security, safety, vehicle efficiency, track, I/O, and peripheral events.
-hidden: true
+description: >-
+  Standard event_id values for NGP messages, covering power, security, safety,
+  vehicle efficiency, track, I/O, and peripheral events.
 ---
 
 # Predefined event identifiers
@@ -61,59 +62,59 @@ Range: 101–200.
 
 Range: 201–300.
 
-| **Event ID** | **Description**                                           |
-| ------------ | --------------------------------------------------------- |
-| 201          | Emergency contact number called                           |
-| 202          | SOS button pressed                                        |
-| 203          | Cruise control switched on                                |
-| 204          | Cruise control switched off                               |
-| 205          | DMS: driver not identified                                |
-| 206          | DMS: driver identified                                    |
-| 207          | ADAS: frequent lane change                                |
-| 208          | DMS: device cannot detect human face                      |
-| 209          | Seat belt unbuckled                                       |
-| 210          | DMS: driver is drinking                                   |
-| 211          | DMS: driver eyes closed                                   |
-| 212          | DMS: new driver detection reported                        |
-| 213          | DMS: driver enters cabin                                  |
-| 214          | DMS: driver absence start                                 |
-| 215          | DMS: driver stopped smoking (driver distraction)          |
-| 216          | DMS: driver started smoking (driver distraction)          |
-| 217          | DMS: driver finished using phone (driver distraction)     |
-| 218          | DMS: driver started using phone (driver distraction)      |
-| 219          | DMS: yawning detected (fatigue driving)                   |
-| 220          | DMS: driver stopped distraction                           |
-| 221          | DMS: driver started distraction                           |
-| 222          | DMS: driver stopped drowsiness (fatigue driving)          |
-| 223          | DMS: driver started drowsiness (fatigue driving)          |
-| 224          | Overspeeding                                              |
-| 225          | Unexpected movement start                                 |
-| 226          | Unexpected movement end                                   |
-| 227          | ADAS: pedestrian in danger zone                           |
-| 228          | ADAS: traffic sign recognition                            |
-| 229          | ADAS: pedestrian collision warning                        |
-| 230          | Fatigue driving                                           |
-| 231          | ADAS: headway warning                                     |
-| 232          | ADAS: right lane departure                                |
-| 233          | ADAS: left lane departure                                 |
-| 234          | ADAS: lane departure                                      |
-| 235          | ADAS: forward collision warning                           |
-| 236          | Harsh driving: quick lane change                          |
-| 237          | Harsh driving: acceleration and turn                      |
-| 238          | Harsh driving: braking and turn                           |
-| 239          | Harsh driving: turn                                       |
-| 240          | Harsh driving: acceleration                               |
-| 241          | Harsh driving: braking                                    |
-| 242          | Crash alarm                                               |
-| 243          | Harsh driving                                             |
-| 244          | Call button pressed                                       |
-| 245          | Driver distraction: texting while driving                 |
-| 246          | Driver distraction: not watching the road ("lizard eye")  |
-| 247          | Lane drift detected                                       |
-| 248          | Traffic STOP sign violation                               |
-| 249          | Speed limit exceeded                                      |
-| 250          | Traffic light violation                                   |
-| 251          | Tailgating: unsafe following distance                     |
+| **Event ID** | **Description**                                          |
+| ------------ | -------------------------------------------------------- |
+| 201          | Emergency contact number called                          |
+| 202          | SOS button pressed                                       |
+| 203          | Cruise control switched on                               |
+| 204          | Cruise control switched off                              |
+| 205          | DMS: driver not identified                               |
+| 206          | DMS: driver identified                                   |
+| 207          | ADAS: frequent lane change                               |
+| 208          | DMS: device cannot detect human face                     |
+| 209          | Seat belt unbuckled                                      |
+| 210          | DMS: driver is drinking                                  |
+| 211          | DMS: driver eyes closed                                  |
+| 212          | DMS: new driver detection reported                       |
+| 213          | DMS: driver enters cabin                                 |
+| 214          | DMS: driver absence start                                |
+| 215          | DMS: driver stopped smoking (driver distraction)         |
+| 216          | DMS: driver started smoking (driver distraction)         |
+| 217          | DMS: driver finished using phone (driver distraction)    |
+| 218          | DMS: driver started using phone (driver distraction)     |
+| 219          | DMS: yawning detected (fatigue driving)                  |
+| 220          | DMS: driver stopped distraction                          |
+| 221          | DMS: driver started distraction                          |
+| 222          | DMS: driver stopped drowsiness (fatigue driving)         |
+| 223          | DMS: driver started drowsiness (fatigue driving)         |
+| 224          | Overspeeding                                             |
+| 225          | Unexpected movement start                                |
+| 226          | Unexpected movement end                                  |
+| 227          | ADAS: pedestrian in danger zone                          |
+| 228          | ADAS: traffic sign recognition                           |
+| 229          | ADAS: pedestrian collision warning                       |
+| 230          | Fatigue driving                                          |
+| 231          | ADAS: headway warning                                    |
+| 232          | ADAS: right lane departure                               |
+| 233          | ADAS: left lane departure                                |
+| 234          | ADAS: lane departure                                     |
+| 235          | ADAS: forward collision warning                          |
+| 236          | Harsh driving: quick lane change                         |
+| 237          | Harsh driving: acceleration and turn                     |
+| 238          | Harsh driving: braking and turn                          |
+| 239          | Harsh driving: turn                                      |
+| 240          | Harsh driving: acceleration                              |
+| 241          | Harsh driving: braking                                   |
+| 242          | Crash alarm                                              |
+| 243          | Harsh driving                                            |
+| 244          | Call button pressed                                      |
+| 245          | Driver distraction: texting while driving                |
+| 246          | Driver distraction: not watching the road ("lizard eye") |
+| 247          | Lane drift detected                                      |
+| 248          | Traffic STOP sign violation                              |
+| 249          | Speed limit exceeded                                     |
+| 250          | Traffic light violation                                  |
+| 251          | Tailgating: unsafe following distance                    |
 
 ### Vehicle efficiency
 
@@ -129,18 +130,18 @@ Range: 301–400.
 
 Range: 401–500.
 
-| **Event ID** | **Description**                              |
-| ------------ | -------------------------------------------- |
-| 401          | Track point — no specific event              |
-| 402          | GSM LBS point report                         |
-| 403          | Track point by time interval                 |
-| 404          | Track point by distance                      |
-| 405          | Track point by heading angle change          |
-| 406          | Movement start                               |
-| 407          | Movement end                                 |
-| 408          | Non-track message                            |
-| 409          | Tracker entered auto geofence                |
-| 410          | Tracker exited auto geofence                 |
+| **Event ID** | **Description**                     |
+| ------------ | ----------------------------------- |
+| 401          | Track point — no specific event     |
+| 402          | GSM LBS point report                |
+| 403          | Track point by time interval        |
+| 404          | Track point by distance             |
+| 405          | Track point by heading angle change |
+| 406          | Movement start                      |
+| 407          | Movement end                        |
+| 408          | Non-track message                   |
+| 409          | Tracker entered auto geofence       |
+| 410          | Tracker exited auto geofence        |
 
 ### Inputs
 

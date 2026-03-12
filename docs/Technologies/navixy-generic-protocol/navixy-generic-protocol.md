@@ -1,6 +1,7 @@
 ---
-description: Navixy Generic Protocol (NGP) — an open, JSON-based telematics protocol for transmitting device data to the Navixy platform and compatible systems.
-hidden: true
+description: >-
+  Navixy Generic Protocol (NGP) — an open, JSON-based telematics protocol for
+  transmitting device data to the Navixy platform and compatible systems.
 ---
 
 # Navixy Generic Protocol
@@ -13,13 +14,13 @@ NGP is designed to be the single, standardized data format between devices and t
 
 Typical senders include: GPS trackers, IoT sensors, telematics terminals, and gateways that aggregate data from multiple sub-devices.
 
-![NGP-purpose.jpg](../../.gitbook/assets/NGP-purpose.jpg)
+![NGP-purpose.jpg](<../../.gitbook/assets/NGP-purpose (1).jpg>)
 
 ## Protocol versions
 
-| **Date**   | **Version**                                                                              | **Status**     | **Description**                                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------- |
-| 2024-09-03 | [**Version 1.0**](navixy-generic-protocol/navixy-generic-protocol-10.md)                 | **Current**    | Base version with general availability. Standard data structures with foundational telematics and sensor data support. |
+| **Date**   | **Version**                                                              | **Status**  | **Description**                                                                                                        |
+| ---------- | ------------------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------- |
+| 2024-09-03 | [**Version 1.0**](navixy-generic-protocol/navixy-generic-protocol-10.md) | **Current** | Base version with general availability. Standard data structures with foundational telematics and sensor data support. |
 
 ## Section content
 

@@ -1,14 +1,11 @@
 ---
 hidden: true
+noIndex: true
 ---
 
 # Navixy Generic Protocol 1.1a (on demand)
 
-{% hint style="danger" %}
-This version is deprecated and no longer actively developed. The documentation is retained for reference only.
-
 For current integration, use [Navixy Generic Protocol 1.0](navixy-generic-protocol-10.md).
-{% endhint %}
 
 Version 1.1a introduced advanced data structures and enhanced custom attribute support. It maintains backward compatibility with [1.0](navixy-generic-protocol-10.md).
 
@@ -18,13 +15,13 @@ Version [1.0](navixy-generic-protocol-10.md) allows simple custom attributes in 
 
 ### Attribute structure
 
-| **Attribute**      | **Type**        | **Object**          | **Required** | **Description**                                                        |
-| ------------------ | --------------- | ------------------- | ------------ | ---------------------------------------------------------------------- |
-| custom\_attributes | Array [Object]  | Root                | No           | Array of enhanced custom attribute objects.                            |
-| └─ type            | String          | custom\_attributes  | Yes          | Attribute name.                                                        |
-| └─ id              | Integer         | custom\_attributes  | No           | Attribute order number.                                                |
-| └─ value           | Mixed           | custom\_attributes  | Yes          | Attribute value — any JSON type.                                       |
-| └─ units           | String          | custom\_attributes  | No           | Unit of measurement, e.g. `rpm`, `percent`.                            |
+| **Attribute**      | **Type**        | **Object**         | **Required** | **Description**                             |
+| ------------------ | --------------- | ------------------ | ------------ | ------------------------------------------- |
+| custom\_attributes | Array \[Object] | Root               | No           | Array of enhanced custom attribute objects. |
+| └─ type            | String          | custom\_attributes | Yes          | Attribute name.                             |
+| └─ id              | Integer         | custom\_attributes | No           | Attribute order number.                     |
+| └─ value           | Mixed           | custom\_attributes | Yes          | Attribute value — any JSON type.            |
+| └─ units           | String          | custom\_attributes | No           | Unit of measurement, e.g. `rpm`, `percent`. |
 
 ### Dual implementation support
 

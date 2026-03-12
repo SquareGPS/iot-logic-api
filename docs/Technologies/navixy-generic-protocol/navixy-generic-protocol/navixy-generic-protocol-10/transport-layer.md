@@ -1,6 +1,7 @@
 ---
-description: HTTP/HTTPS and MQTT connection parameters, regional endpoints, and code examples for sending NGP messages.
-hidden: true
+description: >-
+  HTTP/HTTPS and MQTT connection parameters, regional endpoints, and code
+  examples for sending NGP messages.
 ---
 
 # Transport layer
@@ -13,28 +14,28 @@ NGP supports **HTTP/HTTPS versions 1.1 and 2.0**. This is the simplest option fo
 
 **Request format:**
 
-| Parameter      | Value                    |
-| -------------- | ------------------------ |
-| Method         | `POST`                   |
-| Content-Type   | `application/json`       |
-| Body encoding  | UTF-8                    |
-| Body           | Single JSON object       |
+| Parameter     | Value              |
+| ------------- | ------------------ |
+| Method        | `POST`             |
+| Content-Type  | `application/json` |
+| Body encoding | UTF-8              |
+| Body          | Single JSON object |
 
 **Regional endpoints:**
 
-| Region | Endpoint                          |
-| ------ | --------------------------------- |
-| EU     | `http://tracker.navixy.com:47642` |
+| Region | Endpoint                             |
+| ------ | ------------------------------------ |
+| EU     | `http://tracker.navixy.com:47642`    |
 | US     | `http://tracker.us.navixy.com:47642` |
 
 **Response codes:**
 
-| Code  | Meaning                                                                                         |
-| ----- | ----------------------------------------------------------------------------------------------- |
-| `200` | Message received successfully.                                                                  |
-| `400` | Invalid request — malformed JSON or field values outside allowed ranges.                        |
-| `403` | Unknown device identifier. Verify that `device_id` is registered on the platform.              |
-| `500` | Unexpected server error. Contact the platform's technical support.                             |
+| Code  | Meaning                                                                           |
+| ----- | --------------------------------------------------------------------------------- |
+| `200` | Message received successfully.                                                    |
+| `400` | Invalid request — malformed JSON or field values outside allowed ranges.          |
+| `403` | Unknown device identifier. Verify that `device_id` is registered on the platform. |
+| `500` | Unexpected server error. Contact the platform's technical support.                |
 
 **Example — sending a message via curl:**
 
@@ -61,27 +62,23 @@ NGP uses MQTT as a lightweight, reliable transport over TCP.
 
 **Quality of Service levels:**
 
-| QoS | Behaviour                                                              |
-| --- | ---------------------------------------------------------------------- |
-| 0   | At most once — suitable where occasional message loss is acceptable.   |
-| 1   | At least once — use when reliable delivery is required.                |
+| QoS | Behaviour                                                            |
+| --- | -------------------------------------------------------------------- |
+| 0   | At most once — suitable where occasional message loss is acceptable. |
+| 1   | At least once — use when reliable delivery is required.              |
 
 All message bodies must be UTF-8 encoded JSON containing a single JSON object per message. Responses to messages are not supported. The platform strictly validates incoming messages and silently discards those with invalid JSON or out-of-range attribute values.
 
 **Connection parameters:**
 
-| Parameter | Value                                                        |
-| --------- | ------------------------------------------------------------ |
-| Host (EU) | `mqtt.eu.navixy.com`                                         |
-| Host (US) | `mqtt.us.navixy.com`                                         |
-| Port      | `1883` (plain TCP) / `8883` (TLS)                            |
-| Username  | `ngp_device`                                                 |
-| Password  | Device password configured in the Navixy platform           |
+| Parameter | Value                                                                   |
+| --------- | ----------------------------------------------------------------------- |
+| Host (EU) | `mqtt.eu.navixy.com`                                                    |
+| Host (US) | `mqtt.us.navixy.com`                                                    |
+| Port      | `1883` (plain TCP) / `8883` (TLS)                                       |
+| Username  | `ngp_device`                                                            |
+| Password  | Device password configured in the Navixy platform                       |
 | Topic     | `ngp/{device_id}` — replace `{device_id}` with your device's identifier |
-
-{% hint style="info" %}
-The server subscribes to the `ngp/#` wildcard topic. Devices must publish to `ngp/{device_id}` where `{device_id}` matches the identifier registered on the platform.
-{% endhint %}
 
 **Example — sending a message via Mosquitto client:**
 

@@ -92,7 +92,7 @@ Here's a quick reference:
 | Attribute references   | `speed`, `fuel_level`, `analog_1`   | Reference to device attributes |
 
 {% hint style="info" %}
-To find more examples of formulas, see [Calculation examples](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/readme/account/iot-logic/flow-management/initiate-attribute-node/calculation-examples) in our User docs.
+To find more examples of formulas, see [Calculation examples](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/calculation-examples) in our User docs.
 {% endhint %}
 
 **Expression examples**
@@ -391,7 +391,7 @@ Headers must be explicitly specified, including `Content-Type`. Common authentic
   * URL protocol omission (always include `https://` or `http://`)
   * Attribute name mismatches (ensure referenced attributes exist in upstream nodes)
 * The Webhook node enables integration with RESTful APIs, webhook platforms (Zapier, Make, n8n), ticketing systems, CRM platforms, and custom internal systems
-* For more information on webhook configuration, see [Webhook node user guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/readme/account/iot-logic/flow-management/webhook-node)
+* For more information on webhook configuration, see [Webhook node user guide](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/webhook-node)
 
 ## Device action node (`action`)
 
