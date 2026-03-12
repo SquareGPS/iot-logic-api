@@ -6,6 +6,10 @@ description: Complete reference for NGP message attributes — location, events,
 
 NGP messages are JSON objects transmitted one per request. Each message must contain two **mandatory** attributes: `device_id` and `message_time`.
 
+{% hint style="warning" %}
+`message_time` must not be earlier than the timestamp of the most recently received message for this device. Messages with an out-of-order timestamp will be discarded by the platform.
+{% endhint %}
+
 ### Minimum valid message
 
 ```json
@@ -30,10 +34,6 @@ The platform requires a valid location with at least 3 satellites before saving 
     }
 }
 ```
-
-{% hint style="warning" %}
-`message_time` must not be earlier than the timestamp of the most recently received message for this device. Messages with an out-of-order timestamp will be discarded by the platform.
-{% endhint %}
 
 ## Attributes
 
