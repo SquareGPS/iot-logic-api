@@ -1,164 +1,203 @@
+---
+description: Complete reference for NGP message attributes — location, events, cell towers, Wi-Fi, sensors, I/O, and custom fields.
+---
+
 # Message structure and attributes
 
-Messages are processed sequentially and follow a straightforward **JSON** structure. Each message includes two **mandatory** attributes: `device_id` and `message_time`.
+NGP messages are JSON objects transmitted one per request. Each message must contain two **mandatory** attributes: `device_id` and `message_time`.
 
-Minimum possible message to transmit:
+**Minimum valid message:**
 
-```
+```json
 {
-   "message_time": "...",
-   "device_id": "..."
+    "message_time": "2026-02-05T06:00:11Z",
+    "device_id": "1112312212"
 }
 ```
 
-Minimum possible message to be saved on the platform:
+**Minimum message that will be stored by the platform:**
 
-```
+The platform requires a valid location with at least 3 satellites before saving a data point. The `device_id` must already be registered on the platform.
+
+```json
 {
-    "message_time": "2026-02-05T06:00:11Z", // current message time shouldn't be after an already sent
-    "device_id": "1112312212", // device_id should be already registered on the platform
+    "message_time": "2026-02-05T06:00:11Z",
+    "device_id": "1112312212",
     "location": {
         "latitude": 34.15929687705282,
         "longitude": -118.4614133834839,
-        "satellites": 3 // amount of satellites is better to set more than 2 to save data properly
+        "satellites": 3
     }
 }
 ```
 
-This example demonstrates the basic structure of a message with only the mandatory attributes. You can then add optional attributes as needed based on the specific protocol and device type. Continue reading to learn more about attributes supported by the protocol.
+{% hint style="warning" %}
+`message_time` must not be earlier than the timestamp of the most recently received message for this device. Messages with an out-of-order timestamp will be discarded by the platform.
+{% endhint %}
 
-### Attributes
+## Attributes
 
-The Navixy Generic Protocol offers a set of pre-defined attributes that devices can include in their messages. These attributes cover a wide range of functionalities, forming the core vocabulary of the protocol for transmitting data such as basic telemetry and advanced sensor readings. Below, you will find detailed specifications for each of the pre-defined attributes, organized by functional categories.
+The table below lists all pre-defined attributes, organized by category. In addition to these, the protocol allows custom attributes — see [Custom attributes](#custom-attributes).
 
-In addition to the pre-defined attributes, the protocol allows defining custom attributes to handle specific cases. See [Custom attributes](message-structure-and-attributes.md#custom-attributes) for details on how to define and transmit such attributes.
+| **Attribute**                | **Type**        | **Object**     | **Required** | **Description**                                                                                                                                                           |
+| ---------------------------- | --------------- | -------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Basic attributes**         |                 |                |              |                                                                                                                                                                           |
+| message\_time                | Timestamp       | Root           | Yes          | Date and time the message was sent by the device (ISO 8601 UTC).                                                                                                          |
+| device\_id                   | String          | Root           | Yes          | Unique device identifier. Maximum 64 characters.                                                                                                                          |
+| version                      | String          | Root           | No           | NGP version of this message. Defaults to `1.0` if omitted.                                                                                                                |
+| **Location**                 |                 |                |              |                                                                                                                                                                           |
+| location                     | Object          | Root           | No           | Device position. May be determined by GNSS (satellite), LBS (cell towers), or a third-party positioning service. Use `source_type` to indicate the positioning method.    |
+| └─ latitude                  | Float           | location       | No           | Latitude in decimal degrees (−90.0 to 90.0).                                                                                                                              |
+| └─ longitude                 | Float           | location       | No           | Longitude in decimal degrees (−180.0 to 180.0).                                                                                                                           |
+| └─ altitude                  | Float           | location       | No           | Altitude above sea level in meters (−1000 to 10000).                                                                                                                      |
+| └─ gnss\_time                | Timestamp       | location       | No           | Time when the position fix was acquired by the device.                                                                                                                    |
+| └─ fix\_type                 | String          | location       | No           | Position fix type. Possible values: `HAS_FIX` (default), `NO_FIX`, `LAST_KNOWN_POSITION`, `FIX_2D`, `FIX_3D`.                                                            |
+| └─ satellites                | Integer         | location       | No           | Number of GNSS satellites used for the fix (0–64).                                                                                                                        |
+| └─ hdop                      | Float           | location       | No           | Horizontal dilution of precision — lower is more accurate.                                                                                                                |
+| └─ vdop                      | Float           | location       | No           | Vertical dilution of precision — lower is more accurate.                                                                                                                  |
+| └─ pdop                      | Float           | location       | No           | 3D position dilution of precision, combining horizontal and vertical.                                                                                                     |
+| └─ speed                     | Float           | location       | No           | Device speed in km/h (positive values only).                                                                                                                              |
+| └─ heading                   | Integer         | location       | No           | Direction of movement in degrees, clockwise from north (1–360).                                                                                                           |
+| └─ source\_type              | String          | location       | No           | Positioning source. Possible values: `GNSS` (satellite), `LBS` (cell tower–based), `ATLAS` (third-party positioning service).                                             |
+| └─ precision                 | Integer         | location       | No           | Location accuracy in meters. Most relevant for non-GNSS positioning methods such as LBS, where accuracy can vary significantly.                                            |
+| **Event information**        |                 |                |              |                                                                                                                                                                           |
+| event\_id                    | Integer         | Root           | No           | Platform event identifier. See [Predefined event identifiers](predefined-event-identifiers.md) for standard values. Custom events start at 10,000.                        |
+| **Mobile cells**             |                 |                |              |                                                                                                                                                                           |
+| mobile\_cells                | Array [Object]  | Root           | No           | List of visible cell towers. Used to provide data for network-based positioning (LBS) when GNSS is unavailable.                                                           |
+| └─ mcc                       | Integer         | mobile\_cells  | Yes          | Mobile Country Code — identifies the country of the mobile network.                                                                                                       |
+| └─ mnc                       | Integer         | mobile\_cells  | Yes          | Mobile Network Code — identifies the mobile operator within the country.                                                                                                  |
+| └─ lac                       | Integer         | mobile\_cells  | Yes          | Location Area Code — identifies the area within the mobile network.                                                                                                       |
+| └─ cell\_id                  | Integer         | mobile\_cells  | Yes          | Unique identifier of the cell tower.                                                                                                                                      |
+| └─ rssi                      | Integer         | mobile\_cells  | No           | Signal strength from the cell tower in dBm (negative values).                                                                                                            |
+| └─ type                      | String          | mobile\_cells  | No           | Radio access technology. Possible values: `GSM` (default), `CDMA`, `WCDMA`, `LTE`, `NR`.                                                                                 |
+| **Wi-Fi points**             |                 |                |              |                                                                                                                                                                           |
+| wifi\_points                 | Array [Object]  | Root           | No           | List of visible Wi-Fi access points. Used alongside `mobile_cells` to improve network-based positioning accuracy.                                                         |
+| └─ mac                       | String          | wifi\_points   | Yes          | MAC address of the access point. Colon-delimited bytes, e.g. `12:33:FF:45:04:33`.                                                                                        |
+| └─ rssi                      | Integer         | wifi\_points   | Yes          | Signal strength in dBm (negative values).                                                                                                                                 |
+| └─ age                       | Integer         | wifi\_points   | No           | Milliseconds since this access point was last detected.                                                                                                                   |
+| └─ channel                   | Integer         | wifi\_points   | No           | Radio channel number used by the access point.                                                                                                                            |
+| **Device motion and status** |                 |                |              |                                                                                                                                                                           |
+| is\_moving                   | Boolean         | Root           | No           | `true` if the device is currently moving, `false` if stationary.                                                                                                          |
+| hardware\_mileage            | Float           | Root           | No           | Cumulative mileage counted by the device hardware, in kilometers.                                                                                                         |
+| battery\_voltage             | Float           | Root           | No           | Built-in battery voltage in volts.                                                                                                                                        |
+| battery\_level               | Integer         | Root           | No           | Built-in battery charge level as a percentage (0–100).                                                                                                                    |
+| board\_voltage               | Float           | Root           | No           | External power supply voltage in volts.                                                                                                                                   |
+| **Input/Output status**      |                 |                |              |                                                                                                                                                                           |
+| input\_status                | Integer         | Root           | No           | State of discrete inputs as a bitmask. Bit 0 = input 1, bit 1 = input 2, and so on. A set bit means the input is active.                                                  |
+| output\_status               | Integer         | Root           | No           | State of outputs as a bitmask. Bit 0 = output 1, bit 1 = output 2, and so on. A set bit means the output is active.                                                       |
+| **Sensor data**              |                 |                |              |                                                                                                                                                                           |
+| analog\_n                    | Float           | Root           | No           | Analog input voltage in volts. `n` is the sensor index from 1 to 16, e.g. `analog_1`, `analog_2`.                                                                        |
+| temperature\_internal        | Float           | Root           | No           | Temperature from the built-in hardware sensor, in degrees Celsius.                                                                                                        |
+| temperature\_n               | Float           | Root           | No           | External temperature sensor reading in degrees Celsius. `n` is the sensor index from 1 to 16, e.g. `temperature_1`, `temperature_2`.                                      |
+| humidity\_internal           | Float           | Root           | No           | Relative humidity from the built-in hardware sensor, as a percentage.                                                                                                     |
+| humidity\_n                  | Float           | Root           | No           | External relative humidity sensor reading as a percentage. `n` is the sensor index from 1 to 16, e.g. `humidity_1`.                                                       |
+| fuel\_level\_n               | Float           | Root           | No           | Fuel level from a fuel sensor, in liters or as a percentage. `n` is the sensor index from 1 to 16, e.g. `fuel_level_1`.                                                   |
+| fuel\_temperature\_n         | Float           | Root           | No           | Fuel temperature from a fuel sensor, in degrees Celsius. `n` is the sensor index from 1 to 16, e.g. `fuel_temperature_1`.                                                 |
+| impulse\_counter\_n          | Integer         | Root           | No           | Impulse counter reading. `n` is the counter index from 1 to 16, e.g. `impulse_counter_1`.                                                                                 |
+| **Identification data**      |                 |                |              |                                                                                                                                                                           |
+| hardware\_key                | String          | Root           | No           | Driver or asset identifier, typically read via RFID, iButton, or similar method.                                                                                          |
+| vin                          | String          | Root           | No           | Vehicle Identification Number (VIN).                                                                                                                                      |
+| **Custom data**              |                 |                |              |                                                                                                                                                                           |
+| custom\_*                    | Mixed           | Root           | No           | Any additional device-specific attribute. See [Custom attributes](#custom-attributes).                                                                                    |
 
-| **Attribute**                | **Type**        | **Object**    | **Required for object** | **Description**                                                                                                                                                                                                 |
-| ---------------------------- | --------------- | ------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Basic attributes**         |                 |               |                         |                                                                                                                                                                                                                 |
-| message\_time                | Timestamp       | Root          | Yes                     | Date and time the message was sent by a device.                                                                                                                                                                 |
-| device\_id                   | String          | Root          | Yes                     | A unique device identifier. Max size 64 characters.                                                                                                                                                             |
-| version                      | String          | Root          | No                      | Version of this protocol (JSON structure). If the version attribute is not specified, v1.0 will be used by default.                                                                                             |
-| **Location information**     |                 |               |                         |                                                                                                                                                                                                                 |
-| location                     | Object          | Root          | No                      | Contains details about the device's GPS location.                                                                                                                                                               |
-| └─ gnss\_time                | String          | location      | No                      | Time when coordinates were registered by the device.                                                                                                                                                            |
-| └─ latitude                  | Float           | location      | No                      | Latitude in degrees (-90.0 to 90.0).                                                                                                                                                                            |
-| └─ longitude                 | Float           | location      | No                      | Longitude in degrees (-180.0 to 180.0).                                                                                                                                                                         |
-| └─ altitude                  | Float           | location      | No                      | Altitude above sea level in meters (-1000 to 10000).                                                                                                                                                            |
-| └─ fix\_type                 | String          | location      | No                      | <p>Location fixation type.<br><br>Possible values are:<br><br>- HAS_FIX<br>- NO_FIX<br>- LAST_KNOWN_POSITION<br>- FIX_2D<br>- FIX_3D<br><br>Default is HAS_FIX.</p>                                             |
-| └─ satellites                | Integer         | location      | No                      | Number of satellites involved in positioning (0 to 64).                                                                                                                                                         |
-| └─ hdop                      | Float           | location      | No                      | Horizontal dilution of precision, a measure of GPS accuracy.                                                                                                                                                    |
-| └─ vdop                      | Float           | location      | No                      | Vertical dilution of precision, a measure of altitude accuracy in GPS.                                                                                                                                          |
-| └─ pdop                      | Float           | location      | No                      | 3D position dilution of precision, combining horizontal and vertical accuracy.                                                                                                                                  |
-| └─ speed                     | Float           | location      | No                      | Device's speed in km/h (positive value).                                                                                                                                                                        |
-| └─ heading                   | Integer         | location      | No                      | Heading in degrees, azimuth, direction of movement (1 to 360).                                                                                                                                                  |
-| **Event information**        |                 |               |                         |                                                                                                                                                                                                                 |
-| event\_id                    | Integer         | Root          | No                      | Platform event identifier. For a full list of possible values, see [Appendix 1](https://docs.navixy.com/iot-logic/navixy-generic-protocol-v-1-0#NavixyGenericProtocol1.0-Appendix1.Predefinedeventidentifiers). |
-| **Mobile cells**             |                 |               |                         |                                                                                                                                                                                                                 |
-| mobile\_cells                | Array \[Object] | Root          | No                      | List of visible cell towers.                                                                                                                                                                                    |
-| └─ mcc                       | Integer         | mobile\_cells | Yes                     | Mobile Country Code that identifies the country of the mobile network.                                                                                                                                          |
-| └─ mnc                       | Integer         | mobile\_cells | Yes                     | Mobile Network Code that identifies the specific mobile operator in the country.                                                                                                                                |
-| └─ lac                       | Integer         | mobile\_cells | Yes                     | Location Area Code, which helps identify the area in the mobile network.                                                                                                                                        |
-| └─ cell\_id                  | Integer         | mobile\_cells | Yes                     | Unique identifier of the mobile cell tower.                                                                                                                                                                     |
-| └─ rssi                      | Integer         | mobile\_cells | No                      | Signal strength from the mobile tower, measured in dBm (negative values).                                                                                                                                       |
-| └─ type                      | String          | mobile\_cells | No                      | The mobile radio type. Supported values are `GSM`, `CDMA`, `WCDMA`, `LTE` and `NR`. Default is `GSM`.                                                                                                           |
-| **Wi-Fi points**             |                 |               |                         |                                                                                                                                                                                                                 |
-| wifi\_points                 | Array \[Object] | Root          | No                      | List of visible Wi-Fi access points.                                                                                                                                                                            |
-| └─ mac                       | String          | wifi\_points  | Yes                     | MAC address (hardware identifier) of the Wi-Fi access point. Each byte is delimited with a colon (e.g., 12:33:FF:45:04:33).                                                                                     |
-| └─ rssi                      | Integer         | wifi\_points  | Yes                     | Signal strength from the Wi-Fi access point, measured in dBm (negative values).                                                                                                                                 |
-| └─ age                       | Integer         | wifi\_points  | No                      | Time in milliseconds since this Wi-Fi access point was last discovered.                                                                                                                                         |
-| └─ channel                   | Integer         | wifi\_points  | No                      | Radio channel number used by the Wi-Fi access point.                                                                                                                                                            |
-| **Device motion and status** |                 |               |                         |                                                                                                                                                                                                                 |
-| is\_moving                   | Boolean         | Root          | No                      | Indicates whether the device is currently moving (True or False).                                                                                                                                               |
-| hardware\_mileage            | Float           | Root          | No                      | Mileage counted by the device's hardware in kilometers.                                                                                                                                                         |
-| battery\_voltage             | Float           | Root          | No                      | Built-in battery voltage in volts.                                                                                                                                                                              |
-| battery\_level               | Integer         | Root          | No                      | Current built-in battery level as a percentage (0 to 100).                                                                                                                                                      |
-| board\_voltage               | Float           | Root          | No                      | Voltage supplied by the external power source in volts.                                                                                                                                                         |
-| **Input/Output status**      |                 |               |                         |                                                                                                                                                                                                                 |
-| input\_status                | Integer         | Root          | No                      | Current status of the device's discrete inputs, represented as a bitmask.                                                                                                                                       |
-| output\_status               | Integer         | Root          | No                      | Current status of the device's outputs, represented as a bitmask.                                                                                                                                               |
-| **Sensor data**              |                 |               |                         |                                                                                                                                                                                                                 |
-| analog\_n                    | Float           | Root          | No                      | <p>Analog input voltage (volts).<br><br>Where n stands for the ordinal number of the attribute and n = 1..16.</p>                                                                                               |
-| temperature\_internal        | Float           | Root          | No                      | Temperature from the built-in hardware sensor (degrees Celsius).                                                                                                                                                |
-| temperature\_n               | Float           | Root          | No                      | <p>External temperature sensor (degrees Celsius).<br><br>Where n stands for the ordinal number of the attribute and n = 1..16.</p>                                                                              |
-| humidity\_internal           | Float           | Root          | No                      | Relative humidity from the built-in hardware sensor (percentage).                                                                                                                                               |
-| humidity\_n                  | Float           | Root          | No                      | <p>External relative humidity sensor (percentage).<br><br>Where n stands for the ordinal number of the attribute and n = 1..16.</p>                                                                             |
-| fuel\_level\_n               | Float           | Root          | No                      | <p>Fuel level from fuel sensor (liters or percentage). <br><br>Where n stands for the ordinal number of the attribute and n = 1..16.</p>                                                                        |
-| fuel\_temperature\_n         | Float           | Root          | No                      | <p>Fuel temperature from fuel sensor (degrees Celsius).<br><br>Where n stands for the ordinal number of the attribute and n = 1..16.</p>                                                                        |
-| impulse\_counter\_n          | Integer         | Root          | No                      | <p>Impulse counter sensor. <br><br>Where n stands for the ordinal number of the attribute and n = 1..16.</p>                                                                                                    |
-| **Identification data**      |                 |               |                         |                                                                                                                                                                                                                 |
-| hardware\_key                | String          | Root          | No                      | Driver ID, typically read via RFID, iButton, or other identification methods.                                                                                                                                   |
-| vin                          | String          | Root          | No                      | Vehicle Identification Number (VIN).                                                                                                                                                                            |
-| **Custom data**              |                 |               |                         |                                                                                                                                                                                                                 |
-| custom\_attribute            | Mixed           | Root          | No                      | Any additional custom data described below.                                                                                                                                                                     |
+## Custom attributes
 
-### Custom attributes
+The protocol allows you to extend messages with device-specific or application-specific data that has no pre-defined attribute. Custom attributes are added directly to the root of the message object.
 
-The table's final section refers to custom data. You can also expand the protocol by adding your own custom data, which will be passed through unchanged, for example, hardware-specific attributes like `avl_io_n` or `flex_id`.
+Any field name not listed in the attributes table above is treated as a custom attribute and passed through to the platform unchanged. Common use cases include hardware-specific telemetry fields such as `avl_io_1`, `flex_id`, or `engine_rpm`.
 
-The following example shows a message containing a custom data attribute. Custom attributes, like the `custom_attribute` in the example, are added directly to the root of the message structure.
-
-```
+```json
 {
- "message_time": "2024-09-02T12:23:45Z",
-    "device_id": "857378374927457",
-    "version": "1.0",
-    "location": {
-        ...
-    },
-    "custom_attribute": 123.44
+    "message_time": "2024-09-02T12:23:45Z",
+    "device_id": "857378374927457",
+    "version": "1.0",
+    "location": {
+        "latitude": 34.15929687705282,
+        "longitude": -118.4614133834839
+    },
+    "custom_fuel": 86
 }
 ```
 
 ## Message example
 
-A typical GPS device telemetry message will follow this format:
+A complete telemetry message from a GPS tracker with GNSS positioning:
 
-```
+```json
 {
-    "message_time": "2024-09-02T10:03:43Z",
-    "device_id": "857378374927457",
-    "version": "1.0",
-    "location": {
-        "gnss_time": "2024-09-02T10:03:41Z",
-        "fix_type": "HAS_FIX",
-        "latitude": 56.348579,
-        "longitude": 60.12344,
-        "altitude": 271,
-        "satellites": 8,
-        "hdop": 0.41,
-        "pdop": 2.0,
-        "speed": 43,
-        "heading": 77
-    },
-    "event_id": 2,
-    "mobile_cells": [{
-            "mcc": 250,
-            "mnc": 0,
-            "lac": 32445,
-            "cell_id": 343455,
-            "rssi": -54,
-            "type": "LTE"
-        }
-    ],
-    "wifi_points": [{
-            "mac": "12:33:FF:45:04:33",
-            "rssi": -54,
-            "age": 4002,
-            "channel": 11
-        }
-    ],
-    "is_moving": true,
-    "hardware_mileage": 7382.3,
-    "battery_voltage": 4.12,
-    "battery_level": 93,
-    "board_voltage": 13.9,
-    "input_status": 23424,
-    "output_status": 23424,
-    "hardware_key": "12FFABC54234",
-    "temperature_internal": 12.3,
-    "temperature_2": -13.7,
-    "custom_attribute": 123.44
+    "message_time": "2024-09-02T10:03:43Z",
+    "device_id": "857378374927457",
+    "version": "1.0",
+    "location": {
+        "gnss_time": "2024-09-02T10:03:41Z",
+        "fix_type": "HAS_FIX",
+        "latitude": 56.348579,
+        "longitude": 60.12344,
+        "altitude": 271,
+        "satellites": 8,
+        "hdop": 0.41,
+        "pdop": 2.0,
+        "speed": 43,
+        "heading": 77,
+        "source_type": "GNSS"
+    },
+    "event_id": 406,
+    "mobile_cells": [
+        {
+            "mcc": 250,
+            "mnc": 0,
+            "lac": 32445,
+            "cell_id": 343455,
+            "rssi": -54,
+            "type": "LTE"
+        }
+    ],
+    "wifi_points": [
+        {
+            "mac": "12:33:FF:45:04:33",
+            "rssi": -54,
+            "age": 4002,
+            "channel": 11
+        }
+    ],
+    "is_moving": true,
+    "hardware_mileage": 7382.3,
+    "battery_voltage": 4.12,
+    "battery_level": 93,
+    "board_voltage": 13.9,
+    "input_status": 1,
+    "output_status": 0,
+    "hardware_key": "12FFABC54234",
+    "temperature_internal": 12.3,
+    "temperature_2": -13.7,
+    "custom_fuel": 86
+}
+```
+
+**Example — LBS-based position report** (no GNSS fix available):
+
+```json
+{
+    "message_time": "2024-09-02T10:05:12Z",
+    "device_id": "857378374927457",
+    "version": "1.0",
+    "location": {
+        "latitude": 56.352100,
+        "longitude": 60.128900,
+        "source_type": "LBS",
+        "precision": 800
+    },
+    "event_id": 402,
+    "mobile_cells": [
+        {
+            "mcc": 250,
+            "mnc": 0,
+            "lac": 32445,
+            "cell_id": 343455,
+            "rssi": -78,
+            "type": "LTE"
+        }
+    ]
 }
 ```
 

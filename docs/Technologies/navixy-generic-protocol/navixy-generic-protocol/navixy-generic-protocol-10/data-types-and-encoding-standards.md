@@ -1,35 +1,48 @@
+---
+description: JSON type mapping, timestamp formatting, binary encoding, and value constraints used in NGP messages.
+---
+
 # Data types and encoding standards
 
 ## Data types
 
-| **Type** | **JSON** | **Description** | **Examples** | **Limitations** |
-| --- | --- | --- | --- | --- |
-| Integer | Number | Integer numeric values | Bit masks, counters, impulses, passengers and RPM | From 1 to 8 byte signed or unsigned integer number |
-| Float | Number | Numeric floating-point values | Coordinates, telemetry, speed, altitude, mileage | Up to 8 byte signed float number (IEEE 754) |
-| String | String | UTF-8 encoded text string | Driver's name, registration number, driver ID | Up to 10KB escaped text |
-| Boolean | Boolean | Values true or false | CAN attributes states: ignition state, doors state, presence of movement, etc. | True or false |
-| Timestamp | String | Date and time value in ISO 8601 UTC format | Date and time when the coordinate was received by the device | ISO 8601 related restrictions |
-| Blob | String | Binary data in Base-64 format | Photo, raw data from sensors, BLE data, Voice | Up to 1 MB encoded binary data |
-| Array | Array | A list of objects with identical types | Mobile cells, Wi-fi points | No limitations |
-| Object | Object | Structures that consist of several attributes | Location data, Mobile cell, Wi-fi point | No limitations |
+| **Type**  | **JSON** | **Description**                                      | **Examples**                                                      | **Limitations**                                   |
+| --------- | -------- | ---------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------- |
+| Integer   | Number   | Whole numeric values, no decimals                    | Bitmasks, counters, impulse counts, passenger counts, RPM         | Signed or unsigned, 1–8 bytes                     |
+| Float     | Number   | Numeric values with decimal precision                | Coordinates, speed, altitude, mileage, voltage                    | IEEE 754 signed float, up to 8 bytes              |
+| String    | String   | UTF-8 encoded text                                   | Driver name, registration plate, driver ID                        | Up to 10 KB                                       |
+| Boolean   | Boolean  | `true` or `false`                                    | Ignition state, door state, presence of movement                  | `true` or `false` only                            |
+| Timestamp | String   | ISO 8601 date-time in UTC                            | Message time, GNSS fix time                                       | Must be valid ISO 8601 UTC                        |
+| Blob      | String   | Binary data, Base64-encoded                          | Photos, raw sensor data, BLE payloads, audio                      | Up to 1 MB encoded                                |
+| Mixed     | Any      | Value of any JSON type                               | Custom attributes where type varies by attribute                  | Follows the type constraints of the specific attribute |
+| Array     | Array    | Ordered list of objects of the same structure        | `mobile_cells`, `wifi_points`                                     | No size limit                                     |
+| Object    | Object   | Named set of attributes grouped under a single key   | `location`, individual mobile cell, individual Wi-Fi point        | No size limit                                     |
 
-## Timestamps and data encoding
+## Timestamps
 
-All timestamps must adhere to the **ISO 8601** format.
+All timestamps must use **ISO 8601 UTC** format.
 
-Example:
+```
+"message_time": "2024-09-02T23:59:59Z"
+```
 
-- `"message_time": "2024-09-02T23:59:59Z"`
+The trailing `Z` indicates UTC. Timezone offsets are not supported — always convert to UTC before sending.
 
-For raw data such as sensor readings, tachograph logs, images, or audio, binary transmission is supported. When transmitting binary data, it must be **Base64-encoded**.
+## Binary data
 
-Examples:
+For raw payloads such as sensor data, tachograph logs, images, or audio, binary content must be **Base64-encoded** and sent as a string value.
 
-- `"my_sensor_data": "SGVsbG8gd29ybGQh"`
-- `"tachograph_log": "U29tZSB0YWNoZW9nIGxvZw=="`
-- `"photo": "/9j/4AAQSkZJRgABAQEAYABgAAD..."`
-- `"audio": "UklGRjIAAABXRUJQVlA4WAoAAAAQAAAA..."`
+```json
+{
+  "my_sensor_data": "SGVsbG8gd29ybGQh",
+  "tachograph_log": "U29tZSB0YWNoZW9nIGxvZw==",
+  "photo": "/9j/4AAQSkZJRgABAQEAYABgAAD...",
+  "audio": "UklGRjIAAABXRUJQVlA4WAoAAAAQAAAA..."
+}
+```
 
-By adhering to these standards, the protocol ensures universal understanding of timestamps and reliable transmission of binary data. Keep in mind, the protocol is not optimized for large binary payloads within messages.
+{% hint style="warning" %}
+NGP is not optimized for large binary payloads. The 1 MB limit per encoded blob applies per attribute. Avoid sending multiple large blobs in a single message.
+{% endhint %}
 
 Continue reading to learn about [Message structure and attributes](message-structure-and-attributes.md) in Navixy Generic Protocol.
