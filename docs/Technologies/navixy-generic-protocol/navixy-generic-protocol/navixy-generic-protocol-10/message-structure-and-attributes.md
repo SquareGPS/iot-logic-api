@@ -1,5 +1,6 @@
 ---
 description: Complete reference for NGP message attributes — location, events, cell towers, Wi-Fi, sensors, I/O, and custom fields.
+hidden: true
 ---
 
 # Message structure and attributes

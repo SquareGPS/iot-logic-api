@@ -1,5 +1,6 @@
 ---
 description: Reference documentation for Navixy Generic Protocol version 1.0 — the current stable release.
+hidden: true
 ---
 
 # Navixy Generic Protocol 1.0

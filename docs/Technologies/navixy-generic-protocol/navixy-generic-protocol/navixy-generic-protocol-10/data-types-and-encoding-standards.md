@@ -1,5 +1,6 @@
 ---
 description: JSON type mapping, timestamp formatting, binary encoding, and value constraints used in NGP messages.
+hidden: true
 ---
 
 # Data types and encoding standards

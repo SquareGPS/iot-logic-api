@@ -1,5 +1,6 @@
 ---
 description: HTTP/HTTPS and MQTT connection parameters, regional endpoints, and code examples for sending NGP messages.
+hidden: true
 ---
 
 # Transport layer

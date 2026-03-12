@@ -1,5 +1,6 @@
 ---
 description: Navixy Generic Protocol (NGP) — an open, JSON-based telematics protocol for transmitting device data to the Navixy platform and compatible systems.
+hidden: true
 ---
 
 # Navixy Generic Protocol
