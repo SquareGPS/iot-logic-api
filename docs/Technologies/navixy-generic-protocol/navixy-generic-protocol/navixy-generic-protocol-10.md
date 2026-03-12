@@ -1,12 +1,16 @@
+---
+description: Reference documentation for Navixy Generic Protocol version 1.0 — the current stable release.
+---
+
 # Navixy Generic Protocol 1.0
 
-Welcome to the documentation for version 1.0 of the protocol. This protocol is designed to enable data transmission across a wide range of devices, including IoT devices, GPS trackers, terminals, and gateways that consolidate messages from multiple sources.
+Version 1.0 is the current stable release of NGP. It supports a wide range of devices including GPS trackers, IoT sensors, telematics terminals, and gateways that aggregate messages from multiple sources.
 
-The sections that follow provide a comprehensive guide to the protocol’s core functionalities, including its structure, transport layers, message encoding, and customization options. This document serves as a foundation for implementing the protocol and exploring its capabilities.
+Use the sections below to understand how to connect, encode, and structure data for transmission.
 
-Familiarize yourself with protocol by its components:
+## In this section
 
-- [Transport layer](navixy-generic-protocol-10/transport-layer.md)
-- [Data types and encoding standards](navixy-generic-protocol-10/data-types-and-encoding-standards.md)
-- [Message structure and attributes](navixy-generic-protocol-10/message-structure-and-attributes.md)
-- [Predefined event identifiers](navixy-generic-protocol-10/predefined-event-identifiers.md)
+* [**Transport layer**](navixy-generic-protocol-10/transport-layer.md) — How to connect: supported protocols (HTTP/HTTPS, MQTT), endpoint URLs by region, connection parameters, and working code examples.
+* [**Data types and encoding standards**](navixy-generic-protocol-10/data-types-and-encoding-standards.md) — JSON type system used by NGP, timestamp format requirements, and Base64 encoding for binary payloads.
+* [**Message structure and attributes**](navixy-generic-protocol-10/message-structure-and-attributes.md) — Complete attribute reference: location, events, cell towers, Wi-Fi points, sensors, I/O status, and custom fields.
+* [**Predefined event identifiers**](navixy-generic-protocol-10/predefined-event-identifiers.md) — Standard `event_id` values for power, security, safety, motion, and peripheral events.
