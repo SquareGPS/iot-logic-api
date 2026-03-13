@@ -33,4 +33,12 @@ Typical senders include: GPS trackers, IoT sensors, telematics terminals, and ga
 
 ## Implementing NGP
 
-If you are adapting an existing device or data source to send NGP messages, the [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) can accelerate the process. Provide a sample message from your source system and the skill produces a complete field mapping table, a ready-to-send example NGP message, and transport setup — without having to work through the reference manually.
+Mapping an existing device or data source to NGP typically means working through the field reference, identifying transforms for unit conversions and enum remappings, and handling edge cases such as LBS-only positioning or bitmask extraction. The [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) handles this process automatically.
+
+You provide a sample message from your source system — a raw JSON export, a proprietary tracker payload, a Wialon record, or any structured format — and the skill produces a complete field mapping table with every required transform, a ready-to-send NGP JSON example built from your real values, exact transport parameters for HTTP or MQTT in your target region, and notes on fields with no direct NGP equivalent and how to handle them.
+
+The result is a self-contained specification you can hand to a developer or use to implement the converter yourself — without having to read through the entire reference first.
+
+{% hint style="info" %}
+The NGP Mapper skill runs inside Claude desktop and requires no additional tools or accounts. [Download the skill file and see how to use it →](navixy-generic-protocol/ngp-mapper-skill.md)
+{% endhint %}

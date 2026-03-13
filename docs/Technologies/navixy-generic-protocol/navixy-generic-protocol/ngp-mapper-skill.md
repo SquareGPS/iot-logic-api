@@ -36,7 +36,11 @@ For each source protocol you describe, the skill outputs a self-contained mappin
 {% step %}
 ## Install the skill
 
-Download `ngp-mapper.skill` from this repository and install it in Claude desktop (Settings → Skills → Install from file). The skill loads automatically when you describe a protocol mapping task.
+Download the skill file and install it in Claude desktop via Settings → Skills → Install from file. The skill loads automatically when you describe a protocol mapping task.
+
+{% file src="../../../.gitbook/assets/ngp-mapper.skill" %}
+NGP Mapper skill
+{% endfile %}
 {% endstep %}
 
 {% step %}
