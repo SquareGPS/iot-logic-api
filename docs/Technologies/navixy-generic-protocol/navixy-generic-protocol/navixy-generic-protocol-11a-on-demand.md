@@ -9,7 +9,7 @@ For current integration, use [Navixy Generic Protocol 1.0](navixy-generic-protoc
 
 Version 1.1a introduced advanced data structures and enhanced custom attribute support. It maintains backward compatibility with [1.0](navixy-generic-protocol-10.md).
 
-## Key change — Enhanced custom attributes
+## Key change: Enhanced custom attributes
 
 Version [1.0](navixy-generic-protocol-10.md) allows simple custom attributes in `name:value` format. Version 1.1a enhanced this with a structured array format including additional metadata.
 
@@ -20,7 +20,7 @@ Version [1.0](navixy-generic-protocol-10.md) allows simple custom attributes in 
 | custom\_attributes | Array \[Object] | Root               | No           | Array of enhanced custom attribute objects. |
 | └─ type            | String          | custom\_attributes | Yes          | Attribute name.                             |
 | └─ id              | Integer         | custom\_attributes | No           | Attribute order number.                     |
-| └─ value           | Mixed           | custom\_attributes | Yes          | Attribute value — any JSON type.            |
+| └─ value           | Mixed           | custom\_attributes | Yes          | Attribute value. Any JSON type.             |
 | └─ units           | String          | custom\_attributes | No           | Unit of measurement, e.g. `rpm`, `percent`. |
 
 ### Dual implementation support

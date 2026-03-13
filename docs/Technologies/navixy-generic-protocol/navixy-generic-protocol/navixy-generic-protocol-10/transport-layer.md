@@ -33,11 +33,11 @@ NGP supports **HTTP/HTTPS versions 1.1 and 2.0**. This is the simplest option fo
 | Code  | Meaning                                                                           |
 | ----- | --------------------------------------------------------------------------------- |
 | `200` | Message received successfully.                                                    |
-| `400` | Invalid request — malformed JSON or field values outside allowed ranges.          |
+| `400` | Invalid request. Malformed JSON or field values are outside allowed ranges.       |
 | `403` | Unknown device identifier. Verify that `device_id` is registered on the platform. |
 | `500` | Unexpected server error. Contact the platform's technical support.                |
 
-**Example — sending a message via curl:**
+**Example: sending a message via curl:**
 
 ```bash
 curl --location 'tracker.navixy.com:47642' \
@@ -64,8 +64,8 @@ NGP uses MQTT as a lightweight, reliable transport over TCP.
 
 | QoS | Behaviour                                                            |
 | --- | -------------------------------------------------------------------- |
-| 0   | At most once — suitable where occasional message loss is acceptable. |
-| 1   | At least once — use when reliable delivery is required.              |
+| 0   | At most once. Suitable where occasional message loss is acceptable.  |
+| 1   | At least once. Use when reliable delivery is required.               |
 
 All message bodies must be UTF-8 encoded JSON containing a single JSON object per message. Responses to messages are not supported. The platform strictly validates incoming messages and silently discards those with invalid JSON or out-of-range attribute values.
 
@@ -78,9 +78,9 @@ All message bodies must be UTF-8 encoded JSON containing a single JSON object pe
 | Port      | `1883` (plain TCP) / `8883` (TLS)                                       |
 | Username  | `ngp_device`                                                            |
 | Password  | Device password configured in the Navixy platform                       |
-| Topic     | `ngp/{device_id}` — replace `{device_id}` with your device's identifier |
+| Topic     | `ngp/{device_id}` (replace `{device_id}` with your device's identifier) |
 
-**Example — sending a message via Mosquitto client:**
+**Example: sending a message via Mosquitto client:**
 
 ```bash
 mosquitto_pub \

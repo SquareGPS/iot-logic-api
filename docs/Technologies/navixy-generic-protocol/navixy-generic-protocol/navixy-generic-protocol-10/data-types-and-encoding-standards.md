@@ -28,7 +28,7 @@ All timestamps must use **ISO 8601 UTC** format.
 "message_time": "2024-09-02T23:59:59Z"
 ```
 
-The trailing `Z` indicates UTC. Timezone offsets are not supported — always convert to UTC before sending.
+The trailing `Z` indicates UTC. Timezone offsets are not supported. Always convert to UTC before sending.
 
 ## Binary data
 

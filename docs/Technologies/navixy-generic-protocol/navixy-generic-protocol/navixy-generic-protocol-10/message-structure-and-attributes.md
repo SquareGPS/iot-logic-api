@@ -1,6 +1,6 @@
 ---
 description: >-
-  Complete reference for NGP message attributes — location, events, cell towers,
+  Complete reference for NGP message attributes: location, events, cell towers,
   Wi-Fi, sensors, I/O, and custom fields.
 ---
 
@@ -39,7 +39,7 @@ The platform requires a valid location with at least 3 satellites before saving 
 
 ## Attributes
 
-The table below lists all pre-defined attributes, organized by category. In addition to these, the protocol allows custom attributes — see [Custom attributes](message-structure-and-attributes.md#custom-attributes).
+The table below lists all pre-defined attributes, organized by category. In addition to these, the protocol allows custom attributes. See [Custom attributes](message-structure-and-attributes.md#custom-attributes).
 
 | **Attribute**                | **Type**        | **Object**    | **Required** | **Description**                                                                                                                                                        |
 | ---------------------------- | --------------- | ------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -55,8 +55,8 @@ The table below lists all pre-defined attributes, organized by category. In addi
 | └─ gnss\_time                | Timestamp       | location      | No           | Time when the position fix was acquired by the device.                                                                                                                 |
 | └─ fix\_type                 | String          | location      | No           | Position fix type. Possible values: `HAS_FIX` (default), `NO_FIX`, `LAST_KNOWN_POSITION`, `FIX_2D`, `FIX_3D`.                                                          |
 | └─ satellites                | Integer         | location      | No           | Number of GNSS satellites used for the fix (0–64).                                                                                                                     |
-| └─ hdop                      | Float           | location      | No           | Horizontal dilution of precision — lower is more accurate.                                                                                                             |
-| └─ vdop                      | Float           | location      | No           | Vertical dilution of precision — lower is more accurate.                                                                                                               |
+| └─ hdop                      | Float           | location      | No           | Horizontal dilution of precision. Lower is more accurate.                                                                                                              |
+| └─ vdop                      | Float           | location      | No           | Vertical dilution of precision. Lower is more accurate.                                                                                                                |
 | └─ pdop                      | Float           | location      | No           | 3D position dilution of precision, combining horizontal and vertical.                                                                                                  |
 | └─ speed                     | Float           | location      | No           | Device speed in km/h (positive values only).                                                                                                                           |
 | └─ heading                   | Integer         | location      | No           | Direction of movement in degrees, clockwise from north (1–360).                                                                                                        |
@@ -66,9 +66,9 @@ The table below lists all pre-defined attributes, organized by category. In addi
 | event\_id                    | Integer         | Root          | No           | Platform event identifier. See [Predefined event identifiers](predefined-event-identifiers.md) for standard values. Custom events start at 10,000.                     |
 | **Mobile cells**             |                 |               |              |                                                                                                                                                                        |
 | mobile\_cells                | Array \[Object] | Root          | No           | List of visible cell towers. Used to provide data for network-based positioning (LBS) when GNSS is unavailable.                                                        |
-| └─ mcc                       | Integer         | mobile\_cells | Yes          | Mobile Country Code — identifies the country of the mobile network.                                                                                                    |
-| └─ mnc                       | Integer         | mobile\_cells | Yes          | Mobile Network Code — identifies the mobile operator within the country.                                                                                               |
-| └─ lac                       | Integer         | mobile\_cells | Yes          | Location Area Code — identifies the area within the mobile network.                                                                                                    |
+| └─ mcc                       | Integer         | mobile\_cells | Yes          | Mobile Country Code. Identifies the country of the mobile network.                                                                                                     |
+| └─ mnc                       | Integer         | mobile\_cells | Yes          | Mobile Network Code. Identifies the mobile operator within the country.                                                                                                |
+| └─ lac                       | Integer         | mobile\_cells | Yes          | Location Area Code. Identifies the area within the mobile network.                                                                                                     |
 | └─ cell\_id                  | Integer         | mobile\_cells | Yes          | Unique identifier of the cell tower.                                                                                                                                   |
 | └─ rssi                      | Integer         | mobile\_cells | No           | Signal strength from the cell tower in dBm (negative values).                                                                                                          |
 | └─ type                      | String          | mobile\_cells | No           | Radio access technology. Possible values: `GSM` (default), `CDMA`, `WCDMA`, `LTE`, `NR`.                                                                               |
@@ -176,7 +176,7 @@ A complete telemetry message from a GPS tracker with GNSS positioning:
 }
 ```
 
-**Example — LBS-based position report** (no GNSS fix available):
+**Example: LBS-based position report** (no GNSS fix available):
 
 ```json
 {

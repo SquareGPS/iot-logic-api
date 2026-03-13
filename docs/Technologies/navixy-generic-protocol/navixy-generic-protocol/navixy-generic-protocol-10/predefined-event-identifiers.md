@@ -132,7 +132,7 @@ Range: 401–500.
 
 | **Event ID** | **Description**                     |
 | ------------ | ----------------------------------- |
-| 401          | Track point — no specific event     |
+| 401          | Track point (no specific event)     |
 | 402          | GSM LBS point report                |
 | 403          | Track point by time interval        |
 | 404          | Track point by distance             |
