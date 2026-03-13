@@ -1,9 +1,7 @@
 ---
 description: >-
-  Use the NGP Mapper Claude skill to generate a ready-to-implement field
-  mapping from any device or telematics platform format to Navixy Generic
-  Protocol.
-hidden: true
+  Use the NGP Mapper Claude skill to generate a ready-to-implement field mapping
+  from any device or telematics platform format to Navixy Generic Protocol.
 ---
 
 # NGP Mapper skill
@@ -12,9 +10,8 @@ The NGP Mapper is a Claude skill that takes your device's or system's data forma
 
 ## Who it is for
 
-**System integrators** who have an existing telematics platform, fleet application, or data pipeline and want to forward data to Navixy. The skill maps your platform's output fields to NGP so you can build a converter service that bridges the two systems.
-
-**Device manufacturers and firmware developers** who want their hardware to send data to Navixy natively. The skill maps your device's proprietary fields to the corresponding NGP attributes, including the transforms needed when units or formats differ.
+* **System integrators** who have an existing telematics platform, fleet application, or data pipeline and want to forward data to Navixy. The skill maps your platform's output fields to NGP so you can build a converter service that bridges the two systems.
+* **Device manufacturers and firmware developers** who want their hardware to send data to Navixy natively. The skill maps your device's proprietary fields to the corresponding NGP attributes, including the transforms needed when units or formats differ.
 
 In both cases the conversion happens on your side; Navixy receives standard NGP messages as if the device were natively supported.
 
@@ -22,19 +19,16 @@ In both cases the conversion happens on your side; Navixy receives standard NGP 
 
 For each source protocol you describe, the skill outputs a self-contained mapping specification:
 
-**Field mapping table**: every source field alongside its NGP equivalent, the transform required (unit conversion, enum remapping, bitmask extraction, timestamp normalisation), and notes on optionality.
-
-**Example NGP message**: a complete, copy-pasteable JSON object built from your actual sample values with all transforms applied.
-
-**Transport setup**: exact connection parameters for HTTP or MQTT based on your target Navixy region, including endpoint URLs, authentication, topic format, and response codes.
-
-**Handling notes**: callouts for source fields with no NGP equivalent (promoted to `custom_*` attributes or dropped), fields that need to be synthesised (such as `device_id` or `message_time`), and any platform rules that could cause silent message discard.
+* **Field mapping table**: every source field alongside its NGP equivalent, the transform required (unit conversion, enum remapping, bitmask extraction, timestamp normalisation), and notes on optionality.
+* **Example NGP message**: a complete, copy-pasteable JSON object built from your actual sample values with all transforms applied.
+* **Transport setup**: exact connection parameters for HTTP or MQTT based on your target Navixy region, including endpoint URLs, authentication, topic format, and response codes.
+* **Handling notes**: callouts for source fields with no NGP equivalent (promoted to `custom_*` attributes or dropped), fields that need to be synthesised (such as `device_id` or `message_time`), and any platform rules that could cause silent message discard.
 
 ## How to use it
 
 {% stepper %}
 {% step %}
-## Install the skill
+### Install the skill
 
 Download the skill file below, then follow the steps for your AI tool.
 
@@ -43,7 +37,7 @@ NGP Mapper skill
 {% endfile %}
 
 {% tabs %}
-{% tab title="Claude desktop" %}
+{% tab title="Claude" %}
 1. Open Claude desktop and go to **Settings → Skills**.
 2. Click **Install from file** and select `ngp-mapper.skill`.
 3. The skill appears in your skill list as **NGP Mapper**. No further configuration is needed.
@@ -60,11 +54,23 @@ NGP Mapper skill
 Cursor applies `.mdc` rules automatically to AI conversations within the project. No restart is required after saving the file.
 {% endhint %}
 {% endtab %}
+
+{% tab title="ChatGPT" %}
+1. Open ChatGPT.
+2. Go to your **Skills** library:
+   1. Open the left sidebar → **Skills**, or
+   2. Navigate to **/skills**.
+3. Click **New skill** and select **Upload from your computer**.&#x20;
+4. Select `ngp-mapper.skill`.
+5. Once it appears in your Skills list, start a new chat and use it by prompting normally (it will auto-trigger when relevant), e.g.:
+   1. “Use NGP Mapper to map these fields…”
+   2. “Apply the mapper skill to this config…”
+{% endtab %}
 {% endtabs %}
 {% endstep %}
 
 {% step %}
-## Describe your source protocol
+### Describe your source protocol
 
 Start a conversation and paste a sample message from your device or system. Include any context that isn't obvious from field names: units, whether a field is a Unix epoch or a formatted string, what a flag value of `1` means, and so on.
 
@@ -76,13 +82,13 @@ You don't need to describe every field upfront. The skill will ask about anythin
 {% endstep %}
 
 {% step %}
-## Tell the skill your transport preference and region
+### Tell the skill your transport preference and region
 
 HTTP is simpler to start with; MQTT suits devices that need persistent connections or low overhead. The EU region uses `tracker.navixy.com` and `mqtt.eu.navixy.com`; the US region uses `tracker.us.navixy.com` and `mqtt.us.navixy.com`.
 {% endstep %}
 
 {% step %}
-## Review and implement
+### Review and implement
 
 The skill produces the mapping document in the conversation. Review the field table and the example message, then pass the specification to whoever is implementing the converter: your middleware developer, firmware team, or yourself.
 {% endstep %}
@@ -110,14 +116,14 @@ Plus: `ign` is ignition state (1=on/0=off), `adt1` is an external temperature se
 
 **What you get back** (excerpt):
 
-| Source field | NGP field | Transform | Notes |
-|---|---|---|---|
-| `imei` | `device_id` | none | Max 64 chars |
-| `utc` | `message_time` | Add `T`, append `Z` | `"2024-09-02 10:03:43"` → `"2024-09-02T10:03:43Z"` |
-| `lat` | `location.latitude` | none | Already decimal degrees |
-| `spd` | `location.speed` | none | Already km/h |
-| `ign` | `input_status` | bit 0: `ign=1` → `input_status=1` | Bitmask; bit 0 = input 1 |
-| `adt1` | `temperature_2` | none | External sensor; `temperature_internal` is reserved for built-in |
+| Source field | NGP field           | Transform                         | Notes                                                            |
+| ------------ | ------------------- | --------------------------------- | ---------------------------------------------------------------- |
+| `imei`       | `device_id`         | none                              | Max 64 chars                                                     |
+| `utc`        | `message_time`      | Add `T`, append `Z`               | `"2024-09-02 10:03:43"` → `"2024-09-02T10:03:43Z"`               |
+| `lat`        | `location.latitude` | none                              | Already decimal degrees                                          |
+| `spd`        | `location.speed`    | none                              | Already km/h                                                     |
+| `ign`        | `input_status`      | bit 0: `ign=1` → `input_status=1` | Bitmask; bit 0 = input 1                                         |
+| `adt1`       | `temperature_2`     | none                              | External sensor; `temperature_internal` is reserved for built-in |
 
 …plus a ready-to-send JSON example and HTTP transport parameters.
 

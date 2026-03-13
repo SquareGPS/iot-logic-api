@@ -40,5 +40,5 @@ You provide a sample message from your source system (a raw JSON export, a propr
 The result is a self-contained specification you can hand to a developer or use to implement the converter yourself, without having to read through the entire reference first.
 
 {% hint style="info" %}
-The NGP Mapper skill runs inside Claude desktop and requires no additional tools or accounts. [Download the skill file and see how to use it →](navixy-generic-protocol/ngp-mapper-skill.md)
+The NGP Mapper skill runs inside your AI assistant and requires no additional tools or accounts. [Download the skill file and see how to use it](navixy-generic-protocol/ngp-mapper-skill.md).
 {% endhint %}
