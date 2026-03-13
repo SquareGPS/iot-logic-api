@@ -29,3 +29,8 @@ Typical senders include: GPS trackers, IoT sensors, telematics terminals, and ga
   * [Data types and encoding standards](navixy-generic-protocol/navixy-generic-protocol-10/data-types-and-encoding-standards.md) — JSON type mapping, timestamps, and binary encoding
   * [Message structure and attributes](navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md) — full attribute reference with location, sensors, I/O, and custom fields
   * [Predefined event identifiers](navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md) — standard `event_id` values for common device events
+* [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) — AI-assisted field mapping from any device format to NGP
+
+## Implementing NGP
+
+If you are adapting an existing device or data source to send NGP messages, the [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) can accelerate the process. Provide a sample message from your source system and the skill produces a complete field mapping table, a ready-to-send example NGP message, and transport setup — without having to work through the reference manually.
