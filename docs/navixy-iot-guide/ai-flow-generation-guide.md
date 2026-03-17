@@ -16,6 +16,7 @@ This guide covers structure rules and JSON format. It does not document every no
 2. **Check the device page** at `https://www.navixy.com/devices/[manufacturer]/[model]/` and look in the **Inputs and outputs** section for the exact attribute names the device transmits.
 3. **Fetch official API docs** for any third-party webhook target (Telegram, Slack, etc.) to verify the URL format, required fields, and auth method. Do not rely on training memory for this.
 4. **Ask the user** — using the pre-generation checklist below as a guide.
+5. **Validate edge completeness before finalizing** — for every Logic node in the flow, confirm that both a `then_edge` and an `else_edge` are present, and that every possible data path terminates at a terminal node. Trace each branch from `data_source` to its terminal node to verify no path dead-ends.
 
 For user-specific values (bot tokens, chat IDs, API keys, device IDs), always ask the user directly. If they may not know where to get a value, include a brief note explaining how.
 
@@ -43,7 +44,7 @@ Do not ask for information that can be safely assumed or substituted with a plac
 * "Should both conditions trigger the same action, or do you want separate logic branches for each?"
 * "If the condition is not met, should data still be forwarded to Navixy?"
 
-**Pre-generation checklist**
+### **Pre-generation checklist**
 
 Before generating any flow JSON, confirm you can answer all of the following. If you cannot, use the lookup order above — or ask the user.
 
@@ -53,11 +54,11 @@ Do not ask all seven at once. Ask only what is genuinely missing, one or two que
 
 ***
 
-### JSON format modes
+## JSON format modes
 
 Navixy uses two distinct JSON formats. They are not interchangeable.
 
-#### Import / Export format (default)
+### Import / Export format (default)
 
 Use this format when generating a flow for UI import (Flow Management → Upload) or as a downloadable file. This is the **default format** unless the user explicitly requests API usage.
 
@@ -73,7 +74,7 @@ The top-level object contains `title`, `description` (optional), `nodes`, and `e
 
 The imported flow is always enabled by default. The `id` is assigned dynamically by the platform. Do not include `id`, `enabled`, or `default_flow` fields in import-format JSON.
 
-#### API format
+### API format
 
 Use this format **only** when the user explicitly requests a payload for the `/iot/logic/flow/create` or `/iot/logic/flow/update` API endpoints.
 
@@ -90,7 +91,7 @@ The top-level object must wrap the flow in a `"flow"` envelope key:
 }
 ```
 
-**Delivery based on usage:**
+### **Delivery based on usage:**
 
 * **Import format** — provide the JSON as a downloadable file, not inline code. The user uploads it via Flow Management → Upload.
 * **API format** — provide the JSON as inline code in your response. The user copies it into their API call.
@@ -99,7 +100,7 @@ Never use the `"flow"` envelope for import-format JSON. Using it in a file impor
 
 ***
 
-### Node types
+## Node types
 
 Always use only these node types. Do not invent additional types or fields.
 
@@ -142,20 +143,20 @@ Where `index` is the historical depth (0 = current message, 1 = previous, up to 
 
 See [Managing attributes](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes) for full examples.
 
-**logic**
+#### **logic**
 
 * `type`: `"logic"`
 * `data.title`: string
 * `data.name`: internal identifier string (no spaces)
 * `data.condition`: JEXL boolean expression
 
-**action**
+#### **action**
 
 * `type`: `"action"`
 * `data.title`: string
 * `data.actions`: array of action objects (max 10). Each action is either `set_output` or `send_gprs_command`.
 
-**webhook**
+#### **webhook**
 
 * `type`: `"webhook"`
 * `data.title`: string
@@ -165,13 +166,13 @@ See [Managing attributes](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/a
 
 For third-party services, verify the expected URL format, required headers, and payload structure from the service's official API documentation before generating. Do not rely on training memory. For Telegram, the correct endpoint is `https://api.telegram.org/bot{TOKEN}/sendMessage` with a body containing `chat_id` and `text`. Ask the user for their bot token and chat ID; if they need guidance, the token comes from @BotFather on Telegram and the chat ID from a `/getUpdates` API call.
 
-**output\_endpoint (Navixy)**
+#### **output\_endpoint (Navixy)**
 
 * `type`: `"output_endpoint"`
 * `data.title`: string
 * `data.output_endpoint_type`: `"output_default"`
 
-**output\_endpoint (MQTT)**
+#### **output\_endpoint (MQTT)**
 
 * `type`: `"output_endpoint"`
 * `data.title`: string
@@ -180,7 +181,7 @@ For third-party services, verify the expected URL format, required headers, and 
 
 ***
 
-### Edge rules
+## Edge rules
 
 Edges connect nodes. Three edge types exist: `simple_edge`, `then_edge`, `else_edge`.
 
@@ -198,7 +199,7 @@ A Logic node must always have both a `then_edge` and an `else_edge` outgoing con
 
 ***
 
-### Critical wiring rule: single Output Endpoint for Logic branches
+## Critical wiring rule: single Output Endpoint for Logic branches
 
 Always use a **single** `output_endpoint` node per logical branch path. A single Output Endpoint node can and should receive connections from multiple upstream nodes simultaneously, including both `then_edge` and `else_edge` from the same Logic node.
 
@@ -286,7 +287,7 @@ For full `value()` syntax, see [Managing attributes](https://app.gitbook.com/s/4
 
 ***
 
-### Canvas layout (view positions)
+## Canvas layout (view positions)
 
 Always generate `view.position` for every node. Use pixel-based coordinates with origin at top-left. Use a left-to-right layout.
 
@@ -296,7 +297,7 @@ Column assignment: data sources in column 1, logic nodes in column 2, outputs an
 
 ***
 
-### Validation checklist
+## Validation checklist
 
 Before finalizing any generated flow, verify all of the following:
 
@@ -304,16 +305,18 @@ Before finalizing any generated flow, verify all of the following:
 2. At least one `data_source` node and at least one terminal node are present
 3. Every node includes `data.title`
 4. Every `data_source` node has `source_ids` (use `[]` if unspecified)
-5. Every `logic` node has both a `then_edge` and an `else_edge` outgoing connection
+5. For every `logic` node: count outgoing edges — there must be at least one `then_edge` AND at least one `else_edge`. A Logic node with only one branch direction is invalid
 6. No edges originate from terminal nodes (`action`, `webhook`, `output_endpoint`)
 7. Only one `output_endpoint` node is used per logical path — both `then_edge` and `else_edge` connect to the same output node
 8. All JEXL expressions use valid syntax (operators: `&&`, `||`, `!`, `<`, `>`, `<=`, `>=`, `==`, `!=`)
 9. All edge `type` values are explicit in import-format flows
 10. Every node has a `view.position` with integer `x` and `y`
 
+Before submitting, trace every possible path through the flow from `data_source` to a terminal node. Every path must terminate. No path may dead-end at a non-terminal node.
+
 ***
 
-### Canonical complete example
+## Canonical complete example
 
 This example shows a complete, valid import-format flow: one Logic node with an Action on the THEN branch and a single shared Output Endpoint receiving both branches.
 
@@ -378,7 +381,7 @@ Node 4 receives two edges total: `then_edge` from node 2, `else_edge` from node 
 
 ***
 
-#### Reference links
+## Reference links
 
 Use these when the guide doesn't cover the detail you need.
 
