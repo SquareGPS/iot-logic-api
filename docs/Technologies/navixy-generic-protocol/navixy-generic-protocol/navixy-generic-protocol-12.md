@@ -20,7 +20,8 @@ Version 1.2 is backward compatible with [1.0](navixy-generic-protocol-10.md). It
 
 `source_type` lets the platform handle the position correctly depending on its origin. When omitted, the platform treats the location as GNSS by default. `precision` is optional but recommended for LBS and ATLAS positions, where the platform can use it to determine whether the accuracy is sufficient for a given use case.
 
-{% details "Full attribute reference for version 1.2" %}
+<details>
+<summary>Full attribute reference for version 1.2</summary>
 
 | **Attribute**                | **Type**        | **Object**    | **Required** | **Description**                                                                                                                                                        |
 | ---------------------------- | --------------- | ------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -83,7 +84,7 @@ Version 1.2 is backward compatible with [1.0](navixy-generic-protocol-10.md). It
 | **Custom data**              |                 |               |              |                                                                                                                                                                        |
 | custom\_\*                   | Mixed           | Root          | No           | Any additional device-specific attribute. See [Custom attributes](navixy-generic-protocol-10/message-structure-and-attributes.md#custom-attributes).                   |
 
-{% enddetails %}
+</details>
 
 ### Example: LBS-based message
 

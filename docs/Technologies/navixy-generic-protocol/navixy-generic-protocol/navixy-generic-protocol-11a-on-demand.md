@@ -23,7 +23,8 @@ Version [1.0](navixy-generic-protocol-10.md) allows simple custom attributes in 
 | └─ value           | Mixed           | custom\_attributes | Yes          | Attribute value. Any JSON type.             |
 | └─ units           | String          | custom\_attributes | No           | Unit of measurement, e.g. `rpm`, `percent`. |
 
-{% details "Full attribute reference for version 1.1a" %}
+<details>
+<summary>Full attribute reference for version 1.1a</summary>
 
 | **Attribute**                | **Type**          | **Object**         | **Required** | **Description**                                                                                                                                                   |
 | ---------------------------- | ----------------- | ------------------ | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -89,7 +90,7 @@ Version [1.0](navixy-generic-protocol-10.md) allows simple custom attributes in 
 | └─ value                     | Mixed             | custom\_attributes | Yes          | Attribute value. Any JSON type.                                                                                                                                   |
 | └─ units                     | String            | custom\_attributes | No           | Unit of measurement, e.g. `rpm`, `percent`.                                                                                                                       |
 
-{% enddetails %}
+</details>
 
 ### Dual implementation support
 
