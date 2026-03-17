@@ -266,9 +266,11 @@ Example: 15 minutes at 30-second intervals = 900 ÷ 30 = **30 messages**.
 ```json
 {
   "name": "idle_count",
-  "value": "speed < 2 && {{ignition_attribute}} == true ? value('idle_count', 1, 'any') + 1 : 0"
+  "value": "speed < 2 && ignition_attribute == true ? value('idle_count', 1, 'any') + 1 : 0"
 }
 ```
+
+Replace `ignition_attribute` with the actual attribute name from your device's Inputs and outputs page.
 
 **Logic node condition:**
 
