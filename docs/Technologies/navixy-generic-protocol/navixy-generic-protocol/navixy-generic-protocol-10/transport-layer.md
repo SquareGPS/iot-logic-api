@@ -1,28 +1,45 @@
+---
+description: >-
+  HTTP/HTTPS and MQTT connection parameters, regional endpoints, and code
+  examples for sending NGP messages.
+---
+
 # Transport layer
 
-The Navixy Generic Protocol supports both MQTT and HTTP/HTTPS as transport layers, ensuring flexibility and scalability for various devices and systems.
+NGP supports both **HTTP/HTTPS** and **MQTT** as transport options. Choose based on your device capabilities and infrastructure requirements.
 
-### HTTP/HTTPS
+## HTTP/HTTPS
 
-Navixy Generic Protocol supports **HTTP/HTTPS version 1.1 and 2.0** as a transport method. This is a common, well-known, and user-friendly option for developers and technicians. Below are the HTTP/HTTPS parameters and headers used for Navixy Generic Protocol:
+NGP supports **HTTP/HTTPS versions 1.1 and 2.0**. This is the simplest option for devices that already support HTTP.
 
-* Method: POST
-* Body: UTF-8 encoded JSON text
-* Content-Type: application/json
+**Request format:**
 
-Moreover, Navixy Generic Protocol supports response codes for HTTP that telematics platform can send in reply to the HTTP request:
+| Parameter     | Value              |
+| ------------- | ------------------ |
+| Method        | `POST`             |
+| Content-Type  | `application/json` |
+| Body encoding | UTF-8              |
+| Body          | Single JSON object |
 
-`200` OK - message received successfully.
+**Regional endpoints:**
 
-`400` BAD\_REQUEST - invalid request body, e.g. broken JSON of incorrect format.
+| Region | Endpoint                             |
+| ------ | ------------------------------------ |
+| EU     | `http://tracker.navixy.com:47642`    |
+| US     | `http://tracker.us.navixy.com:47642` |
 
-`403` FORBIDDEN - unknown device identifier. Please check the device identifier that is specified in the data packet.
+**Response codes:**
 
-`500` INTERNAL\_SERVER\_ERROR - unexpected server error. Something went wrong on the server. Please contact the technical support team of the recipient’s side.
+| Code  | Meaning                                                                           |
+| ----- | --------------------------------------------------------------------------------- |
+| `200` | Message received successfully.                                                    |
+| `400` | Invalid request. Malformed JSON or field values are outside allowed ranges.       |
+| `403` | Unknown device identifier. Verify that `device_id` is registered on the platform. |
+| `500` | Unexpected server error. Contact the platform's technical support.                |
 
-&#x20;For your convenience below you can find the **CURL example** of possible HTTP request:
+**Example: sending a message via curl:**
 
-```
+```bash
 curl --location 'tracker.navixy.com:47642' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -37,21 +54,51 @@ curl --location 'tracker.navixy.com:47642' \
 }'
 ```
 
-### MQTT
+## MQTT
 
-The Navixy Generic Protocol uses [MQTT](https://www.navixy.com/blog/mqtt-gps-devices/), a proven, lightweight, and scalable messaging protocol, to ensure reliable data delivery over TCP.
+NGP uses MQTT as a lightweight, reliable transport over TCP.
 
-The protocol supports **MQTT 5.0** and **MQTT 3.1.1**, offering flexibility and compatibility with various devices and systems. To guarantee message delivery, two Quality of Service (QoS) levels are available:
+**Supported MQTT versions:** 5.0 and 3.1.1
 
-* **QoS 0:** Messages are delivered at most once, suitable for applications where occasional message loss is acceptable.
-* **QoS 1:** Messages are delivered at least once, ensuring reliable delivery.
+**Quality of Service levels:**
 
-All message bodies must be encoded as **UTF-8 JSON** text, containing a single JSON object per message. Responses to messages are not currently supported. To maintain data integrity, Navixy strictly validates incoming messages, discarding those with invalid JSON or attributes that exceed defined value ranges.
+| QoS | Behaviour                                                            |
+| --- | -------------------------------------------------------------------- |
+| 0   | At most once. Suitable where occasional message loss is acceptable.  |
+| 1   | At least once. Use when reliable delivery is required.               |
 
-As a reference, you can use **example of sending a message via Mosquitto client**:
+All message bodies must be UTF-8 encoded JSON containing a single JSON object per message. Responses to messages are not supported. The platform strictly validates incoming messages and silently discards those with invalid JSON or out-of-range attribute values.
 
-```
-mosquitto_pub -h mqtt.eu.navixy.com -p 1883 -u ngp_device -P secretword -t "ngp/1112312212" -m "{
+**Connection parameters:**
+
+| Parameter | Value                                                                   |
+| --------- | ----------------------------------------------------------------------- |
+| Host (EU) | `mqtt.eu.navixy.com`                                                    |
+| Host (US) | `mqtt.us.navixy.com`                                                    |
+| Port      | `1883` (plain TCP) / `8883` (TLS)                                       |
+| Username  | `ngp_device`                                                            |
+| Password  | Device password configured in the Navixy platform                       |
+| Topic     | `ngp/{device_id}` (replace `{device_id}` with your device's identifier) |
+
+**Example: sending a message via Mosquitto client:**
+
+```bash
+mosquitto_pub \
+  -h mqtt.eu.navixy.com \
+  -p 1883 \
+  -u ngp_device \
+  -P <your_device_password> \
+  -t "ngp/1112312212" \
+  -m '{
+    "message_time": "2024-10-10T06:00:11Z",
+    "device_id": "1112312212",
+    "location": {
+        "latitude": 34.15929687705282,
+        "longitude": -118.4614133834839,
+        "satellites": 3
+    },
+    "battery_level": 68
+}'
 ```
 
 Continue reading to learn about [Data types and encoding standards](data-types-and-encoding-standards.md) in Navixy Generic Protocol.
