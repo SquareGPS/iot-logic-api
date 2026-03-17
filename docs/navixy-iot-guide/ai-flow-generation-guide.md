@@ -49,7 +49,7 @@ Before generating any flow JSON, confirm you can answer all of the following. If
 
 <table><thead><tr><th width="58">#</th><th>Question</th><th>Why it matters</th></tr></thead><tbody><tr><td>1</td><td>What device make and model?</td><td>Required to look up exact attribute names</td></tr><tr><td>2</td><td>What attribute name does the device use for the relevant data? (e.g. how is ignition reported — <code>din1</code>, <code>avl_2</code>, <code>input_status</code> bitmask?)</td><td>Device-specific — never assume a generic name</td></tr><tr><td>3</td><td>What is the exact triggering condition, including any required duration?</td><td>Core of the Logic node and counter setup</td></tr><tr><td>4</td><td>If duration matters — what is the device's reporting interval in seconds?</td><td>Required to calculate the message count threshold</td></tr><tr><td>5</td><td>Where should data go — Navixy, MQTT, or external webhook? And what should happen on the THEN branch?</td><td>Determines terminal node types and wiring</td></tr><tr><td>6</td><td>How will you use this flow — import via the UI, or create it through the API?</td><td>Determines JSON format (import shape vs. <code>"flow"</code> envelope) and how the result is delivered</td></tr><tr><td>7</td><td>If webhook — what is the target service? Do you have the connection details (URL, token, chat ID, etc.)?</td><td>URL and payload must be verified from official docs; credentials must come from the user</td></tr></tbody></table>
 
-Do not ask all six at once. Ask only what is genuinely missing, one or two questions at a time. Use `source_ids: []` and placeholder URLs rather than blocking on minor unknowns — but state assumptions explicitly.
+Do not ask all seven at once. Ask only what is genuinely missing, one or two questions at a time. Use `source_ids: []` and placeholder URLs rather than blocking on minor unknowns — but state assumptions explicitly.
 
 ***
 
@@ -140,7 +140,7 @@ value('attribute_name', index, 'any')
 
 Where `index` is the historical depth (0 = current message, 1 = previous, up to 12). Use `'any'` to include nulls or `'valid'` to skip them. This is the only mechanism for accumulating state across messages — counters, running totals, change detection.
 
-See [Managing attributes](https://www.navixy.com/docs/user/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes) for full examples.
+See [Managing attributes](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes) for full examples.
 
 **logic**
 
@@ -266,7 +266,7 @@ Example: 15 minutes at 30-second intervals = 900 ÷ 30 = **30 messages**.
 ```json
 {
   "name": "idle_count",
-  "value": "speed < 2 && din1 == true ? value('idle_count', 1, 'any') + 1 : 0"
+  "value": "speed < 2 && {{ignition_attribute}} == true ? value('idle_count', 1, 'any') + 1 : 0"
 }
 ```
 
@@ -280,7 +280,7 @@ This fires exactly once when the threshold is reached, then resets when the cond
 
 **Important constraint:** `value()` can access up to 12 historical readings. This pattern therefore supports durations up to 12 × reporting interval. For longer durations or more complex state tracking, ask the user to consider alternative approaches.
 
-For full `value()` syntax, see [Managing attributes](https://www.navixy.com/docs/user/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes).
+For full `value()` syntax, see [Managing attributes](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes).
 
 ***
 
@@ -389,4 +389,4 @@ Use these when the guide doesn't cover the detail you need.
 
 ***
 
-_This page is intended for AI assistants and automated tools generating IoT Logic flow JSON. For human-readable documentation, see the_ [_IoT Logic user guide_](https://www.navixy.com/docs/user/guide/account/iot-logic) _and the_ [_IoT Logic API reference_](https://www.navixy.com/docs/iot-logic-api)_._
+_This page is intended for AI assistants and automated tools generating IoT Logic flow JSON. For human-readable documentation, see the_ [_IoT Logic user guide_](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic) _and the_ [_IoT Logic API reference_](../resources/api-reference/)_._
