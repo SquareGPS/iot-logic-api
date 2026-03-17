@@ -36,6 +36,7 @@
     * [Message structure and attributes](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md)
     * [Predefined event identifiers](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md)
   * [Navixy Generic Protocol 1.1a (on demand)](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md)
+  * [Navixy Generic Protocol 1.2](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-12.md)
   * [NGP Mapper skill](Technologies/navixy-generic-protocol/navixy-generic-protocol/ngp-mapper-skill.md)
 * [Navixy IoT Logic Expression Language](technologies/navixy-iot-logic-expression-language/README.md)
   * [Expression syntax reference](technologies/navixy-iot-logic-expression-language/expression-syntax-reference.md)

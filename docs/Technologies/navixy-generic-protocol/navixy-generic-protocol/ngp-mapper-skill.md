@@ -129,6 +129,8 @@ Plus: `ign` is ignition state (1=on/0=off), `adt1` is an external temperature se
 
 ## LBS-only devices
 
-If your device has no GPS and reports cell tower data only, the skill handles this as a separate positioning path. It maps your cell fields (`mcc`, `mnc`, `lac`, `cell_id`, signal strength) to the `mobile_cells` array, sets `location.source_type: "LBS"`, and explains how Navixy resolves cell tower identifiers to approximate coordinates. A satellite count is not required for LBS-based messages.
+If your device has no GPS and reports cell tower data only, the skill handles this as a separate positioning path. It maps your cell fields (`mcc`, `mnc`, `lac`, `cell_id`, signal strength) to the `mobile_cells` array and explains how Navixy resolves cell tower identifiers to approximate coordinates. A satellite count is not required for LBS-based messages.
 
-See [Message structure and attributes](message-structure-and-attributes.md) for the full `mobile_cells` schema and the `source_type` / `precision` fields.
+When targeting [version 1.2](../navixy-generic-protocol-12.md), the skill also sets `location.source_type: "LBS"` and populates `location.precision` with the expected accuracy in meters. These fields are not available in version 1.0.
+
+See [Message structure and attributes](navixy-generic-protocol-10/message-structure-and-attributes.md) for the full `mobile_cells` schema, and [version 1.2](../navixy-generic-protocol-12.md) for the `source_type` and `precision` fields.

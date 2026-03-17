@@ -48,7 +48,7 @@ The table below lists all pre-defined attributes, organized by category. In addi
 | device\_id                   | String          | Root          | Yes          | Unique device identifier. Maximum 64 characters.                                                                                                                       |
 | version                      | String          | Root          | No           | NGP version of this message. Defaults to `1.0` if omitted.                                                                                                             |
 | **Location**                 |                 |               |              |                                                                                                                                                                        |
-| location                     | Object          | Root          | No           | Device position. May be determined by GNSS (satellite), LBS (cell towers), or a third-party positioning service. Use `source_type` to indicate the positioning method. |
+| location                     | Object          | Root          | No           | Device position. May be determined by GNSS (satellite), LBS (cell towers), or a third-party positioning service.                                                       |
 | └─ latitude                  | Float           | location      | No           | Latitude in decimal degrees (−90.0 to 90.0).                                                                                                                           |
 | └─ longitude                 | Float           | location      | No           | Longitude in decimal degrees (−180.0 to 180.0).                                                                                                                        |
 | └─ altitude                  | Float           | location      | No           | Altitude above sea level in meters (−1000 to 10000).                                                                                                                   |
@@ -60,8 +60,6 @@ The table below lists all pre-defined attributes, organized by category. In addi
 | └─ pdop                      | Float           | location      | No           | 3D position dilution of precision, combining horizontal and vertical.                                                                                                  |
 | └─ speed                     | Float           | location      | No           | Device speed in km/h (positive values only).                                                                                                                           |
 | └─ heading                   | Integer         | location      | No           | Direction of movement in degrees, clockwise from north (1–360).                                                                                                        |
-| └─ source\_type              | String          | location      | No           | Positioning source. Possible values: `GNSS` (satellite), `LBS` (cell tower–based), `ATLAS` (third-party positioning service).                                          |
-| └─ precision                 | Integer         | location      | No           | Location accuracy in meters. Most relevant for non-GNSS positioning methods such as LBS, where accuracy can vary significantly.                                        |
 | **Event information**        |                 |               |              |                                                                                                                                                                        |
 | event\_id                    | Integer         | Root          | No           | Platform event identifier. See [Predefined event identifiers](predefined-event-identifiers.md) for standard values. Custom events start at 10,000.                     |
 | **Mobile cells**             |                 |               |              |                                                                                                                                                                        |
@@ -185,9 +183,7 @@ A complete telemetry message from a GPS tracker with GNSS positioning:
     "version": "1.0",
     "location": {
         "latitude": 56.352100,
-        "longitude": 60.128900,
-        "source_type": "LBS",
-        "precision": 800
+        "longitude": 60.128900
     },
     "event_id": 402,
     "mobile_cells": [
@@ -202,5 +198,9 @@ A complete telemetry message from a GPS tracker with GNSS positioning:
     ]
 }
 ```
+
+{% hint style="info" %}
+To explicitly identify the positioning source (GNSS, LBS, or ATLAS) and include a location accuracy value, use [version 1.2](../navixy-generic-protocol-12.md), which adds `source_type` and `precision` to the `location` object.
+{% endhint %}
 
 Continue reading to learn about [Predefined event identifiers](predefined-event-identifiers.md) in Navixy Generic Protocol.

@@ -18,9 +18,11 @@ Typical senders include: GPS trackers, IoT sensors, telematics terminals, and ga
 
 ## Protocol versions
 
-| **Date**   | **Version**                                                              | **Status**  | **Description**                                                                                                        |
-| ---------- | ------------------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------- |
-| 2024-09-03 | [**Version 1.0**](navixy-generic-protocol/navixy-generic-protocol-10.md) | **Current** | Base version with general availability. Standard data structures with foundational telematics and sensor data support. |
+| **Date**   | **Version**                                                                   | **Status**      | **Description**                                                                                                                            |
+| ---------- | ----------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2024-09-03 | [**Version 1.0**](navixy-generic-protocol/navixy-generic-protocol-10.md)      | **Stable**      | Base version with general availability. Standard data structures with foundational telematics and sensor data support.                     |
+|            | [**Version 1.1a**](navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md) | **On demand**   | Adds structured custom attribute arrays with metadata. Backward compatible with 1.0.                                               |
+|            | [**Version 1.2**](navixy-generic-protocol/navixy-generic-protocol-12.md)      | **Current**     | Adds `source_type` and `precision` to the `location` object, enabling explicit positioning source identification. Backward compatible with 1.0. |
 
 ## Section content
 
@@ -29,6 +31,8 @@ Typical senders include: GPS trackers, IoT sensors, telematics terminals, and ga
   * [Data types and encoding standards](navixy-generic-protocol/navixy-generic-protocol-10/data-types-and-encoding-standards.md) - JSON type mapping, timestamps, and binary encoding
   * [Message structure and attributes](navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md) - full attribute reference with location, sensors, I/O, and custom fields
   * [Predefined event identifiers](navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md) - standard `event_id` values for common device events
+* [Navixy Generic Protocol 1.1a (on demand)](navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md) - structured custom attribute arrays with metadata
+* [Navixy Generic Protocol 1.2](navixy-generic-protocol/navixy-generic-protocol-12.md) - adds `source_type` and `precision` to the `location` object
 * [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) - AI-assisted field mapping from any device format to NGP
 
 ## Implementing NGP
