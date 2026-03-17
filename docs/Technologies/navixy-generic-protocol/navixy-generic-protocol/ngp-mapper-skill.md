@@ -19,12 +19,14 @@ In both cases the conversion happens on your side; Navixy receives standard NGP 
 
 For each source protocol you describe, the skill outputs a self-contained mapping specification:
 
-* **Field mapping table**: every source field alongside its NGP equivalent, the transform required (unit conversion, enum remapping, bitmask extraction, timestamp normalisation), and notes on optionality.
-* **Example NGP message**: a complete, copy-pasteable JSON object built from your actual sample values with all transforms applied.
+* **Field mapping table**: every source field alongside its NGP equivalent, the transform required (unit conversion, enum remapping, bitmask extraction, timestamp normalization), and notes on optionality.
+* **Example NGP message**: a complete, copy-pastable JSON object built from your actual sample values with all transforms applied.
 * **Transport setup**: exact connection parameters for HTTP or MQTT based on your target Navixy region, including endpoint URLs, authentication, topic format, and response codes.
-* **Handling notes**: callouts for source fields with no NGP equivalent (promoted to `custom_*` attributes or dropped), fields that need to be synthesised (such as `device_id` or `message_time`), and any platform rules that could cause silent message discard.
+* **Handling notes**: callouts for source fields with no NGP equivalent (promoted to `custom_*` attributes or dropped), fields that need to be synthesized (such as `device_id` or `message_time`), and any platform rules that could cause silent message discard.
 
-## How to use it### Install the skill
+## How to use it
+
+### Install the skill
 
 Download the skill file below, then follow the steps for your AI tool.
 
@@ -34,11 +36,17 @@ NGP Mapper skill
 
 {% tabs %}
 {% tab title="Claude" %}
-1\. Open Claude desktop and go to **Settings → Skills**. 2. Click **Install from file** and select `ngp-mapper.skill`. 3. The skill appears in your skill list as **NGP Mapper**. No further configuration is needed. 4. Start a new chat. The skill activates automatically when you describe a protocol mapping task.
+1. Open Claude desktop and go to **Settings → Skills**.&#x20;
+2. Click **Install from file** and select `ngp-mapper.skill`.&#x20;
+3. The skill appears in your skill list as **NGP Mapper**. No further configuration is needed.&#x20;
+4. &#x20;Start a new chat. The skill activates automatically when you describe a protocol mapping task.
 {% endtab %}
 
 {% tab title="Cursor" %}
-1\. Rename `ngp-mapper.skill` to `ngp-mapper.skill.zip` and extract it. You will find `SKILL.md` inside. 2. In your project root, create the file `.cursor/rules/ngp-mapper.mdc`. 3. Paste the entire contents of `SKILL.md` into that file and save. 4. Open a Cursor AI chat and ask it to map your protocol to NGP. The instructions from the skill file will guide the model through the mapping process.
+1. Rename `ngp-mapper.skill` to `ngp-mapper.skill.zip` and extract it. You will find `SKILL.md` inside.&#x20;
+2. In your project root, create the file `.cursor/rules/ngp-mapper.mdc`.&#x20;
+3. Paste the entire contents of `SKILL.md` into that file and save.&#x20;
+4. Open a Cursor AI chat and ask it to map your protocol to NGP. The instructions from the skill file will guide the model through the mapping process.
 
 {% hint style="info" %}
 Cursor applies `.mdc` rules automatically to AI conversations within the project. No restart is required after saving the file.
@@ -58,7 +66,7 @@ Cursor applies `.mdc` rules automatically to AI conversations within the project
 {% endtab %}
 {% endtabs %}
 
-\### Describe your source protocol
+### Describe your source protocol
 
 Start a conversation and paste a sample message from your device or system. Include any context that isn't obvious from field names: units, whether a field is a Unix epoch or a formatted string, what a flag value of `1` means, and so on.
 
@@ -68,11 +76,11 @@ The more concrete the input, the more precise the output. A raw sample message w
 You don't need to describe every field upfront. The skill will ask about anything ambiguous as it works through the mapping.
 {% endhint %}
 
-\### Tell the skill your transport preference and region
+### Tell the skill your transport preference and region
 
 HTTP is simpler to start with; MQTT suits devices that need persistent connections or low overhead. The EU region uses `tracker.navixy.com` and `mqtt.eu.navixy.com`; the US region uses `tracker.us.navixy.com` and `mqtt.us.navixy.com`.
 
-\### Review and implement
+### Review and implement
 
 The skill produces the mapping document in the conversation. Review the field table and the example message, then pass the specification to whoever is implementing the converter: your middleware developer, firmware team, or yourself.
 
