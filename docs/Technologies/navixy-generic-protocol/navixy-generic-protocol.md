@@ -18,15 +18,11 @@ Typical senders include: GPS trackers, IoT sensors, telematics terminals, and ga
 
 ## Protocol versions
 
-| **Date**   | **Version**                                                                   | **Status**      | **Description**                                                                                                                            |
-| ---------- | ----------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2024-09-03 | [**Version 1.0**](navixy-generic-protocol/navixy-generic-protocol-10.md)      | **Stable**      | Base version with general availability. Standard data structures with foundational telematics and sensor data support.                     |
-|            | [**Version 1.1a**](navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md) | **On demand**   | Adds structured custom attribute arrays with metadata. Backward compatible with 1.0.                                               |
-|            | [**Version 1.2**](navixy-generic-protocol/navixy-generic-protocol-12.md)      | **Current**     | Adds `source_type` and `precision` to the `location` object, enabling explicit positioning source identification. Backward compatible with 1.0. |
+<table><thead><tr><th width="136">Date</th><th width="124">Version</th><th width="133">Status</th><th>Description</th></tr></thead><tbody><tr><td>2024-09-03</td><td><a href="navixy-generic-protocol/navixy-generic-protocol-10.md"><strong>Version 1.0</strong></a></td><td><strong>Stable</strong></td><td>Base version with general availability. Standard data structures with foundational telematics and sensor data support.</td></tr><tr><td>2024-10-25</td><td><a href="navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md"><strong>Version 1.1a</strong></a></td><td><strong>On demand</strong></td><td>Early release for advanced data structures and enhanced custom attributes support. Enhanced custom attributes, available exclusively in version 1.1a, open up new possibilities for users to integrate diverse sensor data and custom configurations.</td></tr><tr><td>2026-03-12</td><td><a href="navixy-generic-protocol/navixy-generic-protocol-12.md"><strong>Version 1.2</strong></a></td><td><strong>Current</strong></td><td>Adds <code>source_type</code> and <code>precision</code> to the <code>location</code> object, enabling explicit positioning source identification. Backward compatible with 1.0.</td></tr></tbody></table>
 
 ## Section content
 
-* [Navixy Generic Protocol 1.0](navixy-generic-protocol/navixy-generic-protocol-10.md)
+* [Navixy Generic Protocol 1.0](navixy-generic-protocol/navixy-generic-protocol-10.md) - base version with complete reference
   * [Transport layer](navixy-generic-protocol/navixy-generic-protocol-10/transport-layer.md) - HTTP/HTTPS and MQTT connection parameters, endpoints, and code examples
   * [Data types and encoding standards](navixy-generic-protocol/navixy-generic-protocol-10/data-types-and-encoding-standards.md) - JSON type mapping, timestamps, and binary encoding
   * [Message structure and attributes](navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md) - full attribute reference with location, sensors, I/O, and custom fields
