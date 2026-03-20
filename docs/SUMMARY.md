@@ -31,13 +31,10 @@
 ## TECHNOLOGIES
 
 * [Navixy Generic Protocol](Technologies/navixy-generic-protocol/navixy-generic-protocol.md)
-  * [Navixy Generic Protocol 1.0](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10.md)
-    * [Transport layer](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/transport-layer.md)
-    * [Data types and encoding standards](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/data-types-and-encoding-standards.md)
-    * [Message structure and attributes](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md)
-    * [Predefined event identifiers](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md)
-  * [Navixy Generic Protocol 1.1a (on demand)](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md)
-  * [Navixy Generic Protocol 1.2](Technologies/navixy-generic-protocol/navixy-generic-protocol/navixy-generic-protocol-12.md)
-  * [NGP Mapper skill](Technologies/navixy-generic-protocol/navixy-generic-protocol/ngp-mapper-skill.md)
+  * [Transport layer](Technologies/navixy-generic-protocol/transport-layer.md)
+  * [Data types and encoding standards](Technologies/navixy-generic-protocol/data-types-and-encoding-standards.md)
+  * [Message structure and attributes](Technologies/navixy-generic-protocol/message-structure-and-attributes.md)
+  * [Predefined event identifiers](Technologies/navixy-generic-protocol/predefined-event-identifiers.md)
+  * [NGP Mapper skill](Technologies/navixy-generic-protocol/ngp-mapper-skill.md)
 * [Navixy IoT Logic Expression Language](technologies/navixy-iot-logic-expression-language/README.md)
   * [Expression syntax reference](technologies/navixy-iot-logic-expression-language/expression-syntax-reference.md)
