@@ -30,7 +30,7 @@ For each source protocol you describe, the skill outputs a self-contained mappin
 
 Download the skill file below, then follow the steps for your AI tool.
 
-{% file src="../../../.gitbook/assets/ngp-mapper.skill" %}
+{% file src="../../.gitbook/assets/ngp-mapper.skill" %}
 NGP Mapper skill
 {% endfile %}
 
