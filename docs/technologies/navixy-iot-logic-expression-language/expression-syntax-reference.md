@@ -185,7 +185,7 @@ The `util:` namespace provides specialized functions for binary data processing,
 
 Binary data is processed as HEX strings (uppercase) for readability and protocol compatibility.
 
-<table><thead><tr><th>Function</th><th>Parameters</th><th width="120.63641357421875">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:hex(n)</code></td><td><code>n</code> (Number): value to convert</td><td>String</td><td>Convert to HEX string; 16 chars for negative/float, variable for positive int; <code>null</code> if invalid</td></tr><tr><td><code>util:hex(n, bytesAmount)</code></td><td><code>n</code> (Number): value to convert<code>bytesAmount</code> (int): byte length</td><td>String</td><td>Convert to fixed-length HEX (bytesAmount * 2 chars); pad/truncate as needed; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s)</code></td><td><code>s</code> (String): HEX string</td><td>Long</td><td>Convert HEX string to Long; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s, firstByteIndex, lastByteIndexInclusive)</code></td><td><p> </p><ul><li><code>s</code> (String): HEX string</li></ul><ul><li><code>firstByteIndex</code> (int): start byte (0=left). <br>Byte 0 is the leftmost (most-significant) byte of the HEX string.</li></ul><ul><li><code>lastByteIndexInclusive</code> (int): end byte</li></ul></td><td>Long</td><td>Extract bytes from HEX string to Long; reverse if <code>lastByteIndexInclusive</code> &#x3C; <code>firstByteIndex</code>; <code>null</code> if invalid</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th>Parameters</th><th width="120.63641357421875">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:hex(n)</code></td><td><code>n</code> (Number): value to convert</td><td>String</td><td>Convert to HEX string; 16 chars for negative/float, variable for positive int; <code>null</code> if invalid</td></tr><tr><td><code>util:hex(n, bytesAmount)</code></td><td><code>n</code> (Number): value to convert<code>bytesAmount</code> (int): byte length</td><td>String</td><td>Convert to fixed-length HEX (bytesAmount * 2 chars); pad/truncate as needed; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s)</code></td><td><code>s</code> (String): HEX string</td><td>Long</td><td>Convert HEX string to Long; <code>null</code> if invalid</td></tr><tr><td><code>util:hexToLong(s, firstByteIndex, lastByteIndexInclusive)</code></td><td><p> </p><ul><li><code>s</code> (String): HEX string</li><li><code>firstByteIndex</code> (int): start byte (0=left). <br>Byte 0 is the leftmost (most-significant) byte of the HEX string.</li><li><code>lastByteIndexInclusive</code> (int): end byte</li></ul></td><td>Long</td><td>Extract bytes from HEX string to Long; reverse if <code>lastByteIndexInclusive</code> &#x3C; <code>firstByteIndex</code>; <code>null</code> if invalid</td></tr></tbody></table>
 
 **Examples:**
 
@@ -219,6 +219,16 @@ Binary data is processed as HEX strings (uppercase) for readability and protocol
 | `util:leftPad(123, 5)`    | `"00123"` |
 | `util:leftPad(7, 3, "*")` | `"**7"`   |
 | `util:rightPad(123, 5)`   | `"12300"` |
+
+#### String join functions
+
+Use these functions to combine multiple attribute values into a single string. They are particularly useful when consolidating readings from indexed device attributes, such as BLE sensor slots, where only some values may be present.
+
+<table><thead><tr><th>Function</th><th>Parameters</th><th width="122">Result type</th><th>Description</th></tr></thead><tbody><tr><td><code>util:join(separator, arguments...)</code></td><td><code>separator</code> (String): delimiter<br><code>arguments</code> (Object...): values to join</td><td>String</td><td>Joins all arguments into a single string using the given separator. Null arguments are treated as empty strings</td></tr><tr><td><code>util:joinNonNull(separator, arguments...)</code></td><td><code>separator</code> (String): delimiter<br><code>arguments</code> (Object...): values to join</td><td>String</td><td>Joins non-null arguments into a single string using the given separator. Null arguments are skipped; returns empty string if all arguments are null</td></tr></tbody></table>
+
+**Examples:**
+
+<table><thead><tr><th width="271">Expression</th><th>Result</th><th>Use case</th></tr></thead><tbody><tr><td><code>util:join(', ', 'a', null, 'b')</code></td><td><code>"a, , b"</code></td><td>Preserve empty positions</td></tr><tr><td><code>util:joinNonNull(', ', 'a', null, 'b')</code></td><td><code>"a, b"</code></td><td>Skip absent values</td></tr><tr><td><code>util:joinNonNull(', ', ble_name_1, ble_name_2, ble_name_3)</code></td><td><code>"Sensor A, Sensor B"</code> (if <code>ble_name_3</code> is null)</td><td>Collect active BLE sensor names</td></tr></tbody></table>
 
 ## Data types and type handling
 
