@@ -220,7 +220,7 @@ Binary data is processed as HEX strings (uppercase) for readability and protocol
 | `util:leftPad(7, 3, "*")` | `"**7"`   |
 | `util:rightPad(123, 5)`   | `"12300"` |
 
-#### String join functions
+### String join functions
 
 Use these functions to combine multiple attribute values into a single string. They are particularly useful when consolidating readings from indexed device attributes, such as BLE sensor slots, where only some values may be present.
 
