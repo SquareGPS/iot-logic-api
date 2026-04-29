@@ -52,7 +52,10 @@
                     "description": "The flow definition, wrapped in this \"flow\" key as required by the create/update endpoints. Export/import operations do not use this envelope — they accept the flow object directly.",
                     "$ref": "#/components/schemas/FlowDraft"
                   }
-                }
+                },
+                "required": [
+                  "flow"
+                ]
               }
             }
           }
@@ -189,14 +192,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successful response to delete a flow",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Success"
-                }
-              }
-            }
+            "$ref": "#/components/responses/OK"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -960,17 +956,6 @@
       }
     },
     "schemas": {
-      "Success": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "description": "`true` if request finished successfully, otherwise `false`",
-            "readOnly": true,
-            "example": true
-          }
-        }
-      },
       "FlowId": {
         "type": "object",
         "required": [
@@ -997,7 +982,6 @@
           "description": {
             "type": ["string", "null"],
             "description": "Flow description (optional)",
-            "readOnly": true,
             "example": null
           },
           "enabled": {
@@ -1008,7 +992,6 @@
           "default_flow": {
             "type": "boolean",
             "description": "Whether this is the default flow",
-            "readOnly": true,
             "example": false
           },
           "nodes": {
@@ -1042,7 +1025,7 @@
       },
       "FlowExport": {
         "type": "object",
-        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, id) are not defined here: Flow is imported in 'enabled' state by default and 'id' is assigned dinamically.",
+        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, id) are not defined here: Flow is imported in 'enabled' state by default and 'id' is assigned dynamically.",
         "required": ["title", "nodes", "edges"],
         "properties": {
           "title": {
