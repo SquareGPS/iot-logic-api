@@ -28,11 +28,11 @@
   "tags": [
     {
       "name": "Flow",
-      "description": "Operations for managing data flows"
+      "description": "Operations for creating, reading, updating, and deleting flows. Also covers flow validation, system-provided templates, and device source queries — all resources under the /iot/logic/flow/ path."
     },
     {
-      "name": "Node", 
-      "description": "Operations for managing flow nodes (endpoints)"
+      "name": "Node",
+      "description": "Operations for managing output endpoints (IotEndpoints) — reusable, account-level output destinations (Navixy platform or external MQTT broker) that are referenced by Output Endpoint nodes inside flows."
     }
   ],
   "paths": {
@@ -52,7 +52,10 @@
                     "description": "The flow definition, wrapped in this \"flow\" key as required by the create/update endpoints. Export/import operations do not use this envelope — they accept the flow object directly.",
                     "$ref": "#/components/schemas/FlowDraft"
                   }
-                }
+                },
+                "required": [
+                  "flow"
+                ]
               }
             }
           }
@@ -149,7 +152,7 @@
         },
         "responses": {
           "200": {
-            "$ref": "#/components/responses/OK"
+            "$ref": "#/components/responses/EntityCreatedResponse"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -189,14 +192,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successful response to delete a flow",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Success"
-                }
-              }
-            }
+            "$ref": "#/components/responses/OK"
           },
           "default": {
             "$ref": "#/components/responses/ResponseError"
@@ -213,7 +209,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowList",
-        "description": "List all flows in the user account. Returns flow IDs and titles only. Use the read endpoint to retrieve complete flow details including nodes and configuration.",
+        "description": "List all flows in the user account. Returns summary metadata for each flow (id, title, description, enabled status, default_flow flag, last modified timestamp, and device count). Use the read endpoint to retrieve complete flow details including nodes and configuration.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -234,22 +230,7 @@
                       "description": "List of user's flows",
                       "readOnly": true,
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "description": "Flow ID",
-                            "readOnly": true,
-                            "example": 1234
-                          },
-                          "title": {
-                            "type": "string",
-                            "description": "Flow name",
-                            "readOnly": true,
-                            "example": "Super flow"
-                          }
-                        },
-                        "readOnly": true
+                        "$ref": "#/components/schemas/IotFlowInfo"
                       }
                     }
                   }
@@ -347,24 +328,32 @@
         ],
         "responses": {
           "200": {
-            "description": "success",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "example": {
-                    "list": [
-                      {
-                        "device_title": "Emulator",
-                        "model_code": "navixy_ngp",
-                        "device_id": "123456789",
-                        "flow_id": 1,
-                        "flow_title": "Default flow",
-                        "node_id": 1,
-                        "node_title": "Source node"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "list": {
+                      "type": "array",
+                      "description": "Device-to-flow mapping records",
+                      "readOnly": true,
+                      "items": {
+                        "$ref": "#/components/schemas/IotLogicFlowDeviceMapping"
                       }
-                    ],
-                    "count": 1,
-                    "success": true
+                    },
+                    "count": {
+                      "type": "integer",
+                      "description": "Total number of mapping records matching the query",
+                      "readOnly": true,
+                      "example": 1
+                    }
                   }
                 }
               }
@@ -555,11 +544,278 @@
         ]
       }
     },
+    "/iot/logic/flow/schema": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "flowSchema",
+        "description": "Return the server-side JSON Schema used to validate flow objects submitted to `flowCreate` and `flowUpdate`. Clients and LLM agents can fetch this schema to validate a flow structure locally before making a write request. The schema is opaque and may change between server versions.",
+        "operationId": "flowSchema",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "value": {
+                      "type": "object",
+                      "description": "A JSON Schema document describing the valid structure of a flow. Treat as opaque — the schema may evolve between API versions.",
+                      "readOnly": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/iot/logic/flow/template/read": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "flowTemplateRead",
+        "description": "Retrieve a single system-provided flow template by its ID. A template is a pre-built flow graph (nodes + edges) that can be instantiated as a new flow by passing its structure to `flowCreate`. Use `flowTemplateList` to discover available template IDs and their descriptions.",
+        "operationId": "flowTemplateRead",
+        "parameters": [
+          {
+            "name": "flow_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Template ID",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "value": {
+                      "$ref": "#/components/schemas/IotFlowTemplate"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/iot/logic/flow/template/list": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "flowTemplateList",
+        "description": "List all system-provided flow templates available to the user. Each item includes the template ID, title, description, and the pre-configured node and edge graph. To create a flow from a template, pass the template's nodes and edges to `flowCreate`.",
+        "operationId": "flowTemplateList",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "list": {
+                      "type": "array",
+                      "description": "Available flow templates",
+                      "readOnly": true,
+                      "items": {
+                        "$ref": "#/components/schemas/IotFlowTemplate"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/iot/logic/flow/sources/list": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "flowSourcesList",
+        "description": "Return the device source IDs currently feeding a specific flow. Pass `flow_id=0` to query the default flow — returns all trackers in the account not explicitly assigned to any custom flow. Pass a specific flow ID to get only the device IDs explicitly linked to that flow. Use this to determine which devices a flow processes before modifying source assignments.",
+        "operationId": "flowSourcesList",
+        "parameters": [
+          {
+            "name": "flow_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Flow ID. Use 0 to query the default flow.",
+              "example": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "value": {
+                      "type": "array",
+                      "description": "Device source IDs feeding the flow.",
+                      "readOnly": true,
+                      "items": {
+                        "type": "integer"
+                      },
+                      "example": [123456, 789012]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/iot/logic/flow/sources/attribute/list": {
+      "get": {
+        "tags": ["Flow"],
+        "summary": "flowSourcesAttributeList",
+        "description": "Return the telemetry attributes available from the specified devices, for use when authoring expressions in Initiate Attributes or Logic nodes. Pass one or more `source_ids` as repeated query parameters. Set `include_only_iot_flow_attributes=true` to return only attributes that IoT Logic flows have computed and emitted; set it to `false` to return all attributes including raw device parameters.",
+        "operationId": "flowSourcesAttributeList",
+        "parameters": [
+          {
+            "name": "source_ids",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1,
+              "description": "Device source IDs to query attributes for.",
+              "example": [123456, 789012]
+            }
+          },
+          {
+            "name": "include_only_iot_flow_attributes",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean",
+              "description": "When true, returns only IoT Logic flow-emitted attributes. When false, returns all attributes including raw device parameters.",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "`true` if request finished successfully.",
+                      "readOnly": true,
+                      "example": true
+                    },
+                    "list": {
+                      "type": "array",
+                      "description": "Attributes available from the specified devices.",
+                      "readOnly": true,
+                      "items": {
+                        "$ref": "#/components/schemas/TrackerAttribute"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/ResponseError"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/iot/logic/flow/endpoint/list": {
       "post": {
         "tags": ["Node"],
         "summary": "endpointList",
-        "description": "List all nodes across all flows in the user account. Returns complete node configurations including type, data, and position for each node. To retrieve nodes for a specific flow, use the flow read endpoint instead.",
+        "description": "List all output endpoints in the user account. Returns a summary view for each endpoint: id, title, type, and description. Use endpointRead to retrieve the full configuration including connection properties for a specific endpoint.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
@@ -589,7 +845,7 @@
                       "description": "List of user's endpoints",
                       "readOnly": true,
                       "items": {
-                        "$ref": "#/components/schemas/IotEndpoint"
+                        "$ref": "#/components/schemas/IotEndpointResponse"
                       }
                     }
                   }
@@ -700,17 +956,6 @@
       }
     },
     "schemas": {
-      "Success": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "description": "`true` if request finished successfully, otherwise `false`",
-            "readOnly": true,
-            "example": true
-          }
-        }
-      },
       "FlowId": {
         "type": "object",
         "required": [
@@ -737,7 +982,6 @@
           "description": {
             "type": ["string", "null"],
             "description": "Flow description (optional)",
-            "readOnly": true,
             "example": null
           },
           "enabled": {
@@ -748,7 +992,6 @@
           "default_flow": {
             "type": "boolean",
             "description": "Whether this is the default flow",
-            "readOnly": true,
             "example": false
           },
           "nodes": {
@@ -782,7 +1025,7 @@
       },
       "FlowExport": {
         "type": "object",
-        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, id) are not defined here: Flow is imported in 'enabled' state by default and 'id' is assigned dinamically.",
+        "description": "Portable flow structure for export/import (download/upload) operations. Unlike FlowDraft, which must be wrapped in a {\"flow\": ...} envelope when calling the create/update endpoints, FlowExport is used as the direct request/response payload — no wrapper. Runtime and identity fields (enabled, id) are not defined here: Flow is imported in 'enabled' state by default and 'id' is assigned dynamically.",
         "required": ["title", "nodes", "edges"],
         "properties": {
           "title": {
@@ -808,6 +1051,92 @@
             }
           }
         }
+      },
+      "IotFlowInfo": {
+        "type": "object",
+        "description": "Flow summary as returned by the flow/list endpoint.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Flow ID",
+            "readOnly": true,
+            "example": 1234
+          },
+          "title": {
+            "type": "string",
+            "description": "Flow name",
+            "readOnly": true,
+            "example": "Super flow"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Flow description",
+            "readOnly": true,
+            "example": null
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the flow is currently enabled",
+            "readOnly": true,
+            "example": true
+          },
+          "default_flow": {
+            "type": "boolean",
+            "description": "Whether this is the account's default flow",
+            "readOnly": true,
+            "example": false
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the last modification",
+            "readOnly": true,
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "devices_count": {
+            "type": "integer",
+            "description": "Number of devices currently assigned to this flow",
+            "readOnly": true,
+            "example": 42
+          }
+        }
+      },
+      "IotFlowTemplate": {
+        "type": "object",
+        "description": "Pre-built flow template available for instantiation as a new flow.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Template ID",
+            "readOnly": true,
+            "example": 1
+          },
+          "title": {
+            "type": "string",
+            "description": "Template name",
+            "example": "Basic processing flow"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Template description",
+            "example": "A simple flow for standard telemetry processing."
+          },
+          "nodes": {
+            "type": "array",
+            "description": "Nodes pre-configured in this template.",
+            "items": {
+              "$ref": "#/components/schemas/Node"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "description": "Edges pre-configured in this template.",
+            "items": {
+              "$ref": "#/components/schemas/Edge"
+            }
+          }
+        },
+        "required": ["id", "title", "nodes", "edges"]
       },
       "Edge": {
         "type": "object",
@@ -1306,70 +1635,176 @@
           "output_endpoint_id"
         ]
       },
-      "IotEndpoint": {
-        "type": "object",
-        "description": "Input or output endpoint",
-        "allOf": [
-          {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "integer",
-                "description": "Endpoint ID inside user account",
-                "example": 12345,
-                "readOnly": true
-              }
-            },
-            "required": [
-              "id"
-            ]
-          },
-          {
-            "$ref": "#/components/schemas/IotEndpointDraft"
-          }
-        ]
+      "IotEndpointStatus": {
+        "type": "string",
+        "description": "Endpoint connection status.",
+        "enum": ["active", "waiting_reconnect", "suspend", "disabled"],
+        "example": "active"
       },
-      "IotEndpointDraft": {
+      "IotEndpointResponse": {
         "type": "object",
-        "description": "Input or output endpoint draft (for creation)",
+        "description": "Trimmed endpoint representation returned by the endpoint/list endpoint.",
         "properties": {
-          "user_id": {
+          "id": {
             "type": "integer",
-            "description": "Master user ID",
-            "example": 8
+            "description": "Endpoint ID inside user account",
+            "readOnly": true,
+            "example": 12345
+          },
+          "title": {
+            "type": "string",
+            "description": "Endpoint title",
+            "readOnly": true,
+            "example": "MQTT Endpoint"
           },
           "type": {
             "type": "string",
-            "description": "Endpoint type. One of: 'input_default', 'output_default', 'output_mqtt_client'.",
+            "description": "Endpoint type",
+            "readOnly": true,
+            "example": "output_mqtt_client"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Endpoint description",
+            "readOnly": true,
+            "example": null
+          }
+        }
+      },
+      "IotDefaultEndpointDraft": {
+        "type": "object",
+        "description": "Navixy platform (output_default) endpoint — create/update payload.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["output_default"],
+            "description": "Endpoint type. Always 'output_default' for this subtype.",
+            "example": "output_default"
+          },
+          "title": {
+            "type": "string",
+            "description": "Endpoint title",
+            "example": "Navixy Endpoint"
+          },
+          "status": {
+            "$ref": "#/components/schemas/IotEndpointStatus"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Endpoint description (optional, max 4000 characters).",
+            "maxLength": 4000,
+            "example": null
+          }
+        },
+        "required": ["type", "title", "status"]
+      },
+      "IotMqttEndpointDraft": {
+        "type": "object",
+        "description": "MQTT client (output_mqtt_client) endpoint — create/update payload.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["output_mqtt_client"],
+            "description": "Endpoint type. Always 'output_mqtt_client' for this subtype.",
             "example": "output_mqtt_client"
           },
           "title": {
             "type": "string",
+            "description": "Endpoint title",
             "example": "MQTT Endpoint Client Properties"
           },
           "status": {
-            "type": "string",
-            "description": "Endpoint status. One of: 'active', 'suspend', 'disabled'."
+            "$ref": "#/components/schemas/IotEndpointStatus"
+          },
+          "description": {
+            "type": ["string", "null"],
+            "description": "Endpoint description (optional, max 4000 characters).",
+            "maxLength": 4000,
+            "example": null
           },
           "properties": {
-            "type": "object",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/IotEndpointMqttClientProperties"
-              },
-              {
-                "type": "object",
-                "description": "Navixy endpoint - empty object (no properties)",
-                "properties": {}
-              }
-            ]
+            "$ref": "#/components/schemas/IotEndpointMqttClientProperties"
           }
         },
-        "required": [
-          "type",
-          "title",
-          "status"
+        "required": ["type", "title", "status", "properties"]
+      },
+      "IotDefaultEndpoint": {
+        "type": "object",
+        "description": "Navixy platform (output_default) endpoint — full representation including id.",
+        "allOf": [
+          {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Endpoint ID inside user account",
+                "readOnly": true,
+                "example": 12345
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/IotDefaultEndpointDraft"
+          }
         ]
+      },
+      "IotEndpointMqtt": {
+        "type": "object",
+        "description": "MQTT client (output_mqtt_client) endpoint — full representation including id.",
+        "allOf": [
+          {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Endpoint ID inside user account",
+                "readOnly": true,
+                "example": 12345
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/IotMqttEndpointDraft"
+          }
+        ]
+      },
+      "IotEndpoint": {
+        "description": "Output endpoint — full representation. Use the type field to determine which subtype applies.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/IotDefaultEndpoint"
+          },
+          {
+            "$ref": "#/components/schemas/IotEndpointMqtt"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "output_default": "#/components/schemas/IotDefaultEndpoint",
+            "output_mqtt_client": "#/components/schemas/IotEndpointMqtt"
+          }
+        }
+      },
+      "IotEndpointDraft": {
+        "description": "Endpoint for creation. The type field determines the subtype and the required properties.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/IotDefaultEndpointDraft"
+          },
+          {
+            "$ref": "#/components/schemas/IotMqttEndpointDraft"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "output_default": "#/components/schemas/IotDefaultEndpointDraft",
+            "output_mqtt_client": "#/components/schemas/IotMqttEndpointDraft"
+          }
+        }
       },
       "IotEndpointMqttClientProperties": {
         "type": "object",
@@ -1445,6 +1880,73 @@
           "use_ssl",
           "mqtt_auth"
         ]
+      },
+      "IotLogicFlowDeviceMapping": {
+        "type": "object",
+        "description": "A single device-to-flow assignment record.",
+        "properties": {
+          "device_title": {
+            "type": "string",
+            "description": "Device name",
+            "readOnly": true,
+            "example": "Emulator"
+          },
+          "model_code": {
+            "type": "string",
+            "description": "Device model code",
+            "readOnly": true,
+            "example": "navixy_ngp"
+          },
+          "device_id": {
+            "type": "integer",
+            "description": "Device ID",
+            "readOnly": true,
+            "example": 123456789
+          },
+          "flow_id": {
+            "type": "integer",
+            "description": "ID of the flow this device is assigned to",
+            "readOnly": true,
+            "example": 1
+          },
+          "flow_title": {
+            "type": "string",
+            "description": "Name of the flow",
+            "readOnly": true,
+            "example": "Default flow"
+          },
+          "node_id": {
+            "type": "integer",
+            "description": "ID of the Data Source node within the flow that ingests this device",
+            "readOnly": true,
+            "example": 1
+          },
+          "node_title": {
+            "type": "string",
+            "description": "Title of the Data Source node",
+            "readOnly": true,
+            "example": "Source node"
+          }
+        }
+      },
+      "TrackerAttribute": {
+        "type": "object",
+        "description": "A data attribute (parameter) available from a tracker/device. Used by the flow editor to discover which fields can be referenced in node expressions.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Attribute name as used in flow expressions.",
+            "readOnly": true,
+            "example": "temperature"
+          },
+          "type": {
+            "type": "string",
+            "description": "Data type of the attribute (e.g. 'double', 'integer', 'boolean', 'string').",
+            "readOnly": true,
+            "example": "double"
+          }
+        },
+        "required": ["name", "type"]
       }
     }
   },
