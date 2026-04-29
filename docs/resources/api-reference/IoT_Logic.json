@@ -209,7 +209,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowList",
-        "description": "List all flows in the user account. Returns flow IDs and titles only. Use the read endpoint to retrieve complete flow details including nodes and configuration.",
+        "description": "List all flows in the user account. Returns summary metadata for each flow (id, title, description, enabled status, default_flow flag, last modified timestamp, and device count). Use the read endpoint to retrieve complete flow details including nodes and configuration.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -815,7 +815,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointList",
-        "description": "List all nodes across all flows in the user account. Returns complete node configurations including type, data, and position for each node. To retrieve nodes for a specific flow, use the flow read endpoint instead.",
+        "description": "List all output endpoints in the user account. Returns a summary view for each endpoint: id, title, type, and description. Use endpointRead to retrieve the full configuration including connection properties for a specific endpoint.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
