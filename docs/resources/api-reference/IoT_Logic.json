@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "title": "Navixy IoT Logic API",
     "summary": "API calls for Flow and Node management",
-    "description": "Navixy IoT Logic API. Use these endpoints to build and manage data processing pipelines (flows) that transform telemetry from IoT devices into actions and outputs. A flow is a directed graph of nodes — data sources, attribute transforms, logic branches, device actions, webhooks, and output endpoints. This spec also covers output endpoint management, device-source assignment queries, and flow validation.",
+    "description": "This is an API reference for Flow and Node management in Navixy IoT Logic. Use these endpoints to create and configure data processing flows, manage nodes and their connections, assign devices to flows, and export or import flow configurations.",
     "contact": {
       "name": "Navixy support",
       "email": "support@navixy.com",
