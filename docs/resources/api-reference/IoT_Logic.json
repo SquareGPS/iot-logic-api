@@ -40,7 +40,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowCreate",
-        "description": "Create a new flow. Nodes and edges can be included in the creation request or added later via `endpointCreate`. The request body must nest the flow object inside a `flow` key: `{\"flow\": <FlowDraft>}`. Returns the ID of the created flow.",
+        "description": "Create a new data processing flow with nodes and connections. Flows define how data moves from devices through transformation stages to output destinations. Each flow requires at least one Data Source node and one Output Endpoint node. You can create flows with nodes and edges in a single request or add nodes later using the endpoint management API.",
         "operationId": "flowCreate",
         "requestBody": {
           "content": {
@@ -79,7 +79,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowRead",
-        "description": "Retrieve the complete configuration of a single flow: all nodes, edges, positions, and runtime fields (`enabled`, `default_flow`). Use this when you need the full graph structure. For a lightweight listing of all flows with metadata only, use `flowList`.",
+        "description": "Retrieve complete flow configuration including all nodes, edges, and metadata. Returns the flow structure with node positions, connections, and enabled status. Use this endpoint to inspect flow architecture or retrieve configuration for duplication.",
         "operationId": "flowRead",
         "parameters": [
           {
@@ -130,7 +130,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowUpdate",
-        "description": "Replace the entire configuration of an existing flow. Send the complete flow object — nodes and edges omitted from the request are deleted. The request body must nest the flow object inside a `flow` key: `{\"flow\": <Flow>}`. Changes apply immediately to enabled flows. Returns the flow ID.",
+        "description": "Update an existing flow's configuration. Requires the complete flow object including all nodes and edges. To modify individual nodes without affecting the entire flow, use the endpoint management API. Changes take effect immediately for enabled flows.",
         "operationId": "flowUpdate",
         "requestBody": {
           "content": {
@@ -169,7 +169,7 @@
       "post": {
         "tags": ["Flow"],
         "summary": "flowDelete",
-        "description": "Permanently delete a flow. All devices assigned to this flow automatically revert to the account's default flow. Cannot be undone. To pause processing without losing the flow configuration, use `flowUpdate` with `enabled: false` instead.",
+        "description": "Permanently delete a flow and stop its data processing pipeline. Devices assigned to this flow will automatically revert to the default flow in your account. This action cannot be undone. To temporarily stop processing without reassigning devices, disable the flow using the update endpoint instead.",
         "operationId": "flowDelete",
         "requestBody": {
           "content": {
@@ -209,7 +209,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowList",
-        "description": "List all flows in the user account. Returns summary metadata for each flow: `id`, `title`, `description`, `enabled`, `default_flow`, last modified timestamp, and assigned device count. Does not include node or edge data — use `flowRead` to retrieve the full graph for a specific flow.",
+        "description": "List all flows in the user account. Returns flow IDs and titles only. Use the read endpoint to retrieve complete flow details including nodes and configuration.",
         "operationId": "flowList",
         "responses": {
           "200": {
@@ -253,7 +253,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowExport",
-        "description": "Export a flow as a portable structure that can be passed directly to `flowCreate` to duplicate it or import it into another account. Returns only the flow graph (title, description, nodes, edges) — runtime and identity fields (`id`, `enabled`, `default_flow`) are stripped. Unlike `flowRead`, the response `value` is not wrapped in a `flow` envelope and is ready to use as a `flowCreate` request body.",
+        "description": "Export a flow as a reusable template without instance-specific metadata. Unlike the read endpoint which retrieves the complete operational state of a flow, export returns only the flow structure (nodes, edges, title, description) suitable for creating duplicate flows or transferring configurations between accounts. The exported template excludes flow ID, enabled status, and default flow designation, making it ready for use with the create endpoint.",
         "operationId": "flowExport",
         "parameters": [
           {
@@ -303,7 +303,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "sourceMappingList",
-        "description": "List all device-to-flow assignments in the user account with pagination. Each record identifies a device, the flow it is assigned to, and the specific Data Source node within that flow that ingests it. Supports `offset` and `limit` for large device fleets (`limit` max: 100 000, default: 10 000).",
+        "description": "List all device-to-flow assignments in the user account. Shows which devices are currently assigned to which flows and their corresponding Data Source nodes. Returns device information including title, model, and the flow configuration processing its data. Use this endpoint to audit device assignments, identify unassigned devices, or verify flow coverage across your device fleet. Supports pagination for accounts with large device inventories.",
         "operationId": "sourceMappingList",
         "parameters": [
           {
@@ -374,7 +374,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointCreate",
-        "description": "Create a new output endpoint (IotEndpoint) in the user account. Output endpoints are reusable, account-level output destinations — either the Navixy platform (`output_default`) or an external MQTT broker (`output_mqtt_client`). They are distinct from flow graph nodes: an IotEndpoint is stored once at the account level and referenced by Output Endpoint nodes in flows via `output_endpoint_id`. The `type` field acts as a discriminator that determines the required shape of `properties`. Wrap the payload in an `endpoint` key: `{\"endpoint\": <IotEndpointDraft>}`. Returns the ID of the created endpoint.",
+        "description": "Create a new node within a flow. Supports all node types existing in IoT Logic. The node type is specified in the request body's type field. ",
         "operationId": "endpointCreate",
         "requestBody": {
           "content": {
@@ -412,7 +412,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointRead",
-        "description": "Retrieve the full configuration of a single output endpoint by ID, including its `type`, `status`, `description`, and `properties` (MQTT connection details for `output_mqtt_client` endpoints). Use `endpointList` to enumerate endpoints and obtain their IDs.",
+        "description": "Retrieve detailed configuration for a specific node. Returns complete node data including type-specific configuration, position, and enabled status. Use this endpoint to inspect individual node configuration without retrieving the entire flow.",
         "operationId": "endpointRead",
         "requestBody": {
           "content": {
@@ -470,7 +470,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointUpdate",
-        "description": "Replace the full configuration of an existing output endpoint. Requires the complete IotEndpoint object including `id`, wrapped in an `endpoint` key: `{\"endpoint\": <IotEndpoint>}`. Changes apply immediately to all flows that reference this endpoint.",
+        "description": "Update an existing node configuration. Requires the complete node object including all required fields for the node type. Changes to nodes in enabled flows take effect immediately and may impact active data processing. ",
         "operationId": "endpointUpdate",
         "requestBody": {
           "content": {
@@ -508,7 +508,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointDelete",
-        "description": "Permanently delete an output endpoint from the user account. Any Output Endpoint nodes in flows that reference this endpoint via `output_endpoint_id` will lose their output target — disable or update those flows before deleting. Cannot be undone.",
+        "description": "Permanently delete a node from accoun. Automatically removes all edges connected to this node. Deleting critical nodes (Data Source or Output Endpoint) from enabled flows will interrupt data processing. Verify flow integrity after deletion.",
         "operationId": "endpointDelete",
         "requestBody": {
           "content": {
@@ -815,7 +815,7 @@
       "post": {
         "tags": ["Node"],
         "summary": "endpointList",
-        "description": "List all output endpoints in the user account. Returns a trimmed summary for each: `id`, `title`, `type`, and `description`. Use `endpointRead` to retrieve the full configuration including MQTT connection properties for a specific endpoint.",
+        "description": "List all nodes across all flows in the user account. Returns complete node configurations including type, data, and position for each node. To retrieve nodes for a specific flow, use the flow read endpoint instead.",
         "operationId": "endpointList",
         "requestBody": {
           "content": {
