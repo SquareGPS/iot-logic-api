@@ -749,6 +749,7 @@
           {
             "name": "source_ids",
             "in": "query",
+            "required": true,
             "style": "form",
             "explode": true,
             "schema": {
@@ -757,7 +758,7 @@
                 "type": "integer"
               },
               "minItems": 1,
-              "description": "Device source IDs to query attributes for. If omitted, returns attributes for all trackers in the account.",
+              "description": "Device source IDs to query attributes for.",
               "example": [123456, 789012]
             }
           },
@@ -1116,8 +1117,7 @@
             "example": "Basic processing flow"
           },
           "description": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Template description",
             "example": "A simple flow for standard telemetry processing."
           },
