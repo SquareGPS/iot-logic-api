@@ -768,39 +768,38 @@
       }
     },
     "/iot/logic/flow/sources/attribute/list": {
-      "get": {
+      "post": {
         "tags": ["Flow"],
         "summary": "flowSourcesAttributeList",
         "description": "Return the telemetry attributes available from the specified devices, for use when authoring expressions in Initiate Attributes or Logic nodes. If `source_ids` is omitted, returns attributes for all trackers in the account. Set `include_only_iot_flow_attributes=true` to return only attributes that IoT Logic flows have computed and emitted; omit or set to `false` to return all attributes including raw device parameters.",
         "operationId": "flowSourcesAttributeList",
-        "parameters": [
-          {
-            "name": "source_ids",
-            "in": "query",
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "integer"
-              },
-              "minItems": 1,
-              "maxItems": 25000,
-              "description": "Device source IDs to query attributes for. If omitted, returns attributes for all trackers in the account.",
-              "example": [123456, 789012]
-            }
-          },
-          {
-            "name": "include_only_iot_flow_attributes",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "default": false,
-              "description": "When true, returns only IoT Logic flow-emitted attributes. When false (default), returns all attributes including raw device parameters.",
-              "example": false
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 1,
+                    "maxItems": 25000,
+                    "description": "Device source IDs to query attributes for. If omitted, returns attributes for all trackers in the account.",
+                    "example": [123456, 789012]
+                  },
+                  "include_only_iot_flow_attributes": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "When true, returns only IoT Logic flow-emitted attributes. When false (default), returns all attributes including raw device parameters.",
+                    "example": false
+                  }
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Successful response",
