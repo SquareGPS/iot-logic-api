@@ -678,7 +678,7 @@
                             "example": "Device healthcheck and reboot"
                           },
                           "description": {
-                            "type": ["string", "null"],
+                            "type": "string",
                             "description": "Translated template description. Supports Markdown.",
                             "readOnly": true,
                             "example": "Monitors GPS signal quality and schedules a device reboot if signal is poor."
