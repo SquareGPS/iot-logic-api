@@ -1972,18 +1972,6 @@
             "readOnly": true,
             "example": true
           },
-          "indexed": {
-            "type": "boolean",
-            "description": "Present and `true` when the attribute supports a numeric index suffix (e.g. `temperature_0`, `temperature_1`). Omitted when false.",
-            "readOnly": true,
-            "example": true
-          },
-          "max_index": {
-            "type": "integer",
-            "description": "Highest observed index for an indexed attribute. Omitted when 0.",
-            "readOnly": true,
-            "example": 3
-          },
           "received": {
             "type": "boolean",
             "description": "Present and `true` when this attribute has been observed in actual device data received by the server. Omitted when false.",
