@@ -641,7 +641,7 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowTemplateList",
-        "description": "List all system-provided flow templates available to the user. Each item includes the template ID, translated title, and translated description. To get the full node/edge graph for a specific template, use `flowTemplateRead`. To create a flow from a template, pass its nodes and edges to `flowCreate`.",
+        "description": "List all system-provided flow templates available to the user. Each item includes the template ID, title, description, and the pre-configured node and edge graph. To create a flow from a template, pass the template's nodes and edges to `flowCreate`.",
         "operationId": "flowTemplateList",
         "responses": {
           "200": {
@@ -662,29 +662,7 @@
                       "description": "Available flow templates",
                       "readOnly": true,
                       "items": {
-                        "type": "object",
-                        "description": "Flow template summary. Titles and descriptions are server-translated according to the request locale.",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "description": "Template ID",
-                            "readOnly": true,
-                            "example": 1
-                          },
-                          "title": {
-                            "type": "string",
-                            "description": "Translated template name",
-                            "readOnly": true,
-                            "example": "Device healthcheck and reboot"
-                          },
-                          "description": {
-                            "type": ["string", "null"],
-                            "description": "Translated template description. Supports Markdown.",
-                            "readOnly": true,
-                            "example": "Monitors GPS signal quality and schedules a device reboot if signal is poor."
-                          }
-                        },
-                        "required": ["id", "title"]
+                        "$ref": "#/components/schemas/IotFlowTemplate"
                       }
                     }
                   }
@@ -765,13 +743,13 @@
       "get": {
         "tags": ["Flow"],
         "summary": "flowSourcesAttributeList",
-        "description": "Return the telemetry attributes available from the specified devices, for use when authoring expressions in Initiate Attributes or Logic nodes. If `source_ids` is omitted, returns attributes for all trackers in the account. Set `include_only_iot_flow_attributes=true` to return only attributes that IoT Logic flows have computed and emitted; omit or set to `false` to return all attributes including raw device parameters.",
+        "description": "Return the telemetry attributes available from the specified devices, for use when authoring expressions in Initiate Attributes or Logic nodes. Pass one or more `source_ids` as repeated query parameters. Set `include_only_iot_flow_attributes=true` to return only attributes that IoT Logic flows have computed and emitted; set it to `false` to return all attributes including raw device parameters.",
         "operationId": "flowSourcesAttributeList",
         "parameters": [
           {
             "name": "source_ids",
             "in": "query",
-            "required": false,
+            "required": true,
             "style": "form",
             "explode": true,
             "schema": {
@@ -780,18 +758,17 @@
                 "type": "integer"
               },
               "minItems": 1,
-              "description": "Device source IDs to query attributes for. If omitted, returns attributes for all trackers in the account.",
+              "description": "Device source IDs to query attributes for.",
               "example": [123456, 789012]
             }
           },
           {
             "name": "include_only_iot_flow_attributes",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "boolean",
-              "default": false,
-              "description": "When true, returns only IoT Logic flow-emitted attributes. When false (default), returns all attributes including raw device parameters.",
+              "description": "When true, returns only IoT Logic flow-emitted attributes. When false, returns all attributes including raw device parameters.",
               "example": false
             }
           }
