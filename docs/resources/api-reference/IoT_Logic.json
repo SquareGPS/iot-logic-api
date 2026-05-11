@@ -749,7 +749,6 @@
           {
             "name": "source_ids",
             "in": "query",
-            "required": false,
             "style": "form",
             "explode": true,
             "schema": {
