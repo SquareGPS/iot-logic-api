@@ -1116,7 +1116,8 @@
             "example": "Basic processing flow"
           },
           "description": {
-            "type": ["string", "null"],
+            "type": "string",
+            "nullable": true,
             "description": "Template description",
             "example": "A simple flow for standard telemetry processing."
           },
