@@ -6,6 +6,8 @@ description: >-
 
 # Data types and encoding standards
 
+Navixy Generic Protocol messages use standard JSON with a defined set of field types. This page specifies how each type maps to JSON, how timestamps must be formatted, and how binary payloads should be encoded before transmission. Knowing these constraints helps you construct valid messages and avoid silent discard due to type mismatches or encoding errors.
+
 ## Data types
 
 | **Type**  | **JSON** | **Description**                                    | **Examples**                                               | **Limitations**                                        |

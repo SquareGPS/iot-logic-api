@@ -18,27 +18,50 @@ Typical senders include: GPS trackers, IoT sensors, telematics terminals, and ga
 
 ## Protocol versions
 
-<table><thead><tr><th width="136">Date</th><th width="124">Version</th><th width="133">Status</th><th>Description</th></tr></thead><tbody><tr><td>2024-09-03</td><td><a href="navixy-generic-protocol/navixy-generic-protocol-10.md"><strong>Version 1.0</strong></a></td><td><strong>Stable</strong></td><td>Base version with general availability. Standard data structures with foundational telematics and sensor data support.</td></tr><tr><td>2024-10-25</td><td><a href="navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md"><strong>Version 1.1a</strong></a></td><td><strong>On demand</strong></td><td>Early release for advanced data structures and enhanced custom attributes support. Enhanced custom attributes, available exclusively in version 1.1a, open up new possibilities for users to integrate diverse sensor data and custom configurations.</td></tr><tr><td>2026-03-12</td><td><a href="navixy-generic-protocol/navixy-generic-protocol-12.md"><strong>Version 1.2</strong></a></td><td><strong>Current</strong></td><td>Adds <code>source_type</code> and <code>precision</code> to the <code>location</code> object, enabling explicit positioning source identification. Backward compatible with 1.0.</td></tr></tbody></table>
+| Date | Version | Status | Notes |
+|------|---------|--------|-------|
+| 2024-09-03 | **1.0** | Stable | Base version |
+| 2024-10-25 | **1.1a** | On demand | Structured custom attributes with metadata — requires separate arrangement with Navixy |
+| 2026-03-12 | **1.2** | Current | Adds `source_type` and `precision` to the `location` object — **use for all new integrations** |
 
-## Section content
+## Quick start
 
-* [Navixy Generic Protocol 1.0](navixy-generic-protocol/navixy-generic-protocol-10.md) - base version with complete reference
-  * [Transport layer](navixy-generic-protocol/navixy-generic-protocol-10/transport-layer.md) - HTTP/HTTPS and MQTT connection parameters, endpoints, and code examples
-  * [Data types and encoding standards](navixy-generic-protocol/navixy-generic-protocol-10/data-types-and-encoding-standards.md) - JSON type mapping, timestamps, and binary encoding
-  * [Message structure and attributes](navixy-generic-protocol/navixy-generic-protocol-10/message-structure-and-attributes.md) - full attribute reference with location, sensors, I/O, and custom fields
-  * [Predefined event identifiers](navixy-generic-protocol/navixy-generic-protocol-10/predefined-event-identifiers.md) - standard `event_id` values for common device events
-* [Navixy Generic Protocol 1.1a (on demand)](navixy-generic-protocol/navixy-generic-protocol-11a-on-demand.md) - structured custom attribute arrays with metadata
-* [Navixy Generic Protocol 1.2](navixy-generic-protocol/navixy-generic-protocol-12.md) - adds `source_type` and `precision` to the `location` object
-* [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) - AI-assisted field mapping from any device format to NGP
+{% stepper %}
+{% step %}
+## Choose your transport
+
+NGP supports HTTP/HTTPS and MQTT. See [Transport layer](transport-layer.md) for endpoints, connection parameters, and working code examples for both.
+{% endstep %}
+
+{% step %}
+## Build your message
+
+Every NGP message is a JSON object requiring two mandatory fields: `device_id` and `message_time`. See [Message structure and attributes](message-structure-and-attributes.md) for the complete field reference and minimum valid message examples.
+{% endstep %}
+
+{% step %}
+## Declare your version
+
+Include `"version": "1.2"` in your message to enable all current fields. Omitting the field defaults to 1.0 behavior. The availability column in the attribute table shows which fields require a version declaration.
+{% endstep %}
+{% endstepper %}
+
+## Reference
+
+- [Transport layer](transport-layer.md) — HTTP/HTTPS and MQTT connection parameters, endpoints, and code examples
+- [Data types and encoding standards](data-types-and-encoding-standards.md) — JSON type mapping, timestamps, and binary encoding
+- [Message structure and attributes](message-structure-and-attributes.md) — complete attribute reference with availability tags
+- [Predefined event identifiers](predefined-event-identifiers.md) — standard `event_id` values for common device events
+- [NGP Mapper skill](ngp-mapper-skill.md) — AI-assisted field mapping from any device format to NGP
 
 ## Implementing NGP
 
-Mapping an existing device or data source to NGP typically means working through the field reference, identifying transforms for unit conversions and enum remappings, and handling edge cases such as LBS-only positioning or bitmask extraction. The [NGP Mapper skill](navixy-generic-protocol/ngp-mapper-skill.md) handles this process automatically.
+Mapping an existing device or data source to NGP typically means working through the field reference, identifying transforms for unit conversions and enum remappings, and handling edge cases such as LBS-only positioning or bitmask extraction. The [NGP Mapper skill](ngp-mapper-skill.md) handles this process automatically.
 
 You provide a sample message from your source system (a raw JSON export, a proprietary tracker payload, a Wialon record, or any structured format) and the skill produces a complete field mapping table with every required transform, a ready-to-send NGP JSON example built from your real values, exact transport parameters for HTTP or MQTT in your target region, and notes on fields with no direct NGP equivalent and how to handle them.
 
 The result is a self-contained specification you can hand to a developer or use to implement the converter yourself, without having to read through the entire reference first.
 
 {% hint style="info" %}
-The NGP Mapper skill runs inside your AI assistant and requires no additional tools or accounts. [Download the skill file and see how to use it](navixy-generic-protocol/ngp-mapper-skill.md).
+The NGP Mapper skill runs inside your AI assistant and requires no additional tools or accounts. [Download the skill file and see how to use it](ngp-mapper-skill.md).
 {% endhint %}

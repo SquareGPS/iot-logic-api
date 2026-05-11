@@ -16,6 +16,7 @@ This guide covers structure rules and JSON format. It does not document every no
 2. **Check the device page** at `https://www.navixy.com/devices/[manufacturer]/[model]/` and look in the **Inputs and outputs** section for the exact attribute names the device transmits.
 3. **Fetch official API docs** for any third-party webhook target (Telegram, Slack, etc.) to verify the URL format, required fields, and auth method. Do not rely on training memory for this.
 4. **Ask the user** — using the pre-generation checklist below as a guide.
+5. **Validate edge completeness before finalizing** — for every Logic node in the flow, confirm that both a `then_edge` and an `else_edge` are present, and that every possible data path terminates at a terminal node. Trace each branch from `data_source` to its terminal node to verify no path dead-ends.
 
 For user-specific values (bot tokens, chat IDs, API keys, device IDs), always ask the user directly. If they may not know where to get a value, include a brief note explaining how.
 
@@ -43,21 +44,21 @@ Do not ask for information that can be safely assumed or substituted with a plac
 * "Should both conditions trigger the same action, or do you want separate logic branches for each?"
 * "If the condition is not met, should data still be forwarded to Navixy?"
 
-**Pre-generation checklist**
+### **Pre-generation checklist**
 
 Before generating any flow JSON, confirm you can answer all of the following. If you cannot, use the lookup order above — or ask the user.
 
 <table><thead><tr><th width="58">#</th><th>Question</th><th>Why it matters</th></tr></thead><tbody><tr><td>1</td><td>What device make and model?</td><td>Required to look up exact attribute names</td></tr><tr><td>2</td><td>What attribute name does the device use for the relevant data? (e.g. how is ignition reported — <code>din1</code>, <code>avl_2</code>, <code>input_status</code> bitmask?)</td><td>Device-specific — never assume a generic name</td></tr><tr><td>3</td><td>What is the exact triggering condition, including any required duration?</td><td>Core of the Logic node and counter setup</td></tr><tr><td>4</td><td>If duration matters — what is the device's reporting interval in seconds?</td><td>Required to calculate the message count threshold</td></tr><tr><td>5</td><td>Where should data go — Navixy, MQTT, or external webhook? And what should happen on the THEN branch?</td><td>Determines terminal node types and wiring</td></tr><tr><td>6</td><td>How will you use this flow — import via the UI, or create it through the API?</td><td>Determines JSON format (import shape vs. <code>"flow"</code> envelope) and how the result is delivered</td></tr><tr><td>7</td><td>If webhook — what is the target service? Do you have the connection details (URL, token, chat ID, etc.)?</td><td>URL and payload must be verified from official docs; credentials must come from the user</td></tr></tbody></table>
 
-Do not ask all six at once. Ask only what is genuinely missing, one or two questions at a time. Use `source_ids: []` and placeholder URLs rather than blocking on minor unknowns — but state assumptions explicitly.
+Do not ask all seven at once. Ask only what is genuinely missing, one or two questions at a time. Use `source_ids: []` and placeholder URLs rather than blocking on minor unknowns — but state assumptions explicitly.
 
 ***
 
-### JSON format modes
+## JSON format modes
 
 Navixy uses two distinct JSON formats. They are not interchangeable.
 
-#### Import / Export format (default)
+### Import / Export format (default)
 
 Use this format when generating a flow for UI import (Flow Management → Upload) or as a downloadable file. This is the **default format** unless the user explicitly requests API usage.
 
@@ -73,7 +74,7 @@ The top-level object contains `title`, `description` (optional), `nodes`, and `e
 
 The imported flow is always enabled by default. The `id` is assigned dynamically by the platform. Do not include `id`, `enabled`, or `default_flow` fields in import-format JSON.
 
-#### API format
+### API format
 
 Use this format **only** when the user explicitly requests a payload for the `/iot/logic/flow/create` or `/iot/logic/flow/update` API endpoints.
 
@@ -90,7 +91,7 @@ The top-level object must wrap the flow in a `"flow"` envelope key:
 }
 ```
 
-**Delivery based on usage:**
+### **Delivery based on usage:**
 
 * **Import format** — provide the JSON as a downloadable file, not inline code. The user uploads it via Flow Management → Upload.
 * **API format** — provide the JSON as inline code in your response. The user copies it into their API call.
@@ -99,7 +100,7 @@ Never use the `"flow"` envelope for import-format JSON. Using it in a file impor
 
 ***
 
-### Node types
+## Node types
 
 Always use only these node types. Do not invent additional types or fields.
 
@@ -140,22 +141,22 @@ value('attribute_name', index, 'any')
 
 Where `index` is the historical depth (0 = current message, 1 = previous, up to 12). Use `'any'` to include nulls or `'valid'` to skip them. This is the only mechanism for accumulating state across messages — counters, running totals, change detection.
 
-See [Managing attributes](https://www.navixy.com/docs/user/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes) for full examples.
+See [Managing attributes](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes) for full examples.
 
-**logic**
+#### **logic**
 
 * `type`: `"logic"`
 * `data.title`: string
 * `data.name`: internal identifier string (no spaces)
 * `data.condition`: JEXL boolean expression
 
-**action**
+#### **action**
 
 * `type`: `"action"`
 * `data.title`: string
 * `data.actions`: array of action objects (max 10). Each action is either `set_output` or `send_gprs_command`.
 
-**webhook**
+#### **webhook**
 
 * `type`: `"webhook"`
 * `data.title`: string
@@ -165,13 +166,13 @@ See [Managing attributes](https://www.navixy.com/docs/user/guide/account/iot-log
 
 For third-party services, verify the expected URL format, required headers, and payload structure from the service's official API documentation before generating. Do not rely on training memory. For Telegram, the correct endpoint is `https://api.telegram.org/bot{TOKEN}/sendMessage` with a body containing `chat_id` and `text`. Ask the user for their bot token and chat ID; if they need guidance, the token comes from @BotFather on Telegram and the chat ID from a `/getUpdates` API call.
 
-**output\_endpoint (Navixy)**
+#### **output\_endpoint (Navixy)**
 
 * `type`: `"output_endpoint"`
 * `data.title`: string
 * `data.output_endpoint_type`: `"output_default"`
 
-**output\_endpoint (MQTT)**
+#### **output\_endpoint (MQTT)**
 
 * `type`: `"output_endpoint"`
 * `data.title`: string
@@ -180,7 +181,7 @@ For third-party services, verify the expected URL format, required headers, and 
 
 ***
 
-### Edge rules
+## Edge rules
 
 Edges connect nodes. Three edge types exist: `simple_edge`, `then_edge`, `else_edge`.
 
@@ -198,7 +199,7 @@ A Logic node must always have both a `then_edge` and an `else_edge` outgoing con
 
 ***
 
-### Critical wiring rule: single Output Endpoint for Logic branches
+## Critical wiring rule: single Output Endpoint for Logic branches
 
 Always use a **single** `output_endpoint` node per logical branch path. A single Output Endpoint node can and should receive connections from multiple upstream nodes simultaneously, including both `then_edge` and `else_edge` from the same Logic node.
 
@@ -266,9 +267,11 @@ Example: 15 minutes at 30-second intervals = 900 ÷ 30 = **30 messages**.
 ```json
 {
   "name": "idle_count",
-  "value": "speed < 2 && din1 == true ? value('idle_count', 1, 'any') + 1 : 0"
+  "value": "speed < 2 && ignition_attribute == true ? value('idle_count', 1, 'any') + 1 : 0"
 }
 ```
+
+Replace `ignition_attribute` with the actual attribute name from your device's Inputs and outputs page.
 
 **Logic node condition:**
 
@@ -280,11 +283,11 @@ This fires exactly once when the threshold is reached, then resets when the cond
 
 **Important constraint:** `value()` can access up to 12 historical readings. This pattern therefore supports durations up to 12 × reporting interval. For longer durations or more complex state tracking, ask the user to consider alternative approaches.
 
-For full `value()` syntax, see [Managing attributes](https://www.navixy.com/docs/user/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes).
+For full `value()` syntax, see [Managing attributes](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic/flow-management/initiate-attribute-node/managing-attributes).
 
 ***
 
-### Canvas layout (view positions)
+## Canvas layout (view positions)
 
 Always generate `view.position` for every node. Use pixel-based coordinates with origin at top-left. Use a left-to-right layout.
 
@@ -294,7 +297,7 @@ Column assignment: data sources in column 1, logic nodes in column 2, outputs an
 
 ***
 
-### Validation checklist
+## Validation checklist
 
 Before finalizing any generated flow, verify all of the following:
 
@@ -302,16 +305,18 @@ Before finalizing any generated flow, verify all of the following:
 2. At least one `data_source` node and at least one terminal node are present
 3. Every node includes `data.title`
 4. Every `data_source` node has `source_ids` (use `[]` if unspecified)
-5. Every `logic` node has both a `then_edge` and an `else_edge` outgoing connection
+5. For every `logic` node: count outgoing edges — there must be at least one `then_edge` AND at least one `else_edge`. A Logic node with only one branch direction is invalid
 6. No edges originate from terminal nodes (`action`, `webhook`, `output_endpoint`)
 7. Only one `output_endpoint` node is used per logical path — both `then_edge` and `else_edge` connect to the same output node
 8. All JEXL expressions use valid syntax (operators: `&&`, `||`, `!`, `<`, `>`, `<=`, `>=`, `==`, `!=`)
 9. All edge `type` values are explicit in import-format flows
 10. Every node has a `view.position` with integer `x` and `y`
 
+Before submitting, trace every possible path through the flow from `data_source` to a terminal node. Every path must terminate. No path may dead-end at a non-terminal node.
+
 ***
 
-### Canonical complete example
+## Canonical complete example
 
 This example shows a complete, valid import-format flow: one Logic node with an Action on the THEN branch and a single shared Output Endpoint receiving both branches.
 
@@ -376,7 +381,7 @@ Node 4 receives two edges total: `then_edge` from node 2, `else_edge` from node 
 
 ***
 
-#### Reference links
+## Reference links
 
 Use these when the guide doesn't cover the detail you need.
 
@@ -389,4 +394,4 @@ Use these when the guide doesn't cover the detail you need.
 
 ***
 
-_This page is intended for AI assistants and automated tools generating IoT Logic flow JSON. For human-readable documentation, see the_ [_IoT Logic user guide_](https://www.navixy.com/docs/user/guide/account/iot-logic) _and the_ [_IoT Logic API reference_](https://www.navixy.com/docs/iot-logic-api)_._
+_This page is intended for AI assistants and automated tools generating IoT Logic flow JSON. For human-readable documentation, see the_ [_IoT Logic user guide_](https://app.gitbook.com/s/446mKak1zDrGv70ahuYZ/guide/account/iot-logic) _and the_ [_IoT Logic API reference_](../resources/api-reference/)_._
