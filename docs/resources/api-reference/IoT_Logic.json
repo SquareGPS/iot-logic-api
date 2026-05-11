@@ -682,6 +682,12 @@
                             "description": "Translated template description. Supports Markdown.",
                             "readOnly": true,
                             "example": "Monitors GPS signal quality and schedules a device reboot if signal is poor."
+                          },
+                          "icon": {
+                            "type": "string",
+                            "description": "Optional icon key for the template. Omitted when not set.",
+                            "readOnly": true,
+                            "example": "healthcheck"
                           }
                         },
                         "required": ["id", "title"]
