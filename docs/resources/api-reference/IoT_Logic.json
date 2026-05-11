@@ -785,6 +785,7 @@
                 "type": "integer"
               },
               "minItems": 1,
+              "maxItems": 25000,
               "description": "Device source IDs to query attributes for. If omitted, returns attributes for all trackers in the account.",
               "example": [123456, 789012]
             }
